@@ -1,6 +1,6 @@
-import { charityModel } from "../../dataBase/Model/Charity.model.js";
-import { advancedPagination } from "../../Middleware/pagination.middleware.js";
-import { decryptPhone, encryptPhone } from "../../Utils/Encryption/encryption.js";
+import { charityModel } from "../../dataBase/model/charity.model.js";
+import { advancedPagination } from "../../middleware/pagination.middleware.js";
+import { decryptPhone, encryptPhone } from "../../Utils/encryption/encryption.js";
 // ====================1) GET ALL CHARITIES ====================
 export const getAllCharities = async (req, res, next) => {
   const data = await advancedPagination(charityModel);
@@ -24,12 +24,12 @@ export const getCharity = async (req, res, next) => {
 
 export const createCharity = async (req, res, next) => {
   const { email, phone } = req.body;
-  
+
   const existing = await charityModel.findOne({ email });
   if (existing) {
     return next(new Error("Email already exists", { cause: 409 }));
   }
-  
+
   const encryptedPhone = encryptPhone({ cipherText: phone });
   const charity = await charityModel.create({
     ...req.body,
@@ -66,7 +66,7 @@ export const updateCharity = async (req, res, next) => {
 // ===================== 5) Delete Charity ================================
 export const deleteCharity = async (req, res, next) => {
   const { id } = req.params;
-  
+
   const charity = await charityModel.findByIdAndDelete(id);
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));

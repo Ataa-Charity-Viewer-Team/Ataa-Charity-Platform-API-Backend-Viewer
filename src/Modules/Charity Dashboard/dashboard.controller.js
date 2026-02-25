@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { asyncHandler } from "../../Utils/Error-Handling/asyncHandler.js";
+import { asyncHandler } from "../../Utils/error-handling/asyncHandler.js";
 import * as charityService from "./dashboard.service.js";
 import * as  dashboardValidation from "./dashboard.validation.js";
-import authAction from "../../Middleware/authaction.middleware.js";
-import { authorization } from "../../Middleware/authorization.middleware.js";
+import authAction from "../../middleware/authaction.middleware.js";
+import { authorization } from "../../middleware/authorization.middleware.js";
 import { charityEndpoint } from "./dashboard.endpoint.js";
-import { validation } from "../../Middleware/validation.middleware.js";
+import { validation } from "../../middleware/validation.middleware.js";
 
 const router = Router();
 // ====================== get stats ======================

@@ -1,6 +1,6 @@
 // ==================== notification.schema.js ====================
 import joi from "joi";
-import { monggoseID } from "../../Middleware/validation.middleware.js";
+import { monggoseID } from "../../middleware/validation.middleware.js";
 // ==================== Constants ====================
 const NOTIFICATION_STATUS = ["unread", "read"];
 

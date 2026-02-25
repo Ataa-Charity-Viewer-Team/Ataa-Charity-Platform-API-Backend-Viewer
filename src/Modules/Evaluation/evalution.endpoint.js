@@ -1,6 +1,6 @@
-import { roles } from "../../dataBase/Model/User.model.js";
+import { roles } from "../../dataBase/model/user.model.js";
 
-export const evalutionEndpoint={
-  createEvaluation:[roles.user],
-  getEvaluation:[roles.user]
+export const evalutionEndpoint = {
+  createEvaluation: [roles.user],
+  getEvaluation: [roles.user]
 }

@@ -1,5 +1,5 @@
 import joi from "joi";
-import { monggoseID, checkFile } from "../../Middleware/validation.middleware.js";
+import { monggoseID, checkFile } from "../../middleware/validation.middleware.js";
 
 // ==================== Constants ====================
 const DONATION_TYPES = ["رجالي", "حريمي", "أطفال"];

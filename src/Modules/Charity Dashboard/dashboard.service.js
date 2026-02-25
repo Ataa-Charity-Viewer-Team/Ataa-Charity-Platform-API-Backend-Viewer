@@ -1,7 +1,7 @@
-import { advancedPagination } from "../../Middleware/pagination.middleware.js";
-import { donationModel, donationStatus } from "../../dataBase/Model/Donation.model.js";
-import { charityModel } from "../../dataBase/Model/Charity.model.js";
-import { notificationModel, notificationStatus } from "../../dataBase/Model/notification.model.js";
+import { advancedPagination } from "../../middleware/pagination.middleware.js";
+import { donationModel, donationStatus } from "../../dataBase/model/donation.model.js";
+import { charityModel } from "../../dataBase/model/charity.model.js";
+import { notificationModel, notificationStatus } from "../../dataBase/model/notification.model.js";
 // ===================== 1) Get Stats ================================
 export const getStats = async (req, res, next) => {
   const charity = await charityModel.findOne({ userId: req.user._id });
@@ -13,7 +13,8 @@ export const getStats = async (req, res, next) => {
 
   return res.status(200).json({
     success: true,
-    stats: { Total_Donations, Pending_Donations, Accepted_Donations }});
+    stats: { Total_Donations, Pending_Donations, Accepted_Donations }
+  });
 };
 
 // ===================== 2) Get Donations ================================
@@ -45,7 +46,7 @@ export const updateRequestStatus = async (req, res, next) => {
   const charity = await charityModel.findOne({ userId: user._id });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
-  const request = await donationModel.findOne({ _id: id, charityId: charity._id } );
+  const request = await donationModel.findOne({ _id: id, charityId: charity._id });
   if (!request) return next(new Error("Request not found", { cause: 404 }));
 
   if (request.status === donationStatus.accepted) {
@@ -56,13 +57,13 @@ export const updateRequestStatus = async (req, res, next) => {
     id,
     { status },
     { new: true });
-    
-await notificationModel.create({
-  userId: request.donorId,
-  DonationId: request._id,
-  content: `Your donation request has been ${status}`,
-  status: notificationStatus.unread
-});  
+
+  await notificationModel.create({
+    userId: request.donorId,
+    DonationId: request._id,
+    content: `Your donation request has been ${status}`,
+    status: notificationStatus.unread
+  });
   return res.status(200).json({
     success: true,
     message: "Request updated successfully",

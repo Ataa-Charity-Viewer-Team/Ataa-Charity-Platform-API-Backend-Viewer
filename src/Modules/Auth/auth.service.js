@@ -1,134 +1,137 @@
-import { userModel } from "../../dataBase/Model/User.model.js";
-import { encryptPhone } from "../../Utils/Encryption/encryption.js";
+import { userModel } from "../../dataBase/model/user.model.js";
+import { encryptPhone } from "../../Utils/encryption/encryption.js";
 import { hashPassword, comparePassword } from "../../Utils/Hashing(Password)/hashing.js";
-import { createToken, verifyToken } from "../../Utils/Token (Authaction)/token.js";
+import { createToken, verifyToken } from "../../Utils/token (authaction)/token.js";
 import { customAlphabet } from "nanoid";
-import { emailEmmiter } from '../../Utils/Send Emails/emailEvent.js';
-import { templet } from './../../Utils/Send Emails/generate.html.js';
-import {codeOTP, otpModel} from "../../dataBase/Model/OTP.model.js";
+import { emailEmmiter } from '../../Utils/send emails/emailEvent.js';
+import { templet } from '../../Utils/send emails/generate.html.js';
+import { codeOTP, otpModel } from "../../dataBase/model/otp.model.js";
 // ===========================1) Register Account  ===========================
 export const registerAccount = async (req, res, next) => {
-    const { userName, email, phone, password, address } = req.body;
+  const { userName, email, phone, password, address } = req.body;
 
-    const existingUser = await userModel.findOne({ email });
-    if (existingUser) {
-        return next(new Error("Email already exists", { cause: 409 }));
-    }
-    const passwordHash = hashPassword({ plainText: password });
-    const encryptedPhone = encryptPhone({ cipherText: phone });
-    const newUser = await userModel.create({...req.body,phone: encryptedPhone,password: passwordHash});
-    const userData=await userModel.findById(newUser._id).select("-password -__v -phone");
-    const sendCode = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ",6)();
-    await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
-    await otpModel.create({ userId: newUser._id, code:sendCode, codeType: codeOTP.activateAccount });
-    emailEmmiter.emit("sendEmail",{to: email, subject: codeOTP.activateAccount, html:templet({sendCode:sendCode})});
-    return res.status(201).json({success: true,user: userData,message: "User registered successfully. Please check your email for OTP."});
+  const existingUser = await userModel.findOne({ email });
+  if (existingUser) {
+    return next(new Error("Email already exists", { cause: 409 }));
+  }
+  const passwordHash = hashPassword({ plainText: password });
+  const encryptedPhone = encryptPhone({ cipherText: phone });
+  const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash });
+  const userData = await userModel.findById(newUser._id).select("-password -__v -phone");
+  const sendCode = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 6)();
+  await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
+  await otpModel.create({ userId: newUser._id, code: sendCode, codeType: codeOTP.activateAccount });
+  emailEmmiter.emit("sendEmail", { to: email, subject: codeOTP.activateAccount, html: templet({ sendCode: sendCode }) });
+  return res.status(201).json({ success: true, user: userData, message: "User registered successfully. Please check your email for OTP." });
 };
 
 // ===========================2) Login  ===========================
 export const login = async (req, res, next) => {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    const user = await userModel.findOne({ email });
-    if (!user) return next(new Error("Invalid email or password", { cause: 404 }));
+  const user = await userModel.findOne({ email });
+  if (!user) return next(new Error("Invalid email or password", { cause: 404 }));
 
-    const isValid = comparePassword({ plainText: password, hashPassword: user.password });
-    if (!isValid){
-      return next(new Error("Invalid email or password", { cause: 401 }));
-    }
+  const isValid = comparePassword({ plainText: password, hashPassword: user.password });
+  if (!isValid) {
+    return next(new Error("Invalid email or password", { cause: 401 }));
+  }
 
-    if (!user.verify){
-      return next(new Error("Please verify your email first", { cause: 403 }));
-    } 
+  if (!user.verify) {
+    return next(new Error("Please verify your email first", { cause: 403 }));
+  }
 
-    const accessToken = createToken({
-        payload: { id: user._id, roleType: user.roleType },
-        secret: process.env.ACCESS_SECRET + user.updatedAt.getTime(),
-        options: { expiresIn: process.env.ACCESS_TOKEN } //7h
-      });
-      const refreshToken = createToken({
-        payload: { id: user._id, roleType: user.roleType },
-        secret: process.env.REFRESH_SECRET,
+  const accessToken = createToken({
+    payload: { id: user._id, roleType: user.roleType },
+    secret: process.env.ACCESS_SECRET + user.updatedAt.getTime(),
+    options: { expiresIn: process.env.ACCESS_TOKEN } //7h
+  });
+  const refreshToken = createToken({
+    payload: { id: user._id, roleType: user.roleType },
+    secret: process.env.REFRESH_SECRET,
     options: { expiresIn: process.env.REFRESH_TOKEN } //50h
-    });
-    return res.status(200).json({success: true,message: "User logged in successfully",
-    tokens: { accessToken, refreshToken }});
+  });
+  return res.status(200).json({
+    success: true, message: "User logged in successfully",
+    tokens: { accessToken, refreshToken }
+  });
 };
 
 // ===========================3) Verify Email ===========================
 export const verifyEmail = async (req, res, next) => {
-    const { email, code } = req.body;
+  const { email, code } = req.body;
 
-    const user = await userModel.findOne({ email });
-    if (!user) return next(new Error("User not found", { cause: 404 }));
-    if (user.verify){
-      return next(new Error("Email already verified", { cause: 409 }));
-    }
-    const otpRecord = await otpModel.findOne({ userId: user._id, code, codeType: codeOTP.activateAccount });
-    if (!otpRecord){
-      return next(new Error("Invalid or Expired OTP", { cause: 400 }));
-    }
-    user.verify = true;
-    await user.save();
-    await otpModel.deleteOne({ _id: otpRecord._id });
-    return res.status(200).json({
-        success: true,
-        message: "Email verified successfully. You can login now."});
+  const user = await userModel.findOne({ email });
+  if (!user) return next(new Error("User not found", { cause: 404 }));
+  if (user.verify) {
+    return next(new Error("Email already verified", { cause: 409 }));
+  }
+  const otpRecord = await otpModel.findOne({ userId: user._id, code, codeType: codeOTP.activateAccount });
+  if (!otpRecord) {
+    return next(new Error("Invalid or Expired OTP", { cause: 400 }));
+  }
+  user.verify = true;
+  await user.save();
+  await otpModel.deleteOne({ _id: otpRecord._id });
+  return res.status(200).json({
+    success: true,
+    message: "Email verified successfully. You can login now."
+  });
 };
 
 // ====================4) Forget Password  =======================
 export const forgetPassword = async (req, res, next) => {
-    const { email } = req.body;
-    const user = await userModel.findOne({ email });
-    if (!user){
-      return next(new Error("User not found", { cause: 404 }));
-    } 
-    await otpModel.deleteMany({ userId: user._id, codeType: codeOTP.forgetPassword });
-    const sendForget = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 6)();
-    await otpModel.create({ userId: user._id, code: sendForget, codeType: codeOTP.forgetPassword });
-    emailEmmiter.emit("sendEmail",{to: email, subject: codeOTP.forgetPassword, html:templet({sendCode: sendForget})});
+  const { email } = req.body;
+  const user = await userModel.findOne({ email });
+  if (!user) {
+    return next(new Error("User not found", { cause: 404 }));
+  }
+  await otpModel.deleteMany({ userId: user._id, codeType: codeOTP.forgetPassword });
+  const sendForget = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 6)();
+  await otpModel.create({ userId: user._id, code: sendForget, codeType: codeOTP.forgetPassword });
+  emailEmmiter.emit("sendEmail", { to: email, subject: codeOTP.forgetPassword, html: templet({ sendCode: sendForget }) });
 
-    return res.status(200).json({
-        success: true,
-        message: "Password reset OTP sent to your email."
-    });
+  return res.status(200).json({
+    success: true,
+    message: "Password reset OTP sent to your email."
+  });
 };
 
 // ===========================5) Reset Password ===========================
 export const resetPassword = async (req, res, next) => {
-    const { email, code, password } = req.body;
+  const { email, code, password } = req.body;
 
-    const user = await userModel.findOne({ email });
-    if (!user){
-      return next(new Error("User not found", { cause: 404 }));
-    }
-    const otpRecord = await otpModel.findOne({ userId: user._id, code, codeType: codeOTP.forgetPassword });
-    if (!otpRecord){
-      return next(new Error("Invalid or Expired OTP", { cause: 400 }));
-    } 
-    user.password = hashPassword({ plainText: password });
-    await user.save();
-    await otpModel.deleteOne({ _id: otpRecord._id });
-    return res.status(200).json({success: true,message: "Password has been reset successfully."});
+  const user = await userModel.findOne({ email });
+  if (!user) {
+    return next(new Error("User not found", { cause: 404 }));
+  }
+  const otpRecord = await otpModel.findOne({ userId: user._id, code, codeType: codeOTP.forgetPassword });
+  if (!otpRecord) {
+    return next(new Error("Invalid or Expired OTP", { cause: 400 }));
+  }
+  user.password = hashPassword({ plainText: password });
+  await user.save();
+  await otpModel.deleteOne({ _id: otpRecord._id });
+  return res.status(200).json({ success: true, message: "Password has been reset successfully." });
 };
 
 // ===========================6) Refresh Token ===========================
 export const refreshToken = async (req, res, next) => {
-    const { refreshToken } = req.body;
+  const { refreshToken } = req.body;
 
-    const decoded = verifyToken({ token: refreshToken, secret: process.env.REFRESH_SECRET });
-    if (!decoded?.id) {
-        return next(new Error("Invalid Token", { cause: 400 }));
-    }
-    const user = await userModel.findById(decoded.id);
-    if (!user) {
-        return next(new Error("User not found", { cause: 404 }));
-    }
+  const decoded = verifyToken({ token: refreshToken, secret: process.env.REFRESH_SECRET });
+  if (!decoded?.id) {
+    return next(new Error("Invalid Token", { cause: 400 }));
+  }
+  const user = await userModel.findById(decoded.id);
+  if (!user) {
+    return next(new Error("User not found", { cause: 404 }));
+  }
 
-    const newAccessToken = createToken({
+  const newAccessToken = createToken({
     payload: { id: user._id, roleType: user.roleType },
-    secret: process.env.ACCESS_SECRET+user.updatedAt.getTime(),
+    secret: process.env.ACCESS_SECRET + user.updatedAt.getTime(),
     options: { expiresIn: process.env.ACCESS_TOKEN }
-});
-    return res.status(200).json({success: true,accessToken:newAccessToken});
+  });
+  return res.status(200).json({ success: true, accessToken: newAccessToken });
 };

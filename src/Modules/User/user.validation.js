@@ -1,5 +1,5 @@
 import joi from "joi";
-import { monggoseID } from "../../Middleware/validation.middleware.js";
+import { monggoseID } from "../../middleware/validation.middleware.js";
 // =================1)  Update Profile ======================
 export const updateProfileSchema = joi.object({
   userName: joi.string().min(3).max(30).trim().messages({

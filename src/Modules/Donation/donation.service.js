@@ -1,7 +1,7 @@
-import { donationModel } from "../../dataBase/Model/Donation.model.js";
-import { charityModel } from "../../dataBase/Model/Charity.model.js";
-import { advancedPagination } from '../../Middleware/pagination.middleware.js';
-import cloudinary from "../../Utils/UploadFile/cloudnairy.uploadServer.js";
+import { donationModel } from "../../dataBase/model/donation.model.js";
+import { charityModel } from "../../dataBase/model/charity.model.js";
+import { advancedPagination } from '../../middleware/pagination.middleware.js';
+import cloudinary from "../../Utils/uploadfile/cloudnairy.uploadServer.js";
 // ===================== upload to cloudinary ======================
 const uploadToCloud = (buffer, userId) => {
   return new Promise((resolve, reject) => {

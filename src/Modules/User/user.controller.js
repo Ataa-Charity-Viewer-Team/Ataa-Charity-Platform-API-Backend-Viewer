@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { asyncHandler } from "../../Utils/Error-Handling/asyncHandler.js";
+import { asyncHandler } from "../../Utils/error-handling/asyncHandler.js";
 import * as userService from "./user.service.js";
 import * as userValidation from "./user.validation.js";
-import authAction from "../../Middleware/authaction.middleware.js";
-import { validation } from "../../Middleware/validation.middleware.js";
-import { authorization } from "../../Middleware/authorization.middleware.js";
+import authAction from "../../middleware/authaction.middleware.js";
+import { validation } from "../../middleware/validation.middleware.js";
+import { authorization } from "../../middleware/authorization.middleware.js";
 import { userEndpoint } from "./user.endpoint.js";
 const router = Router();
 // ============================ get user ================================

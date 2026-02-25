@@ -1,21 +1,21 @@
 // ===================== import modules =====================
-import connectDB from "./dataBase/Connect.js"
-import { notFoundHandler } from "./Utils/Error-Handling/notFoundHandler.js"
-import { globalErrorHandler } from './Utils/Error-Handling/globalHandler.js';
+import connectDB from "./dataBase/connect.js"
+import { notFoundHandler } from "./Utils/error-handling/notFoundHandler.js"
+import { globalErrorHandler } from './Utils/error-handling/globalHandler.js';
 import cors from 'cors'
-import authRouter from "../src/Modules/Auth/auth.controller.js"
-import userRouter from "../src/Modules/User/user.controller.js"
-import charityRouter from "../src/Modules/Charity/charity.controller.js"
-import dashboardRouter from "../src/Modules/Charity Dashboard/dashboard.controller.js"
-import donationRouter from "../src/Modules/Donation/donation.controller.js"
-import evalutionRouter from "../src/Modules/Evaluation/evalution.controller.js"
-import reportRouter from "../src/Modules/Report/report.controller.js"
-import aiRouter from "../src/Modules/AI/ai.controller.js"
-import limiter from "./Middleware/express.limit.middleware.js";
+import authRouter from "./modules/auth/auth.controller.js"
+import userRouter from "./modules/user/user.controller.js"
+import charityRouter from "./modules/charity/charity.controller.js"
+import dashboardRouter from "./modules/charity dashboard/dashboard.controller.js"
+import donationRouter from "./modules/donation/donation.controller.js"
+import evalutionRouter from "./modules/evaluation/evalution.controller.js"
+import reportRouter from "./modules/report/report.controller.js"
+import aiRouter from "./modules/ai/ai.controller.js"
+import limiter from "./middleware/express.limit.middleware.js";
 import helmet from "helmet";
-import notificationRouter from "./Modules/Notfication/notfication.controller.js";
+import notificationRouter from "./modules/notfication/notfication.controller.js";
 export const bootstrap = async (app, express) => {
-// ================= trust proxy ==================
+  // ================= trust proxy ==================
   app.set("trust proxy", 1);
   // ================= npm helmpt (security) ==================
   app.use(helmet())

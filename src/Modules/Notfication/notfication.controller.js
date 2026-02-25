@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { asyncHandler } from "../../Utils/Error-Handling/asyncHandler.js";
+import { asyncHandler } from "../../Utils/error-handling/asyncHandler.js";
 import * as notificationService from "./notfication.service.js";
 import * as notificationValidation from "./notfication.validation.js";
-import authAction from "../../Middleware/authaction.middleware.js";
-import { validation } from "../../Middleware/validation.middleware.js";
-import { authorization } from "../../Middleware/authorization.middleware.js";
+import authAction from "../../middleware/authaction.middleware.js";
+import { validation } from "../../middleware/validation.middleware.js";
+import { authorization } from "../../middleware/authorization.middleware.js";
 import { notificationEndpoint } from "./notfication.endpoint.js";
 
 const router = Router();

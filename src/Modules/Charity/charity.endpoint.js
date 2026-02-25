@@ -1,9 +1,9 @@
-import { roles } from "../../dataBase/Model/User.model.js";
+import { roles } from "../../dataBase/model/user.model.js";
 
-export const charityEndpoint ={
-  createCharity:[roles.admin],
-  getAllCharities:[roles.admin],
-  getCharity:[roles.admin],
-  updateCharity:[roles.admin],
-  deleteCharity:[roles.admin]
+export const charityEndpoint = {
+  createCharity: [roles.admin],
+  getAllCharities: [roles.admin],
+  getCharity: [roles.admin],
+  updateCharity: [roles.admin],
+  deleteCharity: [roles.admin]
 }

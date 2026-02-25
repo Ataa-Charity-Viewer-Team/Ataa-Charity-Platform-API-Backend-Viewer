@@ -1,11 +1,11 @@
 // =================== import modules ===================
 import { Router } from "express";
-import { asyncHandler } from './../../Utils/Error-Handling/asyncHandler.js';
-import { uploadFile } from "../../Utils/UploadFile/multer.upload.js";
-import * as chatServices from "./../../Modules/AI/ai.services.js"
-import authAction from '../../Middleware/authaction.middleware.js';
-import { validation } from "../../Middleware/validation.middleware.js";
-import * as validationSchema from "./../../Modules/AI/ai.validation.js"
+import { asyncHandler } from '../../Utils/error-handling/asyncHandler.js';
+import { uploadFile } from "../../Utils/uploadfile/multer.upload.js";
+import * as chatServices from "./ai.services.js"
+import authAction from '../../middleware/authaction.middleware.js';
+import { validation } from "../../middleware/validation.middleware.js";
+import * as validationSchema from "./ai.validation.js"
 // =================== Router AI ===================
 const router = Router()
 // ========================== AI Create Chat ==========================

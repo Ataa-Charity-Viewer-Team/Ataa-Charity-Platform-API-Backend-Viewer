@@ -1,9 +1,9 @@
 // =====================   import modules =====================
 import { Router } from "express"
-import { asyncHandler } from './../../Utils/Error-Handling/asyncHandler.js';
+import { asyncHandler } from '../../Utils/error-handling/asyncHandler.js';
 import * as authValidation from "./auth.validation.js"
 import * as authService from "./auth.service.js"
-import { validation } from "../../Middleware/validation.middleware.js";
+import { validation } from "../../middleware/validation.middleware.js";
 // =====================   AUTH CONTROLLER =====================
 const router = Router()
 // ===================== Register =====================

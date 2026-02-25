@@ -1,5 +1,5 @@
 import joi from "joi";
-import { monggoseID } from "../../Middleware/validation.middleware.js";
+import { monggoseID } from "../../middleware/validation.middleware.js";
 // ==================== Constants ====================
 const DONATION_STATUS = ["pending", "accepted", "rejected"];
 
@@ -12,5 +12,6 @@ export const updateRequestStatusSchema = joi.object({
     .required()
     .messages({
       "any.required": "Status is required",
-      "any.only": `Status must be one of: pending, accepted, rejected`,}),
+      "any.only": `Status must be one of: pending, accepted, rejected`,
+    }),
 });
