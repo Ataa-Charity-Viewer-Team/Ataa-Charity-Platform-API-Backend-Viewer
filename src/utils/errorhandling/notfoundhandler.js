@@ -1,4 +1,4 @@
 // ================================= Not Found Handler ===================================
 export const notFoundHandler= async(req,res,next)=>{
-    return next(new Error("not found controller handler",{case:404}))
+    return next(new Error("not found controller handler",{cause:404}))
 }

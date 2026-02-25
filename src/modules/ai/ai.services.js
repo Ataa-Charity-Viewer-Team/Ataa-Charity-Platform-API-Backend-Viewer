@@ -6,7 +6,7 @@ import { chatModel } from '../../database/model/ai.model.js';
 // =============================== Groq API Key File Env ================================
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 // ===============================1) Chat  ================================
-export const chat = async (req, res) => {
+export const chat = async (req, res, next) => {
   // ====================== send message  ================================
   const { message } = req.body;
   // ====================== get user id  ================================
@@ -36,7 +36,7 @@ export const chat = async (req, res) => {
   res.status(200).json({ success: true, reply });
 };
 // ================================2) Analysis Image  ================================
-export const analysis = async (req, res) => {
+export const analysis = async (req, res,next) => {
   const { message } = req.body;
   const { user } = req;
 

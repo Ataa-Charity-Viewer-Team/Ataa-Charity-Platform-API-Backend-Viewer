@@ -9,19 +9,10 @@ import { charityEndpoint } from './charity.endpoint.js';
 
 const router = Router();
 
-// ======================== GET all charities ========================
 router.get("/charities", authAction, authorization(charityEndpoint.getAllCharities), asyncHandler(charityService.getAllCharities));
-
-// ======================== CREATE charity ===========================
 router.post("/c", authAction, authorization(charityEndpoint.createCharity), validation(charityValidation.createCharitySchema), asyncHandler(charityService.createCharity));
-
-// ======================== GET charity by ID ========================
-router.get("/:id", authAction, authorization(charityEndpoint.getAllCharities), validation(charityValidation.charityIdSchema), asyncHandler(charityService.getCharity));
-
-// ======================== UPDATE charity ===========================
+router.get("/:id", authAction, authorization(charityEndpoint.getCharity), validation(charityValidation.charityIdSchema), asyncHandler(charityService.getCharity)); // ✓ getCharity
 router.patch("/:id", authAction, authorization(charityEndpoint.updateCharity), validation(charityValidation.updateCharitySchema), asyncHandler(charityService.updateCharity));
-
-// ======================== DELETE charity ===========================
 router.delete("/:id", authAction, authorization(charityEndpoint.deleteCharity), validation(charityValidation.charityIdSchema), asyncHandler(charityService.deleteCharity));
 
 export default router;
