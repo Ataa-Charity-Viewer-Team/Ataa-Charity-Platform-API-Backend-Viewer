@@ -11,4 +11,4 @@ app.get("/", (req, res) => {
 
 await bootstrap(app, express);
 
-export const handler = serverless(app);
+export default serverless(app);
