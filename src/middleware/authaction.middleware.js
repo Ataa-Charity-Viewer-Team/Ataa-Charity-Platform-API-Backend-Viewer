@@ -8,7 +8,10 @@ const authAction = async (req, res, next) => {
     return next(new Error("unauthorized token not found", { cause: 401 }));
   }
 
-  const decoded = jwt.decode(authorization);
+  let decoded;
+    decoded = jwt.decode(authorization);
+  } 
+
   if (!decoded?.id) {
     return next(new Error("invalid token", { cause: 401 }));
   }
@@ -22,7 +25,7 @@ const authAction = async (req, res, next) => {
       authorization,
       process.env.ACCESS_SECRET + user.updatedAt.getTime()
     );
-  }
+  
 
   if (user.verify === false) {
     return next(new Error("verify your account", { cause: 401 }));
@@ -30,5 +33,6 @@ const authAction = async (req, res, next) => {
 
   req.user = user;
   return next();
+
 
 export default authAction;
