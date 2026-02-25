@@ -126,7 +126,7 @@ export const refreshToken = async (req, res, next) => {
   const user = await userModel.findById(decoded.id);
   if (!user) {
     return next(new Error("User not found", { cause: 404 }));
-  }
+
 
   const newAccessToken = createToken({
     payload: { id: user._id, roleType: user.roleType },
