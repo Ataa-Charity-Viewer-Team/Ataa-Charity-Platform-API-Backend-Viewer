@@ -8,14 +8,20 @@ const authAction = async (req, res, next) => {
     return next(new Error("unauthorized token not found", { cause: 401 }));
   }
 
-  let decoded;
-
-    decoded = jwt.verify(authorization, process.env.ACCESS_SECRET);
+  const decoded = jwt.decode(authorization);
+  if (!decoded?.id) {
+    return next(new Error("invalid token", { cause: 401 }));
+  }
 
   const user = await userModel.findById(decoded.id);
-
   if (!user) {
     return next(new Error("unauthorized user not found", { cause: 401 }));
+  }
+
+    jwt.verify(
+      authorization,
+      process.env.ACCESS_SECRET + user.updatedAt.getTime()
+    );
   }
 
   if (user.verify === false) {
@@ -24,6 +30,5 @@ const authAction = async (req, res, next) => {
 
   req.user = user;
   return next();
-};
 
 export default authAction;
