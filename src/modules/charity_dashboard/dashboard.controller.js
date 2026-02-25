@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { asyncHandler } from "../../utils/error-handling/asynchandler.js";
+import { asyncHandler } from "../../utils/errorhandling/asynchandler.js";
 import * as charityService from "./dashboard.service.js";
 import * as  dashboardValidation from "./dashboard.validation.js";
 import authAction from "../../middleware/authaction.middleware.js";

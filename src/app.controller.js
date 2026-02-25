@@ -1,7 +1,7 @@
 // ===================== import modules =====================
 import connectDB from "./database/connect.js"
-import { notFoundHandler } from "./utils/error-handling/notfoundhandler.js"
-import { globalErrorHandler } from './utils/error-handling/globalhandler.js';
+import { notFoundHandler } from "./utils/errorhandling/notfoundhandler.js"
+import { globalErrorHandler } from './utils/errorhandling/globalhandler.js';
 import authRouter from "./modules/auth/auth.controller.js"
 import userRouter from "./modules/user/user.controller.js"
 import charityRouter from "./modules/charity/charity.controller.js"
@@ -17,7 +17,7 @@ import cors from "cors"
 
 export const bootstrap = async (app, express) => {
   app.use(cors({
-    origin:"*"
+    origin: "*"
   }))
   // ================= trust proxy ==================
   app.set("trust proxy", 1);
