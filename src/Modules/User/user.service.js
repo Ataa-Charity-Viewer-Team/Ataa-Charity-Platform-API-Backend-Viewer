@@ -1,7 +1,7 @@
 import { userModel } from "../../dataBase/model/user.model.js";
-import { decryptPhone, encryptPhone } from "../../Utils/encryption/encryption.js";
+import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
 import bcrypt from "bcrypt";
-import { hashPassword } from '../../Utils/Hashing(Password)/hashing.js';
+import { hashPassword } from '../../utils/Hashing(Password)/hashing.js';
 // =================1) My Profile =================
 export const getMyProfile = async (req, res, next) => {
   const { user } = req

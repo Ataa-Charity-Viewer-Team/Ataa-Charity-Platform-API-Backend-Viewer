@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { asyncHandler } from "../../Utils/error-handling/asyncHandler.js";
+import { asyncHandler } from "../../utils/error-handling/asyncHandler.js";
 import * as notificationService from "./notfication.service.js";
 import * as notificationValidation from "./notfication.validation.js";
 import authAction from "../../middleware/authaction.middleware.js";

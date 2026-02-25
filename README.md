@@ -32,21 +32,21 @@ The system provides authentication, donation management, AI-powered analysis, se
 
 ## 🛠 Tech Stack
 
-| Technology | Purpose |
-|------------|----------|
-| Node.js | Runtime Environment |
-| Express.js | Web Framework |
-| MongoDB | Database |
-| Mongoose | ODM |
-| Joi | Request Validation |
-| JWT | Authentication |
-| bcrypt | Password Hashing |
-| Helmet | Security Headers |
-| express-rate-limit | API Protection |
-| Cloudinary | Media Storage |
-| Multer | File Upload |
-| Nodemailer | Email Service |
-| Groq SDK | AI Integration |
+| Technology         | Purpose             |
+| ------------------ | ------------------- |
+| Node.js            | Runtime Environment |
+| Express.js         | Web Framework       |
+| MongoDB            | Database            |
+| Mongoose           | ODM                 |
+| Joi                | Request Validation  |
+| JWT                | Authentication      |
+| bcrypt             | Password Hashing    |
+| Helmet             | Security Headers    |
+| express-rate-limit | API Protection      |
+| Cloudinary         | Media Storage       |
+| Multer             | File Upload         |
+| Nodemailer         | Email Service       |
+| Groq SDK           | AI Integration      |
 
 ---
 

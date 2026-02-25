@@ -1,7 +1,7 @@
 // =================== import modules ===================
 import { Router } from "express";
-import { asyncHandler } from '../../Utils/error-handling/asyncHandler.js';
-import { uploadFile } from "../../Utils/uploadfile/multer.upload.js";
+import { asyncHandler } from '../../utils/error-handling/asyncHandler.js';
+import { uploadFile } from "../../utils/uploadfile/multer.upload.js";
 import * as chatServices from "./ai.services.js"
 import authAction from '../../middleware/authaction.middleware.js';
 import { validation } from "../../middleware/validation.middleware.js";

@@ -1,6 +1,6 @@
 import { charityModel } from "../../dataBase/model/charity.model.js";
 import { advancedPagination } from "../../middleware/pagination.middleware.js";
-import { decryptPhone, encryptPhone } from "../../Utils/encryption/encryption.js";
+import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
 // ====================1) GET ALL CHARITIES ====================
 export const getAllCharities = async (req, res, next) => {
   const data = await advancedPagination(charityModel);

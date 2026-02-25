@@ -1,10 +1,10 @@
 import { userModel } from "../../dataBase/model/user.model.js";
-import { encryptPhone } from "../../Utils/encryption/encryption.js";
-import { hashPassword, comparePassword } from "../../Utils/Hashing(Password)/hashing.js";
-import { createToken, verifyToken } from "../../Utils/token (authaction)/token.js";
+import { encryptPhone } from "../../utils/encryption/encryption.js";
+import { hashPassword, comparePassword } from "../../utils/Hashing(Password)/hashing.js";
+import { createToken, verifyToken } from "../../utils/token (authaction)/token.js";
 import { customAlphabet } from "nanoid";
-import { emailEmmiter } from '../../Utils/send emails/emailEvent.js';
-import { templet } from '../../Utils/send emails/generate.html.js';
+import { emailEmmiter } from '../../utils/send emails/emailEvent.js';
+import { templet } from '../../utils/send emails/generate.html.js';
 import { codeOTP, otpModel } from "../../dataBase/model/otp.model.js";
 // ===========================1) Register Account  ===========================
 export const registerAccount = async (req, res, next) => {
