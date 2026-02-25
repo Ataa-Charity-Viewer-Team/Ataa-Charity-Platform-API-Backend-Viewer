@@ -1,5 +1,5 @@
 // ===================== import modules =====================
-import connectDB from "./dataBase/connect.js"
+import connectDB from "./database/connect.js"
 import { notFoundHandler } from "./utils/error-handling/notfoundhandler.js"
 import { globalErrorHandler } from './utils/error-handling/globalhandler.js';
 import cors from 'cors'

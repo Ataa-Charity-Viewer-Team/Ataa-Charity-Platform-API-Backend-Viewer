@@ -1,7 +1,7 @@
 // ============= jwt token =============
 import jwt from "jsonwebtoken";
 // ============= user model =============
-import { userModel } from "../dataBase/model/user.model.js";
+import { userModel } from "../database/model/user.model.js";
 // ============ authaction middleware =============
 const authAction = async (req, res, next) => {
   const { authorization } = req.headers;

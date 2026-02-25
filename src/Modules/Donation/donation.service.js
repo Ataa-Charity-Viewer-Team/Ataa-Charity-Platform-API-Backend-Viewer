@@ -1,5 +1,5 @@
-import { donationModel } from "../../dataBase/model/donation.model.js";
-import { charityModel } from "../../dataBase/model/charity.model.js";
+import { donationModel } from "../../database/model/donation.model.js";
+import { charityModel } from "../../database/model/charity.model.js";
 import { advancedPagination } from '../../middleware/pagination.middleware.js';
 import cloudinary from "../../utils/uploadfile/cloudnairy.uploadserver.js";
 // ===================== upload to cloudinary ======================

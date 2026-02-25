@@ -1,5 +1,5 @@
-import { evaluationModel } from "../../dataBase/model/evaluation.model.js";
-import { donationModel, donationStatus } from "../../dataBase/model/donation.model.js";
+import { evaluationModel } from "../../database/model/evaluation.model.js";
+import { donationModel, donationStatus } from "../../database/model/donation.model.js";
 // ====================== create evaluation ======================
 export const createEvaluation = async (req, res, next) => {
   const { rating, comment } = req.body;

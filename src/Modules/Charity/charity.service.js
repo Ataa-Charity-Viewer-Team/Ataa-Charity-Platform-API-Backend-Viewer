@@ -1,4 +1,4 @@
-import { charityModel } from "../../dataBase/model/charity.model.js";
+import { charityModel } from "../../database/model/charity.model.js";
 import { advancedPagination } from "../../middleware/pagination.middleware.js";
 import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
 // ====================1) GET ALL CHARITIES ====================

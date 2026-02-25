@@ -1,7 +1,7 @@
 import { advancedPagination } from "../../middleware/pagination.middleware.js";
-import { donationModel, donationStatus } from "../../dataBase/model/donation.model.js";
-import { charityModel } from "../../dataBase/model/charity.model.js";
-import { notificationModel, notificationStatus } from "../../dataBase/model/notification.model.js";
+import { donationModel, donationStatus } from "../../database/model/donation.model.js";
+import { charityModel } from "../../database/model/charity.model.js";
+import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
 // ===================== 1) Get Stats ================================
 export const getStats = async (req, res, next) => {
   const charity = await charityModel.findOne({ userId: req.user._id });

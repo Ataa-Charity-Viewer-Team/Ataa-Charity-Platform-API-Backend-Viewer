@@ -1,4 +1,4 @@
-import { userModel } from "../../dataBase/model/user.model.js";
+import { userModel } from "../../database/model/user.model.js";
 import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
 import bcrypt from "bcrypt";
 import { hashPassword } from '../../utils/hashing(password)/hashing.js';
