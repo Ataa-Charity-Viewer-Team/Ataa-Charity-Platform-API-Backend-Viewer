@@ -1,9 +1,9 @@
 import { userModel } from "../../dataBase/model/user.model.js";
 import { encryptPhone } from "../../utils/encryption/encryption.js";
-import { hashPassword, comparePassword } from "../../utils/Hashing(Password)/hashing.js";
+import { hashPassword, comparePassword } from "../../utils/hashing(password)/hashing.js";
 import { createToken, verifyToken } from "../../utils/token (authaction)/token.js";
 import { customAlphabet } from "nanoid";
-import { emailEmmiter } from '../../utils/send emails/emailEvent.js';
+import { emailEmmiter } from '../../utils/send emails/emailevent.js';
 import { templet } from '../../utils/send emails/generate.html.js';
 import { codeOTP, otpModel } from "../../dataBase/model/otp.model.js";
 // ===========================1) Register Account  ===========================

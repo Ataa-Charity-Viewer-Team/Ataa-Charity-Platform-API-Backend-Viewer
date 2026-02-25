@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { asyncHandler } from "../../utils/error-handling/asyncHandler.js";
+import { asyncHandler } from "../../utils/error-handling/asynchandler.js";
 import * as reportService from "./report.service.js";
 import * as reportValidation from "./report.validation.js";
 import authAction from "../../middleware/authaction.middleware.js";
