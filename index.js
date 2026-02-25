@@ -10,7 +10,7 @@
 // bootstrap(app, express);
 import serverless from "serverless-http";
 import express from "express";
-import { bootstrap } from "../src/app.controller.js";
+import { bootstrap } from "./src/app.controller.js";
 
 const app = express();
 app.use(express.json());
