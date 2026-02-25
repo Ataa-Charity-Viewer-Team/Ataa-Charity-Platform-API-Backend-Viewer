@@ -1,7 +1,7 @@
 // ===================== import modules =====================
 import connectDB from "./dataBase/connect.js"
-import { notFoundHandler } from "./Utils/error-handling/notFoundHandler.js"
-import { globalErrorHandler } from './Utils/error-handling/globalHandler.js';
+import { notFoundHandler } from "./utils/error-handling/notFoundHandler.js"
+import { globalErrorHandler } from './utils/error-handling/globalHandler.js';
 import cors from 'cors'
 import authRouter from "./modules/auth/auth.controller.js"
 import userRouter from "./modules/user/user.controller.js"
