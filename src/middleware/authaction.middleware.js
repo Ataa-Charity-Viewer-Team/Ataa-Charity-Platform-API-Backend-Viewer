@@ -20,14 +20,14 @@ const authAction = async (req, res, next) => {
     return next(new Error("unauthorized user not found", { cause: 401 }));
   }
 
-    jwt.verify(
-      authorization,
-      process.env.ACCESS_SECRET + user.updatedAt.getTime()
-    );
-  }
+  jwt.verify(
+    authorization,
+    process.env.ACCESS_SECRET + user.updatedAt.getTime()
+  );
 
   if (user.verify === false) {
     return next(new Error("verify your account", { cause: 401 }));
+  }
 
   req.user = user;
   return next();
