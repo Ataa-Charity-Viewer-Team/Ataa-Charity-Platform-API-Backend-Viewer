@@ -1,4 +1,4 @@
-import { reportModel } from "../../dataBase/model/report.model.js";
+import { reportModel } from "../../database/model/report.model.js";
 import { advancedPagination } from "../../middleware/pagination.middleware.js";
 
 // =================================== 1) Get All Reports ================================

@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import Groq from "groq-sdk";
-import { chatModel } from '../../dataBase/model/ai.model.js';
+import { chatModel } from '../../database/model/ai.model.js';
 // =============================== Groq API Key File Env ================================
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 // ===============================1) Chat  ================================

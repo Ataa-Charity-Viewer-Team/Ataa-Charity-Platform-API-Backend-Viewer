@@ -1,4 +1,4 @@
-import { notificationStatus, notificationModel } from "../../dataBase/model/notification.model.js";
+import { notificationStatus, notificationModel } from "../../database/model/notification.model.js";
 import { advancedPagination } from "../../middleware/pagination.middleware.js";
 // ===================1) GET ALL notificationS ===================
 export const getAllnotifications = async (req, res, next) => {
