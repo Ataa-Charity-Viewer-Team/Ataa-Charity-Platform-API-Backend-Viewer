@@ -24,10 +24,6 @@ export const bootstrap = async (app, express) => {
   // ================= limit request =====================
   app.use(limiter);
 
-  // ================= Test API (مهم جداً للـ Vercel) =================
-  app.get("/", (req, res) => {
-    res.json({ message: "API is running 🚀 By Eng. Sayed Herzallah" });
-  });
 
   // ================= connect to database ===================
   connectDB().catch(err => console.error("Database Connection Error:", err));
@@ -44,7 +40,7 @@ export const bootstrap = async (app, express) => {
   app.use("/notification", notificationRouter);
 
   // ======================= import error handlers ============================
-  app.all("*", notFoundHandler);
+  app.all("{/path*}", notFoundHandler);
 
   // =============================== global error ====================
   app.use(globalErrorHandler);
