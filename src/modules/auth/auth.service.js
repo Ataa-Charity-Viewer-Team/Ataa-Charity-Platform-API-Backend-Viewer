@@ -26,6 +26,8 @@ export const registerAccount = async (req, res, next) => {
 };
 
 // ===========================2) Login  ===========================
+console.log("ACCESS_SECRET:", process.env.ACCESS_SECRET);
+console.log("createdAt:", user.createdAt.getTime());
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
 
