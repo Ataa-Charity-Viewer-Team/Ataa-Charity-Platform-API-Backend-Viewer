@@ -1,16 +1,20 @@
-import dotenv from "dotenv"
-dotenv.config()
-import express from "express"
-import { bootstrap } from "./src/app.controller.js"
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
+import { bootstrap } from "./src/app.controller.js";
 
 const app = express();
 
-bootstrap(app, express)
-  .then(() => {
-    console.log("App Bootstrapped Successfully");
-  })
-  .catch(err => {
-    console.error("Critical Bootstrap Error:", err.message);
-  });
+app.get("/", (req, res) => {
+    res.json({ 
+        message: "API is running 🚀", 
+        developer: "Eng. Sayed Herzallah",
+        status: "Online"
+    });
+});
+
+bootstrap(app, express).catch(err => {
+    console.error("Bootstrap Error:", err);
+});
 
 export default app;
