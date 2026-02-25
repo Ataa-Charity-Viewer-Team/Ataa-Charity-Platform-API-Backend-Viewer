@@ -1,5 +1,4 @@
 import express from "express";
-import serverless from "serverless-http";
 import { bootstrap } from "./src/app.controller.js";
 
 const app = express();
@@ -11,4 +10,4 @@ app.get("/", (req, res) => {
 
 await bootstrap(app, express);
 
-export default serverless(app);
+export default app;
