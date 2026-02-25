@@ -13,7 +13,7 @@ const router = Router();
 router.get("/charities", authAction, authorization(charityEndpoint.getAllCharities), asyncHandler(charityService.getAllCharities));
 
 // ======================== CREATE charity ===========================
-router.post("/charities", authAction, authorization(charityEndpoint.createCharity), validation(charityValidation.createCharitySchema), asyncHandler(charityService.createCharity));
+router.post("/c", authAction, authorization(charityEndpoint.createCharity), validation(charityValidation.createCharitySchema), asyncHandler(charityService.createCharity));
 
 // ======================== GET charity by ID ========================
 router.get("/:id", authAction, authorization(charityEndpoint.getAllCharities), validation(charityValidation.charityIdSchema), asyncHandler(charityService.getCharity));
