@@ -1,4 +1,3 @@
-// ==================== notification.model.js ====================
 import mongoose from "mongoose";
 
 export const notificationStatus = {
