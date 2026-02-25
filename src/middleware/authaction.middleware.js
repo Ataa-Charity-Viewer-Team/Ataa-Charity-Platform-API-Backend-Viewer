@@ -22,7 +22,7 @@ const authAction = async (req, res, next) => {
 
   jwt.verify(
     authorization,
-    process.env.ACCESS_SECRET + user.updatedAt.getTime()
+    process.env.ACCESS_SECRET + user.createdAt.getTime()
   );
 
   if (user.verify === false) {

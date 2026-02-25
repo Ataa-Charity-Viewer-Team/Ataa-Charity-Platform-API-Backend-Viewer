@@ -43,7 +43,7 @@ export const login = async (req, res, next) => {
 
   const accessToken = createToken({
     payload: { id: user._id, roleType: user.roleType },
-    secret: process.env.ACCESS_SECRET + user.updatedAt.getTime(),
+    secret: process.env.ACCESS_SECRET + user.createdAt.getTime(),
     options: { expiresIn: process.env.ACCESS_TOKEN } //7h
   });
   const refreshToken = createToken({
@@ -130,7 +130,7 @@ export const refreshToken = async (req, res, next) => {
 
   const newAccessToken = createToken({
     payload: { id: user._id, roleType: user.roleType },
-    secret: process.env.ACCESS_SECRET + user.updatedAt.getTime(),
+    secret: process.env.ACCESS_SECRET + user.createdAt.getTime(),
     options: { expiresIn: process.env.ACCESS_TOKEN }
   });
   return res.status(200).json({ success: true, accessToken: newAccessToken });
