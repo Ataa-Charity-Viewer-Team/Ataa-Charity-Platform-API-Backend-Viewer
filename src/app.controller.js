@@ -27,8 +27,10 @@ export const bootstrap = async (app, express) => {
   app.use(cors())
   //================================== await connect to data base ===================
   await connectDB()
-  // ================================== Testing ================================
-  app.use("/test", (req, res) => res.send.json({ message: "hello world" }))
+  // ===========================Test API ===================
+  app.get("/", (req, res) => {
+  res.json({ message: "API is running 🚀 By Eng.Sayed Herzallah" })
+})
   // ============================ import controllers (endpoints) ============================
   app.use("/auth", authRouter)
   app.use("/users", userRouter)
