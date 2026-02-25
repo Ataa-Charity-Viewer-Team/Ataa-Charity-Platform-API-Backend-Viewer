@@ -13,8 +13,10 @@ import aiRouter from "./modules/ai/ai.controller.js"
 import limiter from "./middleware/express.limit.middleware.js";
 import helmet from "helmet";
 import notificationRouter from "./modules/notfication/notfication.controller.js";
+import cors from "cors"
 
 export const bootstrap = async (app, express) => {
+  app.use(cors())
   // ================= trust proxy ==================
   app.set("trust proxy", 1);
 
@@ -37,7 +39,8 @@ export const bootstrap = async (app, express) => {
   app.use("/notification", notificationRouter);
 
   // ======================= import error handlers ============================
-  app.use( notFoundHandler);
+  app.use(notFoundHandler);import { cors } from 'cors';
+
 
   // =============================== global error ====================
   app.use(globalErrorHandler);
