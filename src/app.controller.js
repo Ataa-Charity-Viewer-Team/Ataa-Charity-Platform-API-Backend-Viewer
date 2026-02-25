@@ -46,4 +46,3 @@ export const bootstrap = async (app, express) => {
   app.use(globalErrorHandler);
 }
 
-// التصدير الافتراضي هنا مش لازم لو بتصدر الـ app من الـ index.js الرئيسي
