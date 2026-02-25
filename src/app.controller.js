@@ -5,7 +5,7 @@ import { globalErrorHandler } from './utils/error-handling/globalhandler.js';
 import authRouter from "./modules/auth/auth.controller.js"
 import userRouter from "./modules/user/user.controller.js"
 import charityRouter from "./modules/charity/charity.controller.js"
-import dashboardRouter from "./modules/charitydashboard/dashboard.controller.js"
+import dashboardRouter from "./modules/charity_dashboard/dashboard.controller.js"
 import donationRouter from "./modules/donation/donation.controller.js"
 import evalutionRouter from "./modules/evaluation/evalution.controller.js"
 import reportRouter from "./modules/report/report.controller.js"
