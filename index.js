@@ -1,12 +1,22 @@
+// import express from "express";
+// import { bootstrap } from "./src/app.controller.js";
+// const app = express();
+// app.use(express.json()); 
+//   // ================= Test API (مهم جداً للـ Vercel) =================
+//   app.get("/", (req, res) => {
+//     res.json({ message: "API is running 🚀 By Eng. Sayed Herzallah" });
+//   });
+
+// bootstrap(app, express);
+
+// export default app;
+import serverless from "serverless-http";
 import express from "express";
-import { bootstrap } from "./src/app.controller.js";
+import { bootstrap } from "../src/app.controller.js";
+
 const app = express();
-app.use(express.json()); 
-  // ================= Test API (مهم جداً للـ Vercel) =================
-  app.get("/", (req, res) => {
-    res.json({ message: "API is running 🚀 By Eng. Sayed Herzallah" });
-  });
+app.use(express.json());
 
 bootstrap(app, express);
 
-export default app;
+export const handler = serverless(app);
