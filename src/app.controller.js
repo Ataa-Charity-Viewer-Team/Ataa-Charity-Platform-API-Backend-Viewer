@@ -19,12 +19,8 @@ export const bootstrap = async (app, express) => {
   app.set("trust proxy", 1);
   // ================= npm helmpt (security) ==================
   app.use(helmet())
-  //================ read data bady ===============
-  app.use(express.json())
   // ================= limit request =====================
   app.use(limiter)
-  // ================ problem solving front end (cors) ==========================
-  app.use(cors())
   //================================== await connect to data base ===================
   await connectDB()
   // ============================ import controllers (endpoints) ============================

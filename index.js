@@ -4,6 +4,10 @@ import express from "express";
 import { bootstrap } from "./src/app.controller.js";
 
 const app = express();
+  //================ read data bady ===============
+  app.use(express.json())
+  // ================ problem solving front end (cors) ==========================
+  app.use(cors())
 
 app.get("/", (req, res) => {
     res.json({ 
