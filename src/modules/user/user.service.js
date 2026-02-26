@@ -10,8 +10,8 @@ export const getMyProfile = async (req, res, next) => {
   if (!finder) {
     return next(new Error("User not found", { cause: 404 }));
   }
-  if (user.phone) {
-    finder.phone = decryptPhone({ cipherText: user.phone });
+  if (finder.phone) {
+    finder.phone = decryptPhone({ cipherText: finder.phone });
   }
   return res.status(200).json({ success: true, finder });
 };
@@ -38,9 +38,10 @@ export const changePassword = async (req, res, next) => {
   if (!isMatch) {
     return next(new Error("Old password is incorrect", { cause: 400 }));
   }
-  user.password = hashPassword({ plainText: newPassword }); 
-  await user.save();
-  return res.status(200).json({ success: true, message: "Password changed successfully" });
+ user.password = hashPassword({ plainText: newPassword });
+  user.passwordChangedAt = Date.now();
+  await user.save(); 
+ return res.status(200).json({ success: true, message: "Password changed successfully" });
 };
 
 export const deleteMyAccount = async (req, res, next) => {

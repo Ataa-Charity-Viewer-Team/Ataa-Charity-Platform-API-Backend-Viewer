@@ -24,7 +24,9 @@ const authAction = async (req, res, next) => {
     authorization,
     process.env.ACCESS_SECRET + user.createdAt.getTime()
   );
-
+   if (decoded.iat * 1000 < user.passwordChangedAt) {
+  return next(new Error("Token expired"));
+}
   if (user.verify === false) {
     return next(new Error("verify your account", { cause: 401 }));
   }
