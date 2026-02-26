@@ -33,7 +33,7 @@ export const changePassword = async (req, res, next) => {
   if (!user) {
     return next(new Error("User not found", { cause: 404 }));
   }
-  const isMatch = await comparePassword(oldPassword, user.password);
+  const isMatch = await comparePassword({ plainText: oldPassword, hashPassword :user.password});
   if (!isMatch) {
     return next(new Error("Old password is incorrect", { cause: 400 }));
   }
