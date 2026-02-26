@@ -1,8 +1,7 @@
 import { userModel } from "../../database/model/user.model.js";
 import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
 import { advancedPagination } from '../../middleware/pagination.middleware.js'; 
-import bcrypt from "bcrypt";
-import { hashPassword } from '../../utils/hashing/hashing.js';
+import { hashPassword , comparePassword } from '../../utils/hashing/hashing.js';
 
 export const getMyProfile = async (req, res, next) => {
   const { user } = req;
@@ -34,7 +33,7 @@ export const changePassword = async (req, res, next) => {
   if (!user) {
     return next(new Error("User not found", { cause: 404 }));
   }
-  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  const isMatch = await comparePassword(oldPassword, user.password);
   if (!isMatch) {
     return next(new Error("Old password is incorrect", { cause: 400 }));
   }
