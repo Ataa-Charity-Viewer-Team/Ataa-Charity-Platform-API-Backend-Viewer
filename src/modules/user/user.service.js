@@ -49,7 +49,7 @@ export const deleteMyAccount = async (req, res, next) => {
 };
 
 export const getAllUsers = async (req, res, next) => {
-  const data = await advancedPagination(userModel, {}, req); 
+  const data = await advancedPagination(userModel); 
   return res.status(200).json({ success: true, data });
 };
 
