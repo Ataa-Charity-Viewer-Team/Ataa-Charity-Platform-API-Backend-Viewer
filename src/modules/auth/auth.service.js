@@ -136,6 +136,7 @@
 //   return res.status(200).json({ success: true, accessToken: newAccessToken });
 // };
 
+// ========================== # Auth Service and send email vercel # =======================
 import { userModel } from "../../database/model/user.model.js";
 import { encryptPhone } from "../../utils/encryption/encryption.js";
 import { hashPassword, comparePassword } from "../../utils/hashing/hashing.js";
