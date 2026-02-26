@@ -6,6 +6,6 @@ export const userEndpoint = {
   changePassword: [roles.user],
   deleteAccount: [roles.user],
   getAllUsers: [roles.admin],
-  updateUserRole: [roles.admin],
+  getUser: [roles.admin],
   deleteUser: [roles.admin]
 }
