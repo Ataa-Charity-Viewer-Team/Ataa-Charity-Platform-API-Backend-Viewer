@@ -13,8 +13,7 @@ export const chat = async (req, res, next) => {
   const { user } = req;
   // ====================== check user id  ================================
   if (!user) {
-    return res.status(400).json({ message: "user not found" });
-  }
+return next(new Error("user not found", { cause: 400 }));  }
   // ====================== check message  ================================
   if (!message) {
     return res.status(400).json({ message: "message required" });
@@ -41,8 +40,7 @@ export const analysis = async (req, res,next) => {
   const { user } = req;
 
   if (!user) {
-    return res.status(400).json({ message: "user not found" });
-  }
+return next(new Error("user not found", { cause: 400 }));  }
   if (!req.files?.length) {
     return res.status(400).json({ message: "No images uploaded" });
   }
