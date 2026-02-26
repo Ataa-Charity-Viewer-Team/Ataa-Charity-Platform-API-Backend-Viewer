@@ -8,7 +8,7 @@ const limiter = rateLimit({
   handler: (req, res) => {
     res.status(429).json({
       status: 429,
-      message: "Too many requests, please try again later."
+      message: "❌ Too many requests, please try again later."
     });
   }
 });
