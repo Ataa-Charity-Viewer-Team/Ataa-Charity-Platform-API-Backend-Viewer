@@ -3,7 +3,7 @@ import { advancedPagination } from "../../middleware/pagination.middleware.js";
 import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
 
 export const getAllCharities = async (req, res, next) => {
-  const data = await advancedPagination(charityModel, {}, req); // ✓ req
+  const data = await advancedPagination(charityModel); 
   res.status(200).json({ success: true, data });
 };
 
@@ -26,7 +26,7 @@ export const createCharity = async (req, res, next) => {
   if (existing) {
     return next(new Error("Email already exists", { cause: 409 }));
   }
-  const encryptedPhone = encryptPhone({ plainText: phone });
+  const encryptedPhone = encryptPhone({ cipherText: phone });
   const charity = await charityModel.create({
     ...req.body,
     phone: encryptedPhone,
