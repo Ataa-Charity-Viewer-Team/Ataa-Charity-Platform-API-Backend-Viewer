@@ -13,7 +13,6 @@ export const getCharity = async (req, res, next) => {
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));
   }
-  // ✓ التحقق قبل الـ decrypt
   if (!charity.phone) {
     return next(new Error("Charity phone not found", { cause: 404 }));
   }
@@ -27,7 +26,7 @@ export const createCharity = async (req, res, next) => {
   if (existing) {
     return next(new Error("Email already exists", { cause: 409 }));
   }
-  const encryptedPhone = encryptPhone({ cipherText: phone });
+  const encryptedPhone = encryptPhone({ plainText: phone });
   const charity = await charityModel.create({
     ...req.body,
     phone: encryptedPhone,
