@@ -5,7 +5,6 @@ export const globalErrorHandler = async (error, req, res, next) => {
   return res.status(status).json({
     success: false,
     message: error.message,
-  details: error.details,
-  stack: error.stack
+  details: error.details
   });
 };
