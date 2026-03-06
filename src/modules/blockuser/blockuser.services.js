@@ -12,7 +12,6 @@ export const blockUser = async (req, res) => {
     const toBlock = [];
     if (email)     toBlock.push({ email });
     if (username)  toBlock.push({ username });
-    if (phone)     toBlock.push({ phone });
     if (ipAddress) toBlock.push({ ipAddress });
 
     const results = [];
@@ -47,7 +46,6 @@ export const unblockUser = async (req, res) => {
       $or: [
         email      ? { email }      : null,
         username   ? { username }   : null,
-        phone      ? { phone }      : null,
         ipAddress  ? { ipAddress }  : null,
       ].filter(Boolean)
     });
