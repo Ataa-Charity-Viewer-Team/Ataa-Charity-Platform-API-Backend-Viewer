@@ -32,6 +32,13 @@ export const bootstrap = async (app, express) => {
   // ================= connect to database ===================
   await connectDB();
   // ==================== check block ip user ============================
+  app.get("/myip", (req, res) => {
+  res.json({
+    forwarded: req.headers['x-forwarded-for'],
+    remoteAddress: req.socket.remoteAddress,
+    allHeaders: req.headers
+  });
+});
   app.use(checkBlocked);
   // ============================ import controllers (endpoints) ============================
   app.use("/auth", authRouter);
