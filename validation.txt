@@ -1,0 +1,29 @@
+1) Name Validation
+
+
+const nameRegex = /^[a-zA-Z\u0621-\u064A][^#&<>"~;$^%{}]{2,29}$/;
+
+2) Password Validation
+
+
+const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+
+
+3)Phone Validation
+
+
+const phoneRegex = /^(002|\+2)?01[0125][0-9]{8}$/;
+
+
+4)Email Validation
+
+
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|edu)$/;
+
+
+5)File Upload Validation
+
+file: checkFile(["image/jpeg", "image/png", "image/webp", "image/gif"])
+  .min(1)
+  .max(5)
+  .required()

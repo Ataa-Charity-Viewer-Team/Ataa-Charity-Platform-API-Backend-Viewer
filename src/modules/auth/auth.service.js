@@ -36,7 +36,7 @@ const ip = req.headers['x-forwarded-for']?.split(',')[0].trim()
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash ,registrationIp: ip});
   const userData = await userModel.findById(newUser._id).select("-password -__v -phone -registrationIp");
 
-  const sendCode = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 6)();
+  const sendCode = customAlphabet("0123456789",6)();
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
   await otpModel.create({ userId: newUser._id, code: sendCode, codeType: codeOTP.activateAccount });
 
