@@ -10,6 +10,10 @@ export const validation = (schema) => {
     if (req.files?.length) {
       data.file = req.files; // array → checkFile (joi.array())
     } 
+    else if (req.file) {
+      data.file = [req.file]; // wrap single file in array for consistency
+    }
+
     const result = schema.validate(data, { abortEarly: false });
     if (result.error) {
       return next({
