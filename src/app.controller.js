@@ -12,7 +12,7 @@ import reportRouter from "./modules/report/report.controller.js"
 import aiRouter from "./modules/ai/ai.controller.js"
 import limiter from "./middleware/express.limit.middleware.js";
 import helmet from "helmet";
-import notificationRouter from "./modules/notfication/notfication.controller.js";
+import notificationRouter from "./modules/notification/notification.controller.js";
 import cors from "cors"
 import { checkBlocked } from "./middleware/blockuser.middleware.js";
 import routerBlock from "./modules/blockuser/blockuser.controller.js"
