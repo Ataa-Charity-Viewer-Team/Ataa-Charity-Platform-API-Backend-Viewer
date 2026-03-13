@@ -126,7 +126,7 @@ export const forgetPassword = async (req, res, next) => {
     return next(new Error("User not found", { cause: 404 }));
   }
 
-  const sendForget = customAlphabet("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", 6)();
+  const sendForget = customAlphabet("0123456789", 6)();
   await otpModel.deleteMany({ userId: user._id, codeType: codeOTP.forgetPassword });
   await otpModel.create({ userId: user._id, code: sendForget, codeType: codeOTP.forgetPassword });
 
