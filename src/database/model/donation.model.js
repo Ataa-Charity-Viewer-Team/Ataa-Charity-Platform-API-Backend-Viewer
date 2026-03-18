@@ -55,6 +55,10 @@ const donationSchema = new mongoose.Schema(
       default: donationStatus.pending,
       required: true,
     },
+      dateDonation: {
+    type: Date,
+    default: Date.now,
+  },
   },
   {
     timestamps: true,

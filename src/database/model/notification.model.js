@@ -26,7 +26,7 @@ export const notificationSchema = new mongoose.Schema(
       type: String,
       required: [true, "Content is required"],
     },
-    date: {
+    dateNotification: {
       type: Date,
       default: Date.now,
     },

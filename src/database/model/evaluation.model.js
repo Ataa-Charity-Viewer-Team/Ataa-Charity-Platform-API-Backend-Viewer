@@ -28,7 +28,7 @@ const evaluationSchema = new mongoose.Schema(
       minlength: [3, "Comment must be at least 3 characters"],
       maxlength: [500, "Comment must not exceed 500 characters"],
     },
-    date: {
+    dateEvaluation: {
       type: Date,
       default: Date.now,
     },

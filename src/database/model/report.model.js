@@ -19,6 +19,10 @@ const reportSchema = new mongoose.Schema(
       type: String,
       required: [true, "Report type is required"],
     },
+    dateReport: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     timestamps: true,
