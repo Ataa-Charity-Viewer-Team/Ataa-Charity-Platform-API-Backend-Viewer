@@ -19,7 +19,6 @@ export const notificationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: [...notificationStatus.map(s => s.en),...notificationStatus.map(s => s.ar)],
       default: "unread",
       required: true,
     },
