@@ -7,6 +7,7 @@ export const donationStatus = {
   accepted: "accepted",
   rejected: "rejected",
 };
+export const donationSize=["XS","S", "M", "L", "XL", "XXL","3XL","4XL","5XL"];
 // ==================== Donation Types ======================
 export const donationTypes = ["رجالي", "حريمي", "أطفال"];
 // ==================== Donation Schema ======================
@@ -25,14 +26,14 @@ const donationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: donationTypes,
+      enum: object.values(donationTypes),
       required: [true, "Type is required"],
     },
     size: {
-      type: Number,
-      min: [1, "Size must be at least 1"],
+      enum: object.values(donationSize),
+      type: String,
       required: [true, "Size is required"],
-    },
+        },
     quantity: {
       type: Number,
       min: [1, "Quantity must be at least 1"],

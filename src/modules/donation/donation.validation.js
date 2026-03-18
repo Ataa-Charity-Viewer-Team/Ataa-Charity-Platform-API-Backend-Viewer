@@ -4,7 +4,7 @@ import { monggoseID, checkFile } from "../../middleware/validation.middleware.js
 // ==================== Constants ====================
 const DONATION_TYPES = ["رجالي", "حريمي", "أطفال"];
 const DONATION_STATUS = ["pending", "accepted", "rejected", "delivered"];
-
+const DONATION_SIZE=["XS","S", "M", "L", "XL", "XXL","3XL","4XL","5XL"];
 // ==================== 1) Create Donation ====================
 export const createDonationSchema = joi.object({
   charityId: monggoseID("Charity ID").required(),
@@ -14,10 +14,10 @@ export const createDonationSchema = joi.object({
     "any.only": `Type must be one of ${DONATION_TYPES.join(", ")}`,
   }),
 
-  size: joi.number().integer().min(1).required().messages({
+  size: joi.string().valid(...DONATION_SIZE).required().messages({
     "any.required": "Size is required",
-    "number.min": "Size must be at least 1",
-    "number.integer": "Size must be a whole number",
+    "any.only": `Size must be one of ${DONATION_SIZE.join(", ")}`,
+    "string.empty": "Size is required"
   }),
 
   quantity: joi.number().integer().min(1).required().messages({
