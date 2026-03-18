@@ -2,7 +2,11 @@ import joi from "joi";
 import { monggoseID, checkFile } from "../../middleware/validation.middleware.js";
 
 // ==================== Constants ====================
-const DONATION_TYPES = ["رجالي", "حريمي", "أطفال"];
+export const donationTypes = [
+  { ar: "رجالي", en: "Men" },
+  { ar: "حريمي", en: "Women" },
+  { ar: "أطفال", en: "Kids" },
+];
 const DONATION_STATUS = ["pending", "accepted", "rejected", "delivered"];
 const DONATION_SIZE=["XS","S", "M", "L", "XL", "XXL","3XL","4XL","5XL"];
 // ==================== 1) Create Donation ====================

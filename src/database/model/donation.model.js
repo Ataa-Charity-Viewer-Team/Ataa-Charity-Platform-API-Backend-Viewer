@@ -9,7 +9,11 @@ export const donationStatus = {
 };
 export const donationSize=["XS","S", "M", "L", "XL", "XXL","3XL","4XL","5XL"];
 // ==================== Donation Types ======================
-export const donationTypes = ["رجالي", "حريمي", "أطفال"];
+export const donationTypes = [
+  { ar: "رجالي", en: "Men" },
+  { ar: "حريمي", en: "Women" },
+  { ar: "أطفال", en: "Kids" },
+];
 // ==================== Donation Schema ======================
 const donationSchema = new mongoose.Schema(
   {
