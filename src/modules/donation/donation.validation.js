@@ -56,7 +56,6 @@ export const createDonationSchema = joi.object({
     }),
 
   file: checkFile(["image/jpeg", "image/png", "image/webp", "image/gif"])
-    .array()
     .min(1)
     .max(5)
     .required()
