@@ -19,8 +19,9 @@ export const notificationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: notificationStatus.map(s => s.en),
+      enum: notificationStatus.map(s => s.en), // إنجليزي فقط
       default: "unread",
+      required: true,
     },
     content: {
       type: String,

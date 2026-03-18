@@ -32,12 +32,12 @@ const donationSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: donationTypes.map(t => t.en),
-      required: [true, "Type is required"],
+      required: [true, "Type is required"]
     },
 
     size: {
       type: String,
-      enum: donationSize,
+      enum: donationSize.map(s=>s.en),
       required: [true, "Size is required"],
     },
 
