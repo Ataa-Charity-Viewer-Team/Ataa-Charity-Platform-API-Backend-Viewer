@@ -31,13 +31,13 @@ const donationSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: donationTypes.map(t => t.en),
+      enum: [donationTypes.map(t => t.en), donationTypes.map(t => t.ar)],
       required: [true, "Type is required"]
     },
 
     size: {
       type: String,
-      enum: donationSize.map(s=>s.en),
+      enum: [donationSize.map(s=>s.en),...donationSize.map(s=>s.ar),],
       required: [true, "Size is required"],
     },
 
@@ -61,7 +61,7 @@ const donationSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: donationStatus.map(s => s.en),
+      enum: [donationStatus.map(s => s.en), donationStatus.map(s => s.ar)],
       default: "pending",
       required: true,
     },
