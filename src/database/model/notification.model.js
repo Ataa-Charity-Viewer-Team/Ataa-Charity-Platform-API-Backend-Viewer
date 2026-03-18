@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
-export const notificationStatus = {
-  unread: "unread",
-  read: "read",
-};
+export const notificationStatus = [
+  { en: "unread", ar: "غير مقروء" },
+  { en: "read", ar: "مقروء" },
+];
 
 export const notificationSchema = new mongoose.Schema(
   {
@@ -12,15 +12,15 @@ export const notificationSchema = new mongoose.Schema(
       ref: "User_Data",
       required: true,
     },
-    DonationId: {
+    donationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Donation",
       required: true,
     },
     status: {
       type: String,
-      enum: Object.values(notificationStatus),
-      default: notificationStatus.unread,
+      enum: notificationStatus.map(s => s.en),
+      default: "unread",
     },
     content: {
       type: String,

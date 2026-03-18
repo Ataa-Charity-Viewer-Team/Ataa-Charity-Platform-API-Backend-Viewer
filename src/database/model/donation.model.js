@@ -2,11 +2,11 @@
 import mongoose from "mongoose";
 
 // ==================== Donation Status ======================
-export const donationStatus = {
-  pending: "pending",
-  accepted: "accepted",
-  rejected: "rejected",
-};
+export const donationStatus = [
+  { en: "pending", ar: "قيد الانتظار" },
+  { en: "accepted", ar: "مقبول" },
+  { en: "rejected", ar: "مرفوض" },
+];
 export const donationSize=["XS","S", "M", "L", "XL", "XXL","3XL","4XL","5XL"];
 // ==================== Donation Types ======================
 export const donationTypes = [
@@ -28,47 +28,53 @@ const donationSchema = new mongoose.Schema(
       ref: "Charity",
       required: true,
     },
+
     type: {
       type: String,
-      enum: Object.values(donationTypes),
+      enum: donationTypes.map(t => t.en),
       required: [true, "Type is required"],
     },
+
     size: {
-      enum: Object.values(donationSize),
       type: String,
+      enum: donationSize,
       required: [true, "Size is required"],
-        },
+    },
+
     quantity: {
       type: Number,
       min: [1, "Quantity must be at least 1"],
       required: [true, "Quantity is required"],
     },
+
     description: {
       type: String,
       maxlength: [500, "Description must not exceed 500 characters"],
     },
+
     imageUrl: [
       {
         public_id: { type: String, required: true },
         secure_url: { type: String, required: true },
       },
     ],
+
     status: {
       type: String,
-      enum: Object.values(donationStatus),
-      default: donationStatus.pending,
+      enum: donationStatus.map(s => s.en),
+      default: "pending",
       required: true,
     },
-      dateDonation: {
-    type: Date,
-    default: Date.now,
-  },
+
+    dateDonation: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     timestamps: true,
     collection: "Donation",
   }
 );
-
 // ==================== Donation Model ======================
 export const donationModel = mongoose.model("Donation", donationSchema);

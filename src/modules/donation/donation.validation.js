@@ -1,3 +1,4 @@
+// ==================== donation.validation.js ====================
 import joi from "joi";
 import { monggoseID, checkFile } from "../../middleware/validation.middleware.js";
 
@@ -7,39 +8,61 @@ export const donationTypes = [
   { ar: "حريمي", en: "Women" },
   { ar: "أطفال", en: "Kids" },
 ];
-const DONATION_STATUS = ["pending", "accepted", "rejected", "delivered"];
-const DONATION_SIZE=["XS","S", "M", "L", "XL", "XXL","3XL","4XL","5XL"];
+
+export const DONATION_STATUS = [
+  { en: "pending", ar: "قيد الانتظار" },
+  { en: "accepted", ar: "مقبول" },
+  { en: "rejected", ar: "مرفوض" },
+];
+
+export const DONATION_SIZE = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
+
 // ==================== 1) Create Donation ====================
 export const createDonationSchema = joi.object({
   charityId: monggoseID("Charity ID").required(),
 
-  type: joi.string().valid(...DONATION_TYPES).required().messages({
-    "any.required": "Type is required",
-    "any.only": `Type must be one of ${DONATION_TYPES.join(", ")}`,
-  }),
+  type: joi.string()
+    .valid(...donationTypes.map(t => t.en))
+    .required()
+    .messages({
+      "any.required": "Type is required",
+      "any.only": `Type must be one of: ${donationTypes.map(t => t.ar).join(", ")}`,
+    }),
 
-  size: joi.string().valid(...DONATION_SIZE).required().messages({
-    "any.required": "Size is required",
-    "any.only": `Size must be one of ${DONATION_SIZE.join(", ")}`,
-    "string.empty": "Size is required"
-  }),
+  size: joi.string()
+    .valid(...DONATION_SIZE)
+    .required()
+    .messages({
+      "any.required": "Size is required",
+      "any.only": `Size must be one of: ${DONATION_SIZE.join(", ")}`,
+      "string.empty": "Size is required",
+    }),
 
-  quantity: joi.number().integer().min(1).required().messages({
-    "any.required": "Quantity is required",
-    "number.min": "Quantity must be at least 1",
-    "number.integer": "Quantity must be a whole number",
-  }),
+  quantity: joi.number()
+    .integer()
+    .min(1)
+    .required()
+    .messages({
+      "any.required": "Quantity is required",
+      "number.min": "Quantity must be at least 1",
+      "number.integer": "Quantity must be a whole number",
+    }),
 
-  description: joi.string().max(500).optional().messages({
-    "string.max": "Description must not exceed 500 characters",
-  }),
+  description: joi.string()
+    .max(500)
+    .optional()
+    .messages({
+      "string.max": "Description must not exceed 500 characters",
+    }),
 
   file: checkFile(["image/jpeg", "image/png", "image/webp", "image/gif"])
+    .array()
+    .min(1)
     .max(5)
     .required()
     .messages({
-      "string.base": "File must be a string",
-      "string.empty": "File cannot be empty",
+      "array.min": "At least 1 image is required",
+      "array.max": "You can upload up to 5 images",
       "any.required": "File is required",
     }),
 });
@@ -48,10 +71,13 @@ export const createDonationSchema = joi.object({
 export const updateDonationStatusSchema = joi.object({
   id: monggoseID("Donation ID").required(),
 
-  status: joi.string().valid(...DONATION_STATUS).required().messages({
-    "any.required": "Status is required",
-    "any.only": `Status must be one of ${DONATION_STATUS.join(", ")}`,
-  }),
+  status: joi.string()
+    .valid(...DONATION_STATUS.map(s => s.en))
+    .required()
+    .messages({
+      "any.required": "Status is required",
+      "any.only": `Status must be one of: ${DONATION_STATUS.map(s => s.ar).join(", ")}`,
+    }),
 });
 
 // ==================== 3) Accept Donation (Charity) ====================
@@ -63,8 +89,11 @@ export const acceptDonationSchema = joi.object({
 export const updateRequestStatusSchema = joi.object({
   id: monggoseID("Request ID").required(),
 
-  status: joi.string().valid(...DONATION_STATUS).required().messages({
-    "any.required": "Status is required",
-    "any.only": `Status must be one of ${DONATION_STATUS.join(", ")}`,
-  }),
+  status: joi.string()
+    .valid(...DONATION_STATUS.map(s => s.en))
+    .required()
+    .messages({
+      "any.required": "Status is required",
+      "any.only": `Status must be one of: ${DONATION_STATUS.map(s => s.ar).join(", ")}`,
+    }),
 });
