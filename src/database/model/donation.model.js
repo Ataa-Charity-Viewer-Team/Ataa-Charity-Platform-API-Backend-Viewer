@@ -26,11 +26,11 @@ const donationSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: object.values(donationTypes),
+      enum: Object.values(donationTypes),
       required: [true, "Type is required"],
     },
     size: {
-      enum: object.values(donationSize),
+      enum: Object.values(donationSize),
       type: String,
       required: [true, "Size is required"],
         },
