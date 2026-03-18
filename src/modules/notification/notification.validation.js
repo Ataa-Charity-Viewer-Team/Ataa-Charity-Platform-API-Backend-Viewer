@@ -10,7 +10,7 @@ export const updatenotificationSchema = joi.object({
   id: monggoseID("Notification ID").required(),
   status: joi
     .string()
-    .valid(...NOTIFICATION_STATUS.map(s => s.en))
+    .valid(...NOTIFICATION_STATUS.map(s => s.en),...NOTIFICATION_STATUS.map(s => s.ar))
     .required()
     .messages({
       "any.required": "Status is required",

@@ -22,7 +22,7 @@ export const createDonationSchema = joi.object({
   charityId: monggoseID("Charity ID").required(),
 
   type: joi.string()
-    .valid(...donationTypes.map(t => t.en))
+    .valid(...donationTypes.map(t => t.en),...donationTypes.map(t => t.ar))
     .required()
     .messages({
       "any.required": "Type is required",
@@ -71,7 +71,7 @@ export const updateDonationStatusSchema = joi.object({
   id: monggoseID("Donation ID").required(),
 
   status: joi.string()
-    .valid(...DONATION_STATUS.map(s => s.en))
+    .valid(...DONATION_STATUS.map(s => s.en),...DONATION_STATUS.map(s => s.ar))
     .required()
     .messages({
       "any.required": "Status is required",
@@ -89,7 +89,7 @@ export const updateRequestStatusSchema = joi.object({
   id: monggoseID("Request ID").required(),
 
   status: joi.string()
-    .valid(...DONATION_STATUS.map(s => s.en))
+    .valid(...DONATION_STATUS.map(s => s.en),...DONATION_STATUS.map(s => s.ar))
     .required()
     .messages({
       "any.required": "Status is required",
