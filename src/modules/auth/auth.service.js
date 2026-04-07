@@ -8,7 +8,6 @@ import { customAlphabet } from "nanoid";
 import { sendEmails } from '../../utils/sendemails/sendemail.nodemailer.js';
 import { templet } from '../../utils/sendemails/generate.html.js';
 import { codeOTP, otpModel } from "../../database/model/otp.model.js";
-import BlockedUser from "../../database/model/blockuser.model.js";
 import { waitUntil } from '@vercel/functions';
 
 // ===========================1) Register Account  ===========================

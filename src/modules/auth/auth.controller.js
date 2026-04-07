@@ -4,7 +4,6 @@ import { asyncHandler } from '../../utils/errorhandling/asynchandler.js';
 import * as authValidation from "./auth.validation.js"
 import * as authService from "./auth.service.js"
 import { validation } from "../../middleware/validation.middleware.js";
-import { checkBlocked } from "../../middleware/blockuser.middleware.js";
 // =====================   AUTH CONTROLLER =====================
 const router = Router()
 // ===================== Register =====================
