@@ -23,6 +23,7 @@ export const registerAccount = async (req, res, next) => {
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash});
   const userData = await userModel.findById(newUser._id).select("-password -__v -phone ");
 
+  
   const sendCode = customAlphabet("0123456789",6)();
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
   await otpModel.create({ userId: newUser._id, code: sendCode, codeType: codeOTP.activateAccount });

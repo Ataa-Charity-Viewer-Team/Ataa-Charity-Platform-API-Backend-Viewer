@@ -6,6 +6,7 @@ const nameRegex = /^[a-zA-Z\u0621-\u064A][^#&<>"~;$^%{}]{2,29}$/;
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 const phoneRegex = /^(002|\+2)?01[0125][0-9]{8}$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|edu)$/
+const roles=["user","charity","admin"]
 // ==================== 1) Register ====================
 export const registerSchema = joi.object({
   userName: joi
@@ -81,7 +82,7 @@ export const registerSchema = joi.object({
     }),
     roleType: joi
     .string()
-    .valid('user', 'charity', 'admin')
+    .valid(...roles)
     .default('user')
     .messages({
       "any.only": "Role must be user, charity, or admin"
