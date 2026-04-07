@@ -79,6 +79,13 @@ export const registerSchema = joi.object({
       "string.max": "Address must not exceed 100 characters",
       "any.required": "Address is required",
     }),
+    roleType: joi
+    .string()
+    .valid('user', 'charity', 'admin')
+    .default('user')
+    .messages({
+      "any.only": "Role must be user, charity, or admin"
+})  
 });
 
 // ==================== 2) Login ====================
