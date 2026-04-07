@@ -14,18 +14,6 @@ import { waitUntil } from '@vercel/functions';
 // ===========================1) Register Account  ===========================
 export const registerAccount = async (req, res, next) => {
   const { userName, email, phone, password, address } = req.body;
-const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() 
-           || req.socket.remoteAddress;
-
-  const isBlocked = await BlockedUser.findOne({
-    $or: [
-      { ipAddress: ip },
-      { email }
-    ]
-  });
- if (isBlocked) {
-    return next(new Error("You are blocked by the Salek team for security reasons and to protect your privacy and security. please contact us for more information", { cause: 403 }));
-  }
   const existingUser = await userModel.findOne({ email });
   if (existingUser) {
     return next(new Error("Email already exists", { cause: 409 }));
@@ -34,7 +22,7 @@ const ip = req.headers['x-forwarded-for']?.split(',')[0].trim()
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash ,registrationIp: ip});
-  const userData = await userModel.findById(newUser._id).select("-password -__v -phone -registrationIp");
+  const userData = await userModel.findById(newUser._id).select("-password -__v -phone ");
 
   const sendCode = customAlphabet("0123456789",6)();
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
@@ -48,18 +36,7 @@ const ip = req.headers['x-forwarded-for']?.split(',')[0].trim()
 // ===========================2) Login  ===========================
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
-const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() 
-           || req.socket.remoteAddress;
 
-  const isBlocked = await BlockedUser.findOne({
-    $or: [
-      { ipAddress: ip },
-      { email }
-    ]
-  });
- if (isBlocked) {
-    return next(new Error("You are blocked by the Salek team for security reasons and to protect your privacy and security. please contact us for more information", { cause: 403 }));
-  }
   const user = await userModel.findOne({ email });
   if (!user) return next(new Error("Invalid email or password", { cause: 404 }));
 

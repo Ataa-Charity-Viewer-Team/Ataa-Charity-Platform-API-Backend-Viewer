@@ -66,7 +66,6 @@ const userSchema = new mongoose.Schema(
   passwordChangedAt: {
   type: Date
 },
-registrationIp: String,
   },
   {
     timestamps: true,
