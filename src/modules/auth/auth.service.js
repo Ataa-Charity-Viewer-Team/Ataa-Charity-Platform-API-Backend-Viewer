@@ -20,7 +20,7 @@ export const registerAccount = async (req, res, next) => {
 
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
-  const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash ,registrationIp: ip});
+  const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash});
   const userData = await userModel.findById(newUser._id).select("-password -__v -phone ");
 
   const sendCode = customAlphabet("0123456789",6)();
