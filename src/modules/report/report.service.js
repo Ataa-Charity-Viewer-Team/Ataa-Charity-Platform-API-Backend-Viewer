@@ -12,7 +12,7 @@ export const createReport = async (req, res, next) => {
   const { user } = req;
 
   const report = await reportModel.create({
-    adminId: user._id,
+    userId: user._id,
     description,
     type,
   });
