@@ -17,6 +17,7 @@ export const createReport = async (req, res, next) => {
     type,
   });
 
+
   return res.status(201).json({
     success: true,
     message: "Report created successfully",
