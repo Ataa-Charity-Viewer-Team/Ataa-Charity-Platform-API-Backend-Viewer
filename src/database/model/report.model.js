@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 // ==================== Report Schema ======================
 const reportSchema = new mongoose.Schema(
   {
-    adminId: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User_Data",
       required: true,
