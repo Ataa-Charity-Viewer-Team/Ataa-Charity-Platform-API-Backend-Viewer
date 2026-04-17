@@ -1,6 +1,6 @@
 
 // ========================== # Auth Service and send email vercel # =======================
-import { roles, userModel } from "../../database/model/user.model.js";
+import {  userModel } from "../../database/model/user.model.js";
 import { encryptPhone } from "../../utils/encryption/encryption.js";
 import { hashPassword, comparePassword } from "../../utils/hashing/hashing.js";
 import { createToken, verifyToken } from "../../utils/token/token.js";
@@ -17,10 +17,9 @@ export const registerAccount = async (req, res, next) => {
   if (existingUser) {
     return next(new Error("Email already exists", { cause: 409 }));
   }
-  if (req.body.roleType === roles.charity) {
-  if (!req.body.licenseNumber) {
-    return next(new Error("License number is required for charity", { cause: 400 }));
-  }
+
+if (req.body.roleType === "charity" && !req.body.licenseNumber) {
+  return next(new Error("License number is required for charity accounts", { cause: 400 }));
 }
 
   const passwordHash = hashPassword({ plainText: password });
