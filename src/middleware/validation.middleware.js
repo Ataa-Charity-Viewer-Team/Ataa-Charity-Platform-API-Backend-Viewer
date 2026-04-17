@@ -18,6 +18,7 @@ export const validation = (schema) => {
         cause: 400,
       });
     }
+    
     return next();
   };
 };
