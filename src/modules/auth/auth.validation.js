@@ -6,6 +6,7 @@ const nameRegex = /^[a-zA-Z\u0621-\u064A][^#&<>"~;$^%{}]{2,29}$/;
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 const phoneRegex = /^(002|\+2)?01[0125][0-9]{8}$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|edu)$/
+const licenseRegex = /^(?=.{6,20}$)[A-Z0-9]{2,5}[-]?[A-Z0-9]{3,10}[-]?[0-9]{2,6}$/;
 const roles=["user","charity","admin"]
 // ==================== 1) Register ====================
 export const registerSchema = joi.object({
@@ -86,7 +87,15 @@ export const registerSchema = joi.object({
     .default('user')
     .messages({
       "any.only": "Role must be user, charity, or admin"
-})  
+}),
+licenseNumber: joi.string().when("roleType", {
+  is: "charity",
+  then: joi.required(),
+  otherwise: joi.forbidden().pattern(licenseRegex).messages({
+  "string.pattern.base": "Invalid license number format",
+  "any.unknown": "License number is not allowed for users"
+})
+})
 });
 
 // ==================== 2) Login ====================
