@@ -14,3 +14,7 @@ router.post("/addReport", authAction, authorization(reportEndpoint.createReport)
 router.get("/allReports", authAction, authorization(reportEndpoint.getAllReports), asyncHandler(reportService.getAllReports));
 
 export default router;
+
+
+
+
