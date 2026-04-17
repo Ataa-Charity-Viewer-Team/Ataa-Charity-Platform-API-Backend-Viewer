@@ -11,7 +11,6 @@ const reportSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      // required: [true, "Description is required"],
       minlength: [10, "Description must be at least 10 characters"],
       maxlength: [500, "Description must not exceed 500 characters"],
     },
@@ -32,3 +31,7 @@ const reportSchema = new mongoose.Schema(
 
 // ==================== Report Model ======================
 export const reportModel = mongoose.model("Report_Admin", reportSchema);
+
+
+
+
