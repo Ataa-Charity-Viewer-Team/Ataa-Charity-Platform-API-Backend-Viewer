@@ -11,12 +11,9 @@ const reportSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      // minlength: [10, "Description must be at least 10 characters"],
-      // maxlength: [500, "Description must not exceed 500 characters"],
-    },
-    type: {
-      type: String,
-      required: [true, "Report type is required"],
+      minlength: [2, "Description must be at least 2 characters"],
+      maxlength: [500, "Description must not exceed 500 characters"],
+      required: [true, "Description is required"]
     },
     dateReport: {
       type: Date,

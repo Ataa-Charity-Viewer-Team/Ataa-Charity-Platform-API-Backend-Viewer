@@ -8,13 +8,12 @@ export const getAllReports = async (req, res, next) => {
 };
 // =================================== 2) Create Report ================================
 export const createReport = async (req, res, next) => {
-  const { description, type } = req.body;
+  const { description } = req.body;
   const { user } = req;
 
   const report = await reportModel.create({
     userId: user._id,
-    description,
-    type,
+    description
   });
   return res.status(201).json({
     success: true,
