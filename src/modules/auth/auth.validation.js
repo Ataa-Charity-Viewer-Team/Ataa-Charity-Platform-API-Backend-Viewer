@@ -94,9 +94,8 @@ licenseNumber: joi.when("roleType", {
     "any.required": "License number is required for charity",
     "string.pattern.base": "Invalid license format"
   }),
-  otherwise: joi.string().optional()
-})
-});
+  otherwise: joi.forbidden()
+})});
 // ==================== 2) Login ====================
 export const loginSchema = joi.object({
   email: joi
