@@ -18,9 +18,6 @@ export const registerAccount = async (req, res, next) => {
     return next(new Error("Email already exists", { cause: 409 }));
   }
 
-if (req.body.roleType === "charity" && !req.body.licenseNumber) {
-  return next(new Error("License number is required for charity accounts", { cause: 400 }));
-}
 
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
