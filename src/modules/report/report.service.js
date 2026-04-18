@@ -11,11 +11,11 @@ export const createReport = async (req, res, next) => {
   const { description } = req.body;
   const { user } = req;
 
-  const report = await reportModel.create({
-    userId: user._id,
-    description
-  });
-  return res.status(201).json({
+const report = await reportModel.create({
+  userId: req.user._id,
+  description,
+  senderType: req.user.roleType,
+});  return res.status(201).json({
     success: true,
     message: "Report created successfully",
     report,
