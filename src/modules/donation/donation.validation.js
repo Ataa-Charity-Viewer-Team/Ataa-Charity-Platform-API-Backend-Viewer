@@ -9,11 +9,16 @@ export const donationTypes = [
   { ar: "أطفال", en: "Kids" },
 ];
 
-export const DONATION_STATUS= {
-  pending:  "pending",
-  accepted: "accepted",
-  rejected: "rejected",
+export const DONATION_STATUS = {
+  pending: { en: "pending", ar: "قيد الانتظار" },
+  accepted: { en: "accepted", ar: "مقبول" },
+  rejected: { en: "rejected", ar: "مرفوض" },
 };
+
+// ==================== FIX: Normalize status values ====================
+const STATUS_VALUES_EN = Object.values(DONATION_STATUS).map(s => s.en);
+const STATUS_VALUES_AR = Object.values(DONATION_STATUS).map(s => s.ar);
+const STATUS_VALUES_ALL = [...STATUS_VALUES_EN, ...STATUS_VALUES_AR];
 
 export const DONATION_SIZE = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
 
@@ -22,7 +27,7 @@ export const createDonationSchema = joi.object({
   charityId: monggoseID("Charity ID").required(),
 
   type: joi.string()
-    .valid(...donationTypes.map(t => t.en),...donationTypes.map(t => t.ar))
+    .valid(...donationTypes.map(t => t.en), ...donationTypes.map(t => t.ar))
     .required()
     .messages({
       "any.required": "Type is required",
@@ -71,11 +76,11 @@ export const updateDonationStatusSchema = joi.object({
   id: monggoseID("Donation ID").required(),
 
   status: joi.string()
-    .valid(...DONATION_STATUS.map(s => s.en),...DONATION_STATUS.map(s => s.ar))
+    .valid(...STATUS_VALUES_ALL)
     .required()
     .messages({
       "any.required": "Status is required",
-      "any.only": `Status must be one of: ${DONATION_STATUS.map(s => s.ar).join(", ")}`,
+      "any.only": `Status must be one of: ${STATUS_VALUES_AR.join(", ")}`,
     }),
 });
 
@@ -89,10 +94,10 @@ export const updateRequestStatusSchema = joi.object({
   id: monggoseID("Request ID").required(),
 
   status: joi.string()
-    .valid(...DONATION_STATUS.map(s => s.en),...DONATION_STATUS.map(s => s.ar))
+    .valid(...STATUS_VALUES_ALL)
     .required()
     .messages({
       "any.required": "Status is required",
-      "any.only": `Status must be one of: ${DONATION_STATUS.map(s => s.ar).join(", ")}`,
+      "any.only": `Status must be one of: ${STATUS_VALUES_AR.join(", ")}`,
     }),
 });

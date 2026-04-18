@@ -1,19 +1,16 @@
 // ==================== Import Mongoose Framework ======================
 import mongoose from "mongoose";
 
+// ==================== Donation Size ======================
+export const donationSize = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
+
 // ==================== Donation Status ======================
-// export const donationStatus = [
-//   { en: "pending", ar: "قيد الانتظار" },
-//   { en: "accepted", ar: "مقبول" },
-//   { en: "rejected", ar: "مرفوض" },
-// ];
-export const donationSize=["XS","S", "M", "L", "XL", "XXL","3XL","4XL","5XL"];
-// ==================== Donation Types ======================
 export const donationStatus = {
-  pending:  "pending",
+  pending: "pending",
   accepted: "accepted",
   rejected: "rejected",
 };
+
 // ==================== Donation Schema ======================
 const donationSchema = new mongoose.Schema(
   {
@@ -31,11 +28,12 @@ const donationSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      required: [true, "Type is required"]
+      required: [true, "Type is required"],
     },
 
     size: {
       type: String,
+      enum: donationSize,
       required: [true, "Size is required"],
     },
 
@@ -68,16 +66,17 @@ const donationSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-       isReminderSent: {
+
+    isReminderSent: {
       type: Boolean,
       default: false,
     },
-
   },
   {
     timestamps: true,
     collection: "Donation",
   }
 );
+
 // ==================== Donation Model ======================
 export const donationModel = mongoose.model("Donation", donationSchema);
