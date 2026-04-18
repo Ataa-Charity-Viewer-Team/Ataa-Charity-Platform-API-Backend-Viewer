@@ -1,91 +1,147 @@
 # 🎓 Smart Charity Donation Platform – Backend API
+📦 Dependencies & System Capabilities
 
-> Graduation Project – Faculty of Computer Science  
-> Secure, Scalable & Production-Ready Backend System  
+The project leverages a carefully selected set of modern backend technologies and libraries to ensure security, scalability, and production-grade performance.
 
----
+----------------------------------------
 
-## 📌 Project Overview
+⚙️ Core Backend Framework
 
-Smart Charity Donation Platform is a secure and scalable backend system designed to manage a modern digital charity ecosystem.
+- Express.js (v5)
+  High-performance web framework used to build a scalable RESTful API with clean routing and middleware architecture.
 
-The system provides authentication, donation management, AI-powered analysis, secure file uploads, and real-time notifications — built following RESTful architecture and best backend practices.
+- Node.js (ES Modules)
+  Modern JavaScript runtime with ES module support for better structure and maintainability.
 
----
+----------------------------------------
 
-## 🚀 Core Features
+🗄 Database Layer
 
-- 🔐 JWT Authentication & Role-Based Authorization
-- 🛡 Secure Password Hashing (bcrypt)
-- 📊 Admin Dashboard & Advanced Statistics
-- 💰 Donation Management System
-- 🏥 Charity Management
-- 🤖 AI Integration (Groq SDK)
-- ☁ Cloud Image Upload (Cloudinary)
-- 📩 Email Service (Nodemailer)
-- ⚡ Rate Limiting & Security Headers
-- 📑 Pagination & Filtering
-- 🧾 Request Validation using Joi
-- 🛡 Global Error Handling Middleware
+- MongoDB
+  NoSQL database designed for high scalability and flexible schema design.
 
----
+- Mongoose
+  ODM used for schema modeling, validation, and efficient database operations.
 
-## 🛠 Tech Stack
+----------------------------------------
 
-| Technology         | Purpose             |
-| ------------------ | ------------------- |
-| Node.js            | Runtime Environment |
-| Express.js         | Web Framework       |
-| MongoDB            | Database            |
-| Mongoose           | ODM                 |
-| Joi                | Request Validation  |
-| JWT                | Authentication      |
-| bcrypt             | Password Hashing    |
-| Helmet             | Security Headers    |
-| express-rate-limit | API Protection      |
-| Cloudinary         | Media Storage       |
-| Multer             | File Upload         |
-| Nodemailer         | Email Service       |
-| Groq SDK           | AI Integration      |
+🔐 Authentication & Security
 
----
+- jsonwebtoken (JWT)
+  Implements secure authentication using token-based strategy.
 
-## 🔐 Security Architecture
+- bcrypt
+  Advanced hashing algorithm to securely store user passwords.
 
-- Environment-based configuration (.env)
-- JWT access tokens
-- Encrypted passwords
-- API rate limiting
-- HTTP security headers
-- Input validation layer (Joi)
-- Centralized error handling
-- 
+- helmet
+  Protects the application by setting secure HTTP headers.
 
----
+- express-rate-limit
+  Prevents API abuse and brute-force attacks.
 
-## 🌍 API Base URL
+- crypto-js
+  Additional layer for encrypting sensitive data when needed.
 
----
+----------------------------------------
 
-## ⚙️ Installation & Setup
+🧾 Validation & Data Integrity
 
-```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
-npm install
-npm run dev
-PORT=
-DB_URL=
-JWT_SECRET=
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-EMAIL_USER=
-EMAIL_PASS=
-GROQ_API_KEY=
-src/
- ├── modules/
- ├── middleware/
- ├── database/
- ├── utils/
- └── index.js
+- Joi
+  Strong validation layer to ensure request data integrity and prevent invalid inputs.
+
+----------------------------------------
+
+☁ File Handling & Media Storage
+
+- multer
+  Handles file uploads efficiently on the server.
+
+- cloudinary
+  Cloud-based media storage for scalable and optimized image handling.
+
+----------------------------------------
+
+📩 Communication & Notifications
+
+- nodemailer
+  Enables sending emails such as:
+  - Account verification
+  - Donation confirmation
+  - Reminder notifications
+
+----------------------------------------
+
+🤖 AI Integration
+
+- Groq SDK
+  Integrated for AI-powered features such as:
+  - Donation analysis
+  - Smart insights generation
+  - Future predictive enhancements
+
+----------------------------------------
+
+⏱ Background Jobs & Automation
+
+- node-cron
+  Handles scheduled tasks like:
+  - Automated admin reports
+  - Donation reminders
+  - System monitoring tasks
+
+----------------------------------------
+
+🔧 Utilities & Enhancements
+
+- dotenv
+  Manages environment variables securely.
+
+- cors
+  Enables cross-origin resource sharing for frontend-backend communication.
+
+- nanoid
+  Generates unique and secure IDs for entities.
+
+----------------------------------------
+
+☁ Deployment Optimization
+
+- @vercel/functions
+  Optimized serverless functions for deployment on Vercel platform.
+
+----------------------------------------
+
+🧠 Engineering Decisions
+
+This tech stack was carefully chosen to achieve:
+
+- High-level security (JWT, bcrypt, Helmet)
+- Performance optimization (Rate limiting, efficient DB queries)
+- Modular and maintainable architecture
+- Cloud-ready deployment
+- AI extensibility
+- Automation via background jobs
+
+----------------------------------------
+
+💡 Why This Stack?
+
+Unlike basic academic projects, this system is designed to simulate a real-world production backend, focusing on:
+
+- Handling real user traffic
+- Preventing common security vulnerabilities
+- Supporting scalability and future integrations
+- Maintaining clean and testable codebase
+
+----------------------------------------
+
+📊 System Strengths
+
+- Production-ready architecture
+- Real-world problem solving (Charity ecosystem)
+- Secure authentication & authorization
+- Automation & background processing
+- AI integration (Advanced feature)
+- Clean and scalable code structure
+- ------------------------------------------------
+https://ataa-charity-platform.vercel.app
