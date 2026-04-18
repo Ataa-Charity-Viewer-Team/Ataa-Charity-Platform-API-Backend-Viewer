@@ -3,17 +3,17 @@
   "builds": [
     { "src": "index.js", "use": "@vercel/node" }
   ],
-  "routes": [
-    { "src": "/(.*)", "dest": "index.js" }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.js" }
   ],
   "crons": [
     {
       "path": "/cron/admin-report",
-      "schedule": "*/10 * * * *"
+      "schedule": "0 10 * * *"
     },
     {
       "path": "/cron/donation-reminder",
-      "schedule": "*/10 * * * *"
+      "schedule": "0 11 * * *"
     }
   ]
 }
