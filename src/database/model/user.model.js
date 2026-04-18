@@ -69,9 +69,7 @@ const userSchema = new mongoose.Schema(
 },
 licenseNumber: {
   type: String,
-  required: function () {
-    return this.roleType === "charity";
-  },
+  trim: true,
 },
   },
   {

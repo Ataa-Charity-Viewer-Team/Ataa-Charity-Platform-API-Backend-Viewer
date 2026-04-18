@@ -88,12 +88,11 @@ export const registerSchema = joi.object({
     .messages({
       "any.only": "Role must be user, charity, or admin"
 }),
-licenseNumber: joi.string()
-  .trim()
-  .pattern(licenseRegex)
-  .messages({
-    "string.pattern.base": "Invalid license number format"
-  })
+licenseNumber: joi.when("roleType", {
+  is: "charity",
+  then: joi.string().trim().pattern(licenseRegex).required(),
+  otherwise: joi.forbidden()
+})
 });
 // ==================== 2) Login ====================
 export const loginSchema = joi.object({

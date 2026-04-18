@@ -4,11 +4,10 @@ import { asyncHandler } from '../../utils/errorhandling/asynchandler.js';
 import * as authValidation from "./auth.validation.js"
 import * as authService from "./auth.service.js"
 import { validation } from "../../middleware/validation.middleware.js";
-import { validateLicenseByRole } from "../../middleware/role.validation.middleware.js";
 // =====================   AUTH CONTROLLER =====================
 const router = Router()
 // ===================== Register =====================
-router.post("/register", validateLicenseByRole, validation(authValidation.registerSchema), asyncHandler(authService.registerAccount))
+router.post("/register", validation(authValidation.registerSchema), asyncHandler(authService.registerAccount))
 // ===================== Login =====================
 router.post("/login" ,validation(authValidation.loginSchema), asyncHandler(authService.login))
 // ===================== verify email =====================
