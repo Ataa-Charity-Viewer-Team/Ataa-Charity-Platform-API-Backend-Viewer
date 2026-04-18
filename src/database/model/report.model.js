@@ -37,4 +37,4 @@ const reportSchema = new mongoose.Schema(
   }
 );
 
-export const ReportModel = mongoose.model("Report_Admin", reportSchema);
+export const reportModel = mongoose.model("Report_Admin", reportSchema);

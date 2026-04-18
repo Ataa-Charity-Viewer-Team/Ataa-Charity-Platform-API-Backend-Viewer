@@ -5,7 +5,7 @@ import { userModel }     from "../../database/model/user.model.js";
 import { charityModel }  from "../../database/model/charity.model.js";
 import { donationModel, donationStatus } from "../../database/model/donation.model.js";
 import { sendEmails }    from "../sendemails/sendemail.nodemailer.js";
-import { generateAdminReportHTML } from "../sendemails/generate.report.html.js";
+import { generateAdminReportHTML } from "../sendemails/generate.report.js";
 
 // ── جمع الإحصائيات بالتوازي من الـ DB ──
 const collectStats = async () => {
