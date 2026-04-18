@@ -1,5 +1,5 @@
 export const validateLicenseByRole = (req, res, next) => {
-  const { roleType } = req.user;
+const roleType = req.user?.roleType;
   const { licenseNumber } = req.body;
 
   if (roleType === "charity") {
