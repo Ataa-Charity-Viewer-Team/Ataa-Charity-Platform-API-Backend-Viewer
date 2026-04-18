@@ -3,15 +3,6 @@ import joi from "joi";
 
 // ==================== Create Report ====================
 export const createReportSchema = joi.object({
-  senderType: joi
-    .string()
-    .valid("user", "charity")
-    .required()
-    .messages({
-      "any.only": "senderType must be either user or charity",
-      "any.required": "senderType is required",
-    }),
-
   description: joi
     .string()
     .min(10)
