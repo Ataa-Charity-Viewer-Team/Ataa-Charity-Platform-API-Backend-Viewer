@@ -14,7 +14,7 @@ import limiter from "./middleware/express.limit.middleware.js";
 import helmet from "helmet";
 import notificationRouter from "./modules/notification/notification.controller.js";
 import cors from "cors"
-import cronRouter from "./corn/cron.controller.js";
+import cronRouter from "./cron/cron.controller.js";
 
 export const bootstrap = async (app, express) => {
   app.use(cors({
