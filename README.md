@@ -89,3 +89,36 @@ src/
  ├── database/
  ├── utils/
  └── index.js
+
+
+
+
+
+## 🛠 Full Tech Stack & Tools
+
+| Category              | Technology           | Purpose                                      |
+| --------------------- | -------------------- | -------------------------------------------- |
+| Runtime               | Node.js              | JavaScript Runtime Environment               |
+| Framework             | Express.js           | Backend Web Framework                        |
+| Database              | MongoDB              | NoSQL Database                               |
+| ODM                   | Mongoose             | MongoDB Object Data Modeling                 |
+| Validation            | Joi                  | Request Data Validation                      |
+| Authentication        | JSON Web Token (JWT) | Secure Authentication System                 |
+| Security              | bcrypt               | Password Hashing                             |
+| Security              | Helmet               | Secure HTTP Headers                          |
+| Security              | express-rate-limit   | API Rate Limiting                            |
+| Security              | cors                 | Cross-Origin Resource Sharing                |
+| Environment Config    | dotenv               | Manage Environment Variables                 |
+| Encryption            | crypto-js            | Data Encryption                              |
+| File Upload           | Multer               | Handle File Uploads                          |
+| Cloud Storage         | Cloudinary           | Image & Media Hosting                        |
+| Email Service         | Nodemailer           | Send Emails                                  |
+| AI Integration        | Groq SDK             | AI Features Integration                      |
+| Background Jobs       | node-cron            | Scheduled Tasks (Cron Jobs)                  |
+| Unique IDs            | nanoid               | Generate Unique Identifiers                  |
+| Deployment            | Vercel               | Hosting & Deployment Platform                |
+| Serverless Support    | @vercel/functions    | Serverless Functions Handling                |
+| Architecture Pattern  | MVC + Modular Design | Scalable Project Structure                   |
+| Error Handling        | Custom Middleware    | Centralized Error Handling                   |
+| API Features          | Pagination System    | Data Pagination & Filtering                  |
+| API Features          | RESTful API          | Standard API Design                          |
