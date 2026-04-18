@@ -90,10 +90,9 @@ export const registerSchema = joi.object({
 }),
 licenseNumber: joi.when("roleType", {
   is: "charity",
-  then: joi.string().trim().pattern(licenseRegex).required(),
+  then: joi.string().required(),
   otherwise: joi.forbidden()
-})
-});
+})});
 // ==================== 2) Login ====================
 export const loginSchema = joi.object({
   email: joi
