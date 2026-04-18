@@ -59,7 +59,8 @@ const donationSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      default: "pending",
+      enum: Object.values(donationStatus),
+      default: donationStatus.pending,
       required: true,
     },
 
