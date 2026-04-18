@@ -3,7 +3,12 @@ import mongoose from "mongoose";
 
 // ==================== Donation Size ======================
 export const donationSize = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
-
+export const donationCondition = [
+  "جديدة",
+  "مقبولة",
+  "جيدة",
+  "ممتازة"
+];
 // ==================== Donation Status ======================
 export const donationStatus = {
   pending: "pending",
@@ -61,7 +66,12 @@ const donationSchema = new mongoose.Schema(
       default: donationStatus.pending,
       required: true,
     },
+    condition :{
+      type: String,
+      enum: donationCondition,
+      required: [true, "Condition is required"],
 
+    },
     dateDonation: {
       type: Date,
       default: Date.now,

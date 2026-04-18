@@ -16,7 +16,7 @@ const uploadToCloud = (buffer, userId) => {
 // ===================== create donation ======================
 export const createDonation = async (req, res, next) => {
   const { user } = req;
-  const { charityId, type, size, quantity, description } = req.body;
+  const { charityId, type, size, quantity, description, condition } = req.body;
 
   const charity = await charityModel.findById(charityId);
   if (!charity) {

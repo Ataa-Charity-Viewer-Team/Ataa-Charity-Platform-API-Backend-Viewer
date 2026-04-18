@@ -14,6 +14,12 @@ export const DONATION_STATUS = {
   accepted: { en: "accepted", ar: "مقبول" },
   rejected: { en: "rejected", ar: "مرفوض" },
 };
+export const donationCondition = [
+  "جديدة",
+  "مقبولة",
+  "جيدة",
+  "ممتازة",
+];
 
 // ==================== FIX: Normalize status values ====================
 const STATUS_VALUES_EN = Object.values(DONATION_STATUS).map(s => s.en);
@@ -68,6 +74,13 @@ export const createDonationSchema = joi.object({
       "array.min": "At least 1 image is required",
       "array.max": "You can upload up to 5 images",
       "any.required": "File is required",
+    }),
+  condition: joi.string()
+    .valid(...donationCondition)
+    .required()
+    .messages({
+      "any.required": "Condition is required",
+      "any.only": `Condition must be one of: ${donationCondition.join(", ")}`,
     }),
 });
 
