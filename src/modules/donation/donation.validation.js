@@ -9,11 +9,11 @@ export const donationTypes = [
   { ar: "أطفال", en: "Kids" },
 ];
 
-export const DONATION_STATUS = [
-  { en: "pending", ar: "قيد الانتظار" },
-  { en: "accepted", ar: "مقبول" },
-  { en: "rejected", ar: "مرفوض" },
-];
+export const DONATION_STATUS= {
+  pending:  "pending",
+  accepted: "accepted",
+  rejected: "rejected",
+};
 
 export const DONATION_SIZE = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
 

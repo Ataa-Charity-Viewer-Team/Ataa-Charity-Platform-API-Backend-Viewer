@@ -14,6 +14,7 @@ import limiter from "./middleware/express.limit.middleware.js";
 import helmet from "helmet";
 import notificationRouter from "./modules/notification/notification.controller.js";
 import cors from "cors"
+import { registerCronJobs } from "./corn/corn.jobs.js";
 
 export const bootstrap = async (app, express) => {
   app.use(cors({
@@ -29,6 +30,8 @@ export const bootstrap = async (app, express) => {
   app.use(limiter);
   // ================= connect to database ===================
   await connectDB();
+  // ================= register cron jobs =====================
+  registerCronJobs();
   // ============================ import controllers (endpoints) ============================
   app.use("/auth", authRouter);
   app.use("/users", userRouter);
@@ -43,7 +46,7 @@ export const bootstrap = async (app, express) => {
   app.use(notFoundHandler);
 
 
-  
+
   // =============================== global error ====================
   app.use(globalErrorHandler);
 }
