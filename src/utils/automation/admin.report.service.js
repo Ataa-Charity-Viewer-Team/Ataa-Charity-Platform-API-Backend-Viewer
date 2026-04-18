@@ -9,26 +9,30 @@ import { generateAdminReportHTML } from "../sendemails/generate.report.js";
 // ── Collect stats ──
 const collectStats = async () => {
   const stats = await donationModel.aggregate([
-  {
-    $group: {
-      _id: null,
-      totalDonations: { $sum: 1 },
-      pendingDonations: {
-        $sum: { $cond: [{ $eq: ["$status", donationStatus.pending] }, 1, 0] }
-      },
-      acceptedDonations: {
-        $sum: { $cond: [{ $eq: ["$status", donationStatus.accepted] }, 1, 0] }
-      },
-      rejectedDonations: {
-        $sum: { $cond: [{ $eq: ["$status", donationStatus.rejected] }, 1, 0] }
+    {
+      $group: {
+        _id: null,
+        totalDonations: { $sum: 1 },
+        pendingDonations: {
+          $sum: { $cond: [{ $eq: ["$status", donationStatus.pending] }, 1, 0] }
+        },
+        acceptedDonations: {
+          $sum: { $cond: [{ $eq: ["$status", donationStatus.accepted] }, 1, 0] }
+        },
+        rejectedDonations: {
+          $sum: { $cond: [{ $eq: ["$status", donationStatus.rejected] }, 1, 0] }
+        }
       }
     }
-  }
-]);
+  ]);
 
-const result = stats[0];
+  return stats[0] || {
+    totalDonations: 0,
+    pendingDonations: 0,
+    acceptedDonations: 0,
+    rejectedDonations: 0
+  };
 };
-
 // ── Main service ──
 export const sendAdminReportEmail = async () => {
   try {
