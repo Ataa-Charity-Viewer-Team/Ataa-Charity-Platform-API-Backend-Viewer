@@ -26,10 +26,12 @@ export const bootstrap = async (app, express) => {
   // ================= npm helmet (security) ==================
   app.use(helmet());
 
-  // ================= limit request =====================
-  app.use(limiter);
   // ================= connect to database ===================
   await connectDB();
+  // ============================ Vercel Cron Endpoints ============================
+  app.use("/cron", cronRouter);
+  // ================= limit request =====================
+  app.use(limiter);
   // ============================ import controllers (endpoints) ============================
   app.use("/auth", authRouter);
   app.use("/users", userRouter);
@@ -40,8 +42,6 @@ export const bootstrap = async (app, express) => {
   app.use("/report", reportRouter);
   app.use("/ai", aiRouter);
   app.use("/notification", notificationRouter);
-  // ============================ Vercel Cron Endpoints ============================
-  app.use("/cron", cronRouter);
   // ======================= import error handlers ============================
   app.use(notFoundHandler);
 

@@ -9,11 +9,11 @@
   "crons": [
     {
       "path": "/cron/admin-report",
-      "schedule": "0 8 */3 * *"
+      "schedule": "*/10 * * * *"
     },
     {
       "path": "/cron/donation-reminder",
-      "schedule": "0 9 * * *"
+      "schedule": "*/10 * * * *"
     }
   ]
 }
