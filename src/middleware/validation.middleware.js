@@ -24,15 +24,11 @@ export const validation = (schema) => {
 };
 
 // ================= Check Mongoose ID ======================
-export const monggoseID = (name = "ID") =>
-  joi
-    .string()
-    .custom((value, helpers) => {
+export const monggoseID = (name = "ID") => joi.string().custom((value, helpers) => {
       if (!mongoose.Types.ObjectId.isValid(value))
         return helpers.error("any.invalid");
       return value;
     })
-    .required()
     .messages({
       "string.empty": `${name} is required`,
       "any.required": `${name} is required`,

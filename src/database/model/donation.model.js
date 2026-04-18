@@ -70,7 +70,6 @@ const donationSchema = new mongoose.Schema(
       type: String,
       enum: donationCondition,
       required: [true, "Condition is required"],
-
     },
     dateDonation: {
       type: Date,
