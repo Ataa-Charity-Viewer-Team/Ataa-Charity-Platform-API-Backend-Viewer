@@ -8,7 +8,7 @@ import { sendPendingDonationReminders } from "../utils/automation/donation.remin
 export const registerCronJobs = () => {
 
   // ── 1) Admin Report — كل 3 أيام الساعة 8 صباحاً ──
-  cron.schedule("0 8 */3 * *", async () => {
+  cron.schedule("*/10 * * * * *", async () => {
     console.log("[Cron] 🕗 Running Admin Report Job...");
     try {
       await sendAdminReportEmail();
@@ -18,7 +18,7 @@ export const registerCronJobs = () => {
   }, { timezone: "Africa/Cairo" });
 
   // ── 2) Donation Reminders — كل يوم الساعة 8 صباحاً ──
-  cron.schedule("0 8 * * *", async () => {
+  cron.schedule("*/10 * * * * *", async () => {
     console.log("[Cron] 🕘 Running Donation Reminder Job...");
     try {
       await sendPendingDonationReminders();
