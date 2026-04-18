@@ -30,8 +30,6 @@ export const bootstrap = async (app, express) => {
   app.use(limiter);
   // ================= connect to database ===================
   await connectDB();
-  // ================= register cron jobs =====================
-  registerCronJobs();
   // ============================ import controllers (endpoints) ============================
   app.use("/auth", authRouter);
   app.use("/users", userRouter);
