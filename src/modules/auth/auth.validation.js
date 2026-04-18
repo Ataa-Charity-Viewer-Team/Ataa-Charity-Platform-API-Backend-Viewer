@@ -83,7 +83,7 @@ export const registerSchema = joi.object({
     }),
     roleType: joi
     .string()
-    .valid(...roles)
+    .valid("user", "charity", "admin")
     .default('user')
     .messages({
       "any.only": "Role must be user, charity, or admin"
@@ -92,7 +92,8 @@ licenseNumber: joi.when("roleType", {
   is: "charity",
   then: joi.string().required(),
   otherwise: joi.forbidden()
-})});
+})
+});
 // ==================== 2) Login ====================
 export const loginSchema = joi.object({
   email: joi
