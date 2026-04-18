@@ -30,8 +30,7 @@ export const DONATION_SIZE = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
 
 // ==================== 1) Create Donation ====================
 export const createDonationSchema = joi.object({
-  charityId: monggoseID("Charity ID").required(),
-
+  charityId: monggoseID("charityId").required(),
   type: joi.string()
     .valid(...donationTypes.map(t => t.en), ...donationTypes.map(t => t.ar))
     .required()
