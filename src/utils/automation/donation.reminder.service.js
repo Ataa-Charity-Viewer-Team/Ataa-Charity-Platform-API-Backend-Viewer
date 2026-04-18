@@ -6,7 +6,7 @@ import { sendEmails } from "../sendemails/sendemail.nodemailer.js";
 
 export const sendPendingDonationReminders = async () => {
   const threeDaysAgo = new Date();
-  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+  threeDaysAgo.setDate(threeDaysAgo.getDate() + 1);
 
   const staleDonations = await donationModel
     .find({
