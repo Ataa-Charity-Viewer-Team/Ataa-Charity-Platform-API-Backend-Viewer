@@ -14,7 +14,7 @@ import limiter from "./middleware/express.limit.middleware.js";
 import helmet from "helmet";
 import notificationRouter from "./modules/notification/notification.controller.js";
 import cors from "cors"
-import { registerCronJobs } from "./corn/corn.jobs.js";
+import cronRouter from "./corn/cron.controller.js";
 
 export const bootstrap = async (app, express) => {
   app.use(cors({
@@ -42,6 +42,8 @@ export const bootstrap = async (app, express) => {
   app.use("/report", reportRouter);
   app.use("/ai", aiRouter);
   app.use("/notification", notificationRouter);
+  // ============================ Vercel Cron Endpoints ============================
+  app.use("/cron", cronRouter);
   // ======================= import error handlers ============================
   app.use(notFoundHandler);
 
