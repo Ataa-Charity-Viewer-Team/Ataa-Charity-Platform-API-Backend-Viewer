@@ -9,6 +9,7 @@ export const donationCondition = [
   "جيدة",
   "ممتازة"
 ];
+const reminderStatus=["none","reminder_sent","final_sent"];
 // ==================== Donation Status ======================
 export const donationStatus = {
   pending: "pending",
@@ -76,11 +77,11 @@ const donationSchema = new mongoose.Schema(
       default: Date.now,
     },
 
-    isReminderSent: {
-      type: Boolean,
-      default: false,
-    },
-  },
+reminderStatus: {
+  type: String,
+  enum: reminderStatus,
+  default: "none",}, 
+ },
   {
     timestamps: true,
     collection: "Donation",

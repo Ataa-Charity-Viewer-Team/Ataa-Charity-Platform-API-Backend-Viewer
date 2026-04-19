@@ -1,162 +1,183 @@
-// ===================== Donation Reminder Service =====================
-import { donationModel, donationStatus } from "../../database/model/donation.model.js";
+import { donationModel, donationStatus, reminderStatus } from "../../database/model/donation.model.js";
 import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
 import { sendEmails } from "../sendemails/sendemail.nodemailer.js";
 
-export const sendPendingDonationReminders = async ({
-  notificationContent = ({ type, quantity, hoursAgo }) =>
-    `لديك تبرع معلق بـ ${quantity} قطعة من "${type}" منذ ${hoursAgo} ${hoursAgo < 24 ? "ساعة" : hoursAgo < 48 ? "يوم" : `${Math.floor(hoursAgo / 24)} أيام`}، يرجى مراجعته واتخاذ الإجراء المناسب.`,
-  emailSubject = ({ hoursAgo }) =>
-    `⏳ تذكير: لديك تبرع معلق منذ ${hoursAgo < 24 ? `${hoursAgo} ساعة` : `${Math.floor(hoursAgo / 24)} ${Math.floor(hoursAgo / 24) === 1 ? "يوم" : "أيام"}`} — منصة عطاء`,
-  emailTemplate = ({ charityName, donorName, type, quantity, size, condition, dateDonation, hoursAgo }) => {
-    const donationDate = new Date(dateDonation).toLocaleDateString("ar-EG", {
-      year:  "numeric",
-      month: "long",
-      day:   "numeric",
-    });
-    const donationTime = new Date(dateDonation).toLocaleTimeString("ar-EG", {
-      hour:   "2-digit",
-      minute: "2-digit",
-    });
-    const timeAgoText = hoursAgo < 24
-      ? `${hoursAgo} ساعة`
-      : `${Math.floor(hoursAgo / 24)} ${Math.floor(hoursAgo / 24) === 1 ? "يوم" : "أيام"}`;
+// ==================== Helpers ====================
+const timeAgoText = (hoursAgo) =>
+  hoursAgo < 24
+    ? `${hoursAgo} ساعة`
+    : `${Math.floor(hoursAgo / 24)} ${Math.floor(hoursAgo / 24) === 1 ? "يوم" : "أيام"}`;
 
-    return `
-      <div style="font-family: Arial, sans-serif; direction: rtl; padding: 32px; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 12px; background-color: #ffffff;">
-        <div style="text-align: center; margin-bottom: 24px;">
-          <h1 style="color: #2e7d32; font-size: 24px; margin: 0;">منصة عطاء 🤝</h1>
-          <p style="color: #757575; font-size: 13px; margin: 6px 0 0;">تذكير تلقائي — تبرع معلق</p>
-        </div>
-        <hr style="border: none; border-top: 1px solid #e0e0e0; margin-bottom: 24px;" />
-        <p style="font-size: 16px; color: #212121;">جمعية <strong>${charityName}</strong>،</p>
-        <p style="font-size: 15px; color: #424242; line-height: 1.8;">
-          نود إعلامكم بأن المتبرع <strong>${donorName}</strong> أرسل تبرعًا بانتظار مراجعتكم منذ
-          <strong>${timeAgoText}</strong>.
-          يرجى اتخاذ الإجراء المناسب في أقرب وقت.
-        </p>
-        <div style="background-color: #f9f9f9; border-right: 4px solid #2e7d32; border-radius: 8px; padding: 16px 20px; margin: 24px 0;">
-          <h3 style="margin: 0 0 14px; font-size: 15px; color: #2e7d32;">📦 تفاصيل التبرع</h3>
-          <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #424242;">
-            <tr style="border-bottom: 1px solid #eeeeee;">
-              <td style="padding: 8px 0; font-weight: bold; width: 40%;">المتبرع</td>
-              <td style="padding: 8px 0;">${donorName}</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #eeeeee;">
-              <td style="padding: 8px 0; font-weight: bold;">نوع التبرع</td>
-              <td style="padding: 8px 0;">${type}</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #eeeeee;">
-              <td style="padding: 8px 0; font-weight: bold;">الكمية</td>
-              <td style="padding: 8px 0;">${quantity} قطعة</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #eeeeee;">
-              <td style="padding: 8px 0; font-weight: bold;">المقاس</td>
-              <td style="padding: 8px 0;">${size}</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #eeeeee;">
-              <td style="padding: 8px 0; font-weight: bold;">الحالة</td>
-              <td style="padding: 8px 0;">${condition}</td>
-            </tr>
-            <tr style="border-bottom: 1px solid #eeeeee;">
-              <td style="padding: 8px 0; font-weight: bold;">تاريخ التبرع</td>
-              <td style="padding: 8px 0;">${donationDate}</td>
-            </tr>
-            <tr>
-              <td style="padding: 8px 0; font-weight: bold;">الساعة</td>
-              <td style="padding: 8px 0;">${donationTime}</td>
-            </tr>
-          </table>
-        </div>
-        <p style="font-size: 14px; color: #757575; line-height: 1.8;">
-          للحفاظ على ثقة المتبرعين يرجى مراجعة التبرع والرد في أقرب وقت ممكن.
-        </p>
-        <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 24px 0;" />
-        <p style="text-align: center; font-size: 12px; color: #9e9e9e; margin: 0;">
-          هذا البريد أُرسل تلقائيًا من منصة عطاء — يرجى عدم الرد عليه.
-        </p>
+const buildEmailSubject = ({ hoursAgo, isFinal }) =>
+  isFinal
+    ? `🚨 آخر تذكير: تبرع معلق منذ 3 أيام — منصة عطاء`
+    : `⏳ تذكير: تبرع معلق منذ ${timeAgoText(hoursAgo)} — منصة عطاء`;
+
+const buildEmailTemplate = ({ charityName, donorName, type, quantity, size, condition, dateDonation, hoursAgo, isFinal }) => {
+  const rows = [
+    ["المتبرع",      donorName],
+    ["نوع التبرع",   type],
+    ["الكمية",       `${quantity} قطعة`],
+    ["المقاس",       size],
+    ["الحالة",       condition],
+    ["تاريخ التبرع", new Date(dateDonation).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })],
+    ["الساعة",       new Date(dateDonation).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" })],
+  ];
+
+  const tableRows = rows.map(([label, value]) => `
+    <tr style="border-bottom:1px solid #eee;">
+      <td style="padding:8px 0;font-weight:bold;width:40%;">${label}</td>
+      <td style="padding:8px 0;">${value}</td>
+    </tr>`).join("");
+
+  const warningBanner = isFinal ? `
+    <div style="background:#fff3e0;border-right:4px solid #e65100;border-radius:8px;padding:12px 16px;margin-bottom:20px;">
+      <p style="margin:0;font-size:14px;color:#e65100;font-weight:bold;">
+        ⚠️ هذا آخر تذكير — مضى على التبرع 3 أيام دون مراجعة.
+      </p>
+    </div>` : "";
+
+  return `
+    <div style="font-family:Arial,sans-serif;direction:rtl;padding:32px;max-width:600px;margin:auto;border:1px solid #e0e0e0;border-radius:12px;background:#fff;">
+      <div style="text-align:center;margin-bottom:24px;">
+        <h1 style="color:#2e7d32;font-size:24px;margin:0;">منصة عطاء 🤝</h1>
+        <p style="color:#757575;font-size:13px;margin:6px 0 0;">تذكير تلقائي — تبرع معلق</p>
       </div>
-    `;
-  },
-} = {}) => {
+      <hr style="border:none;border-top:1px solid #e0e0e0;margin-bottom:24px;" />
+      ${warningBanner}
+      <p style="font-size:16px;color:#212121;">جمعية <strong>${charityName}</strong>،</p>
+      <p style="font-size:15px;color:#424242;line-height:1.8;">
+        المتبرع <strong>${donorName}</strong> أرسل تبرعًا منذ <strong>${timeAgoText(hoursAgo)}</strong> بانتظار مراجعتكم.
+      </p>
+      <div style="background:#f9f9f9;border-right:4px solid #2e7d32;border-radius:8px;padding:16px 20px;margin:24px 0;">
+        <h3 style="margin:0 0 14px;font-size:15px;color:#2e7d32;">📦 تفاصيل التبرع</h3>
+        <table style="width:100%;border-collapse:collapse;font-size:14px;color:#424242;">
+          ${tableRows}
+        </table>
+      </div>
+      <hr style="border:none;border-top:1px solid #e0e0e0;margin:24px 0;" />
+      <p style="text-align:center;font-size:12px;color:#9e9e9e;margin:0;">
+        هذا البريد أُرسل تلقائيًا من منصة عطاء — يرجى عدم الرد عليه.
+      </p>
+    </div>`;
+};
 
-  const now      = new Date();
-  const minDate  = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000); // 3 أيام للخلف
-//  دقيقة للخلف 
-const maxDate = new Date(now.getTime() - 1 * 60 * 1000); // دقيقة للخلف
-  const staleDonations = await donationModel
-    .find({
-      status:         donationStatus.pending,
-      isReminderSent: false,
-      createdAt:      { $gte: minDate, $lte: maxDate }, // ✅ من ساعة لـ 3 أيام
-    })
-    .populate("charityId", "userId charityName email")
-    .populate("donorId",   "userName")
-    .lean();
-
-  if (!staleDonations.length) {
-    console.log("[DonationReminder] ✅ No stale donations found.");
-    return;
-  }
-
-  console.log(`[DonationReminder] 🔔 Found ${staleDonations.length} stale donations.`);
-
+// ==================== Process Donations ====================
+const processDonations = async ({ donations, isFinal, now }) => {
   const notificationsToCreate = [];
-  const donationIdsToUpdate   = [];
+  const idsToUpdate           = [];
 
-  for (const donation of staleDonations) {
+  await Promise.all(donations.map(async (donation) => {
     const charityEmail  = donation.charityId?.email;
     const charityName   = donation.charityId?.charityName;
     const charityUserId = donation.charityId?.userId;
 
     if (!charityEmail || !charityUserId) {
-      console.warn(`[DonationReminder] ⚠️ Donation ${donation._id} — charity data missing. Skipping.`);
-      continue;
+      console.warn(`[DonationReminder] ⚠️ Donation ${donation._id} — missing charity data. Skipping.`);
+      return;
     }
 
     const donorName = donation.donorId?.userName || "متبرع";
+    const hoursAgo  = Math.floor((now - new Date(donation.createdAt)) / (1000 * 60 * 60));
 
-    // ✅ احسب كام ساعة فات من وقت التبرع
-    const hoursAgo = Math.floor((now - new Date(donation.createdAt)) / (1000 * 60 * 60));
+    try {
+      await sendEmails({
+        to:      charityEmail,
+        subject: buildEmailSubject({ hoursAgo, isFinal }),
+        html:    buildEmailTemplate({
+          charityName, donorName, hoursAgo, isFinal,
+          type:         donation.type,
+          quantity:     donation.quantity,
+          size:         donation.size,
+          condition:    donation.condition,
+          dateDonation: donation.dateDonation || donation.createdAt,
+        }),
+      });
 
-    notificationsToCreate.push({
-      userId:     charityUserId,
-      donationId: donation._id,
-      content:    notificationContent({
-        hoursAgo,
-        type:     donation.type,
-        quantity: donation.quantity,
-      }),
-      status: notificationStatus.unread,
-    });
+      notificationsToCreate.push({
+        userId:     charityUserId,
+        donationId: donation._id,
+        content: isFinal
+          ? `⚠️ آخر تذكير — تبرع "${donation.type}" معلق منذ 3 أيام.`
+          : `لديك تبرع معلق بـ ${donation.quantity} قطعة من "${donation.type}" منذ ${timeAgoText(hoursAgo)}، يرجى مراجعته.`,
+        status: notificationStatus.unread,
+      });
 
-    donationIdsToUpdate.push(donation._id);
+      idsToUpdate.push(donation._id);
+      console.log(`[DonationReminder] ${isFinal ? "🚨 Final" : "📧 Reminder"} → ${charityEmail} (${hoursAgo}h)`);
 
-    await sendEmails({
-      to:      charityEmail,
-      subject: emailSubject({ hoursAgo }),
-      html:    emailTemplate({
-        charityName,
-        donorName,
-        type:         donation.type,
-        quantity:     donation.quantity,
-        size:         donation.size,
-        condition:    donation.condition,
-        dateDonation: donation.dateDonation || donation.createdAt,
-        hoursAgo,
-      }),
-    });
+    } catch (err) {
+      console.error(`[DonationReminder] ❌ Failed → ${charityEmail}`, err.message);
+    }
+  }));
 
-    console.log(`[DonationReminder] 📧 Email sent to ${charityEmail} — ${hoursAgo} ساعة مضت`);
+  return { notificationsToCreate, idsToUpdate };
+};
+
+// ==================== Main Function ====================
+export const sendPendingDonationReminders = async () => {
+  const now          = new Date();
+  const minDate      = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+  const maxDate      = new Date(now.getTime() - 1 * 60 * 1000);
+  const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+
+  const [staleDonations, finalWarningDonations] = await Promise.all([
+    // ✅ لسه ما اتبعتلهاش أي reminder
+    donationModel.find({
+      status:         donationStatus.pending,
+      reminderStatus: "none",
+      createdAt:      { $gte: minDate, $lte: maxDate },
+    })
+    .populate("charityId", "userId charityName email")
+    .populate("donorId",   "userName")
+    .lean(),
+
+    // ✅ اتبعتلها reminder عادي بس لسه ما اتبعتلهاش final
+    donationModel.find({
+      status:         donationStatus.pending,
+      reminderStatus: "reminder_sent",
+      createdAt:      { $lte: threeDaysAgo },
+    })
+    .populate("charityId", "userId charityName email")
+    .populate("donorId",   "userName")
+    .lean(),
+  ]);
+
+  if (!staleDonations.length && !finalWarningDonations.length) {
+    console.log("[DonationReminder] ✅ No pending donations.");
+    return;
   }
 
-  if (!notificationsToCreate.length) return;
+  console.log(`[DonationReminder] 🔔 Stale: ${staleDonations.length} | Final: ${finalWarningDonations.length}`);
 
-  await notificationModel.insertMany(notificationsToCreate);
-  await donationModel.updateMany(
-    { _id: { $in: donationIdsToUpdate } },
-    { $set: { isReminderSent: true } }
-  );
+  const [staleResult, finalResult] = await Promise.all([
+    processDonations({ donations: staleDonations,        isFinal: false, now }),
+    processDonations({ donations: finalWarningDonations, isFinal: true,  now }),
+  ]);
 
-  console.log(`[DonationReminder] ✅ Sent ${notificationsToCreate.length} reminders.`);
+  const allNotifications = [...staleResult.notificationsToCreate, ...finalResult.notificationsToCreate];
+
+  await Promise.all([
+    allNotifications.length
+      ? notificationModel.insertMany(allNotifications)
+      : Promise.resolve(),
+
+    // ✅ بدل isReminderSent: true
+    staleResult.idsToUpdate.length
+      ? donationModel.updateMany(
+          { _id: { $in: staleResult.idsToUpdate } },
+          { $set: { reminderStatus: "reminder_sent" } }
+        )
+      : Promise.resolve(),
+
+    // ✅ بدل isFinalReminderSent: true
+    finalResult.idsToUpdate.length
+      ? donationModel.updateMany(
+          { _id: { $in: finalResult.idsToUpdate } },
+          { $set: { reminderStatus: "final_sent" } }
+        )
+      : Promise.resolve(),
+  ]);
+
+  console.log(`[DonationReminder] ✅ Done — ${allNotifications.length} notifications created.`);
 };
