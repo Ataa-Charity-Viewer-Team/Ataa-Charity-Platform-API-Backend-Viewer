@@ -9,7 +9,7 @@ export const donationCondition = [
   "جيدة",
   "ممتازة"
 ];
-const reminderStatus=["none","reminder_sent","final_sent"];
+export const reminderStatus=["none","reminder_sent","final_sent"];
 // ==================== Donation Status ======================
 export const donationStatus = {
   pending: "pending",
