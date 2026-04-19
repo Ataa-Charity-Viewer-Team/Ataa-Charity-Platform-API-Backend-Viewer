@@ -57,7 +57,7 @@
 import { Router } from "express";
 import { asyncHandler } from "../utils/errorhandling/asynchandler.js";
 import * as cronController from "./cron.services.js";
-import authAction from './../middleware/authaction.middleware';
+import authAction from './../middleware/authaction.middleware.js';
 import { authorization } from './../middleware/authorization.middleware.js';
 import { cronEndpoint } from "./cron.endpoint.js";
 
