@@ -4,12 +4,11 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 import { sendEmails } from "../sendemails/sendemail.nodemailer.js";
 
 export const sendPendingDonationReminders = async ({
-  hoursThreshold = 1,
-  notificationContent = ({ hours, type, quantity }) =>
-    `لديك تبرع معلق بـ ${quantity} قطعة من "${type}" منذ أكثر من ${hours} ${hours === 1 ? "ساعة" : "ساعات"}، يرجى مراجعته واتخاذ الإجراء المناسب.`,
-  emailSubject = ({ hours }) =>
-    `⏳ تذكير: لديك تبرع معلق منذ أكثر من ${hours} ${hours === 1 ? "ساعة" : "ساعات"} — منصة عطاء`,
-  emailTemplate = ({ charityName, donorName, type, quantity, size, condition, dateDonation, hours }) => {
+  notificationContent = ({ type, quantity, hoursAgo }) =>
+    `لديك تبرع معلق بـ ${quantity} قطعة من "${type}" منذ ${hoursAgo} ${hoursAgo < 24 ? "ساعة" : hoursAgo < 48 ? "يوم" : `${Math.floor(hoursAgo / 24)} أيام`}، يرجى مراجعته واتخاذ الإجراء المناسب.`,
+  emailSubject = ({ hoursAgo }) =>
+    `⏳ تذكير: لديك تبرع معلق منذ ${hoursAgo < 24 ? `${hoursAgo} ساعة` : `${Math.floor(hoursAgo / 24)} ${Math.floor(hoursAgo / 24) === 1 ? "يوم" : "أيام"}`} — منصة عطاء`,
+  emailTemplate = ({ charityName, donorName, type, quantity, size, condition, dateDonation, hoursAgo }) => {
     const donationDate = new Date(dateDonation).toLocaleDateString("ar-EG", {
       year:  "numeric",
       month: "long",
@@ -19,6 +18,9 @@ export const sendPendingDonationReminders = async ({
       hour:   "2-digit",
       minute: "2-digit",
     });
+    const timeAgoText = hoursAgo < 24
+      ? `${hoursAgo} ساعة`
+      : `${Math.floor(hoursAgo / 24)} ${Math.floor(hoursAgo / 24) === 1 ? "يوم" : "أيام"}`;
 
     return `
       <div style="font-family: Arial, sans-serif; direction: rtl; padding: 32px; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 12px; background-color: #ffffff;">
@@ -29,8 +31,8 @@ export const sendPendingDonationReminders = async ({
         <hr style="border: none; border-top: 1px solid #e0e0e0; margin-bottom: 24px;" />
         <p style="font-size: 16px; color: #212121;">جمعية <strong>${charityName}</strong>،</p>
         <p style="font-size: 15px; color: #424242; line-height: 1.8;">
-          نود إعلامكم بأن المتبرع <strong>${donorName}</strong> أرسل تبرعًا بانتظار مراجعتكم منذ أكثر من
-          <strong>${hours} ${hours === 1 ? "ساعة" : "ساعات"}</strong>.
+          نود إعلامكم بأن المتبرع <strong>${donorName}</strong> أرسل تبرعًا بانتظار مراجعتكم منذ
+          <strong>${timeAgoText}</strong>.
           يرجى اتخاذ الإجراء المناسب في أقرب وقت.
         </p>
         <div style="background-color: #f9f9f9; border-right: 4px solid #2e7d32; border-radius: 8px; padding: 16px 20px; margin: 24px 0;">
@@ -78,14 +80,15 @@ export const sendPendingDonationReminders = async ({
   },
 } = {}) => {
 
-  const thresholdDate = new Date();
-  thresholdDate.setHours(thresholdDate.getHours() - hoursThreshold);
-
+  const now      = new Date();
+  const minDate  = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000); // 3 أيام للخلف
+//  دقيقة للخلف 
+const maxDate = new Date(now.getTime() - 1 * 60 * 1000); // دقيقة للخلف
   const staleDonations = await donationModel
     .find({
       status:         donationStatus.pending,
-      isReminderSent: { $ne: true },
-      createdAt:      { $lte: thresholdDate },
+      isReminderSent: false,
+      createdAt:      { $gte: minDate, $lte: maxDate }, // ✅ من ساعة لـ 3 أيام
     })
     .populate("charityId", "userId charityName email")
     .populate("donorId",   "userName")
@@ -113,11 +116,14 @@ export const sendPendingDonationReminders = async ({
 
     const donorName = donation.donorId?.userName || "متبرع";
 
+    // ✅ احسب كام ساعة فات من وقت التبرع
+    const hoursAgo = Math.floor((now - new Date(donation.createdAt)) / (1000 * 60 * 60));
+
     notificationsToCreate.push({
       userId:     charityUserId,
       donationId: donation._id,
       content:    notificationContent({
-        hours:    hoursThreshold,
+        hoursAgo,
         type:     donation.type,
         quantity: donation.quantity,
       }),
@@ -128,7 +134,7 @@ export const sendPendingDonationReminders = async ({
 
     await sendEmails({
       to:      charityEmail,
-      subject: emailSubject({ hours: hoursThreshold }),
+      subject: emailSubject({ hoursAgo }),
       html:    emailTemplate({
         charityName,
         donorName,
@@ -137,11 +143,11 @@ export const sendPendingDonationReminders = async ({
         size:         donation.size,
         condition:    donation.condition,
         dateDonation: donation.dateDonation || donation.createdAt,
-        hours:        hoursThreshold,
+        hoursAgo,
       }),
     });
 
-    console.log(`[DonationReminder] 📧 Email sent to ${charityEmail}`);
+    console.log(`[DonationReminder] 📧 Email sent to ${charityEmail} — ${hoursAgo} ساعة مضت`);
   }
 
   if (!notificationsToCreate.length) return;
