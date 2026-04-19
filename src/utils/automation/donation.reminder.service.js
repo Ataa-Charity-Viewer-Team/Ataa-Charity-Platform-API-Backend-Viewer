@@ -137,7 +137,6 @@ export const sendPendingDonationReminders = async () => {
       $or: [
         { reminderStatus: "none"             },
         { reminderStatus: { $exists: false } },
-        { reminderStatus: null               },
       ],
       createdAt: { $lte: maxDate },
     })
