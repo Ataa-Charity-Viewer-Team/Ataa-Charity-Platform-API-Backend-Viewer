@@ -4,15 +4,30 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 import { userModel } from "../../database/model/user.model.js";
 import { sendEmails } from "../sendemails/sendemail.nodemailer.js";
 
-export const sendPendingDonationReminders = async () => {
-  const threeDaysAgo = new Date();
-  threeDaysAgo.setDate(threeDaysAgo.getDate() + 1);
+
+export const sendPendingDonationReminders = async ({
+  daysThreshold = 1,
+  notificationContent = (days) => `لديك تبرع معلق منذ أكثر من ${days} أيام، يرجى مراجعته واتخاذ الإجراء المناسب.`,
+  emailSubject = "⏳ تذكير: لديك تبرع معلق — منصة عطاء",
+  emailTemplate = ({ charityName, days }) => `
+    <div style="font-family: Arial, sans-serif; direction: rtl; padding: 20px;">
+      <h2>تذكير بتبرع معلق</h2>
+      <p>جمعية <strong>${charityName}</strong>،</p>
+      <p>لديك تبرع معلق منذ أكثر من ${days} أيام.</p>
+      <p>يرجى مراجعته واتخاذ الإجراء المناسب في أقرب وقت.</p>
+      <br/>
+      <p>منصة عطاء 🤝</p>
+    </div>
+  `,
+} = {}) => {
+  const thresholdDate = new Date();
+  thresholdDate.setDate(thresholdDate.getDate() + daysThreshold);
 
   const staleDonations = await donationModel
     .find({
       status:         donationStatus.pending,
       isReminderSent: { $ne: true },
-      createdAt:      { $lte: threeDaysAgo },
+      createdAt:      { $lte: thresholdDate },
     })
     .populate("charityId", "userId charityName")
     .lean();
@@ -33,17 +48,15 @@ export const sendPendingDonationReminders = async () => {
       continue;
     }
 
-    // ✅ 1 — إشعار جوه الـ DB
     notificationsToCreate.push({
       userId:     donation.charityId.userId,
       donationId: donation._id,
-      content:    "لديك تبرع معلق منذ أكثر من 3 أيام، يرجى مراجعته واتخاذ الإجراء المناسب.",
+      content:    notificationContent(daysThreshold),
       status:     notificationStatus.unread,
     });
 
     donationIdsToUpdate.push(donation._id);
 
-    // ✅ 2 — إيميل للجمعية
     const charityUser = await userModel
       .findById(donation.charityId.userId, "email")
       .lean();
@@ -51,17 +64,8 @@ export const sendPendingDonationReminders = async () => {
     if (charityUser?.email) {
       await sendEmails({
         to:      charityUser.email,
-        subject: "⏳ تذكير: لديك تبرع معلق — منصة عطاء",
-        html:    `
-          <div style="font-family: Arial, sans-serif; direction: rtl; padding: 20px;">
-            <h2>تذكير بتبرع معلق</h2>
-            <p>جمعية <strong>${donation.charityId.charityName}</strong>،</p>
-            <p>لديك تبرع معلق منذ أكثر من 3 أيام.</p>
-            <p>يرجى مراجعته واتخاذ الإجراء المناسب في أقرب وقت.</p>
-            <br/>
-            <p>منصة عطاء 🤝</p>
-          </div>
-        `,
+        subject: emailSubject,
+        html:    emailTemplate({ charityName: donation.charityId.charityName, days: daysThreshold }),
       });
       console.log(`[DonationReminder] 📧 Email sent to ${charityUser.email}`);
     }
@@ -77,8 +81,3 @@ export const sendPendingDonationReminders = async () => {
 
   console.log(`[DonationReminder] ✅ Sent ${notificationsToCreate.length} reminders.`);
 };
-
-
-
-
-
