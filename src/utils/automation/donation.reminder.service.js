@@ -4,12 +4,12 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 import { sendEmails } from "../sendemails/sendemail.nodemailer.js";
 
 export const sendPendingDonationReminders = async ({
-  daysThreshold = 1,
-  notificationContent = ({ days, type, quantity }) =>
-    `لديك تبرع معلق بـ ${quantity} قطعة من "${type}" منذ أكثر من ${days} ${days === 1 ? "يوم" : "أيام"}، يرجى مراجعته واتخاذ الإجراء المناسب.`,
-  emailSubject = ({ days }) =>
-    `⏳ تذكير: لديك تبرع معلق منذ أكثر من ${days} ${days === 1 ? "يوم" : "أيام"} — منصة عطاء`,
-  emailTemplate = ({ charityName, donorName, type, quantity, size, condition, dateDonation, days }) => {
+  hoursThreshold = 1,
+  notificationContent = ({ hours, type, quantity }) =>
+    `لديك تبرع معلق بـ ${quantity} قطعة من "${type}" منذ أكثر من ${hours} ${hours === 1 ? "ساعة" : "ساعات"}، يرجى مراجعته واتخاذ الإجراء المناسب.`,
+  emailSubject = ({ hours }) =>
+    `⏳ تذكير: لديك تبرع معلق منذ أكثر من ${hours} ${hours === 1 ? "ساعة" : "ساعات"} — منصة عطاء`,
+  emailTemplate = ({ charityName, donorName, type, quantity, size, condition, dateDonation, hours }) => {
     const donationDate = new Date(dateDonation).toLocaleDateString("ar-EG", {
       year:  "numeric",
       month: "long",
@@ -30,7 +30,7 @@ export const sendPendingDonationReminders = async ({
         <p style="font-size: 16px; color: #212121;">جمعية <strong>${charityName}</strong>،</p>
         <p style="font-size: 15px; color: #424242; line-height: 1.8;">
           نود إعلامكم بأن المتبرع <strong>${donorName}</strong> أرسل تبرعًا بانتظار مراجعتكم منذ أكثر من
-          <strong>${days} ${days === 1 ? "يوم" : "أيام"}</strong>.
+          <strong>${hours} ${hours === 1 ? "ساعة" : "ساعات"}</strong>.
           يرجى اتخاذ الإجراء المناسب في أقرب وقت.
         </p>
         <div style="background-color: #f9f9f9; border-right: 4px solid #2e7d32; border-radius: 8px; padding: 16px 20px; margin: 24px 0;">
@@ -78,9 +78,8 @@ export const sendPendingDonationReminders = async ({
   },
 } = {}) => {
 
-  // ✅ التبرعات الـ pending اللي فات عليها daysThreshold يوم أو أكتر
   const thresholdDate = new Date();
-  thresholdDate.setDate(thresholdDate.getDate() - daysThreshold);
+  thresholdDate.setHours(thresholdDate.getHours() - hoursThreshold);
 
   const staleDonations = await donationModel
     .find({
@@ -88,7 +87,7 @@ export const sendPendingDonationReminders = async ({
       isReminderSent: { $ne: true },
       createdAt:      { $lte: thresholdDate },
     })
-    .populate("charityId", "userId charityName email") // ✅ email موجود في Charity مباشرة
+    .populate("charityId", "userId charityName email")
     .populate("donorId",   "userName")
     .lean();
 
@@ -103,8 +102,8 @@ export const sendPendingDonationReminders = async ({
   const donationIdsToUpdate   = [];
 
   for (const donation of staleDonations) {
-    const charityEmail = donation.charityId?.email;
-    const charityName  = donation.charityId?.charityName;
+    const charityEmail  = donation.charityId?.email;
+    const charityName   = donation.charityId?.charityName;
     const charityUserId = donation.charityId?.userId;
 
     if (!charityEmail || !charityUserId) {
@@ -118,7 +117,7 @@ export const sendPendingDonationReminders = async ({
       userId:     charityUserId,
       donationId: donation._id,
       content:    notificationContent({
-        days:     daysThreshold,
+        hours:    hoursThreshold,
         type:     donation.type,
         quantity: donation.quantity,
       }),
@@ -129,7 +128,7 @@ export const sendPendingDonationReminders = async ({
 
     await sendEmails({
       to:      charityEmail,
-      subject: emailSubject({ days: daysThreshold }),
+      subject: emailSubject({ hours: hoursThreshold }),
       html:    emailTemplate({
         charityName,
         donorName,
@@ -138,7 +137,7 @@ export const sendPendingDonationReminders = async ({
         size:         donation.size,
         condition:    donation.condition,
         dateDonation: donation.dateDonation || donation.createdAt,
-        days:         daysThreshold,
+        hours:        hoursThreshold,
       }),
     });
 
