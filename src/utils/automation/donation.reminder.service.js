@@ -62,18 +62,29 @@ const buildEmailTemplate = ({ charityName, donorName, type, quantity, size, cond
     </div>`;
 };
 
+// ==================== Populate Helper ====================
+const charityPopulate = {
+  path:     "charityId",
+  select:   "userId charityName",
+  populate: {
+    path:   "userId",
+    select: "email userName",
+  },
+};
+
 // ==================== Process Donations ====================
 const processDonations = async ({ donations, isFinal, now }) => {
   const notificationsToCreate = [];
   const idsToUpdate           = [];
 
   await Promise.all(donations.map(async (donation) => {
-    const charityEmail  = donation.charityId?.email;
+    // ✅ إيميل الـ user بتاع الجمعية مش إيميل الجمعية
+    const charityEmail  = donation.charityId?.userId?.email;
     const charityName   = donation.charityId?.charityName;
-    const charityUserId = donation.charityId?.userId;
+    const charityUserId = donation.charityId?.userId?._id;
 
     if (!charityEmail || !charityUserId) {
-      console.warn(`[DonationReminder] ⚠️ Donation ${donation._id} — missing charity data. Skipping.`);
+      console.warn(`[DonationReminder] ⚠️ Donation ${donation._id} — missing charity user data. Skipping.`);
       return;
     }
 
@@ -125,14 +136,14 @@ export const sendPendingDonationReminders = async () => {
     donationModel.find({
       status: donationStatus.pending,
       $or: [
-        { reminderStatus: "none" },
-        { reminderStatus: { $exists: false } }, // ✅ التبرعات القديمة
-        { reminderStatus: null },               // ✅ لو قيمتها null
+        { reminderStatus: "none"            },
+        { reminderStatus: { $exists: false }},
+        { reminderStatus: null              },
       ],
       createdAt: { $gte: minDate, $lte: maxDate },
     })
-    .populate("charityId", "userId charityName email")
-    .populate("donorId",   "userName")
+    .populate(charityPopulate)
+    .populate("donorId", "userName")
     .lean(),
 
     donationModel.find({
@@ -140,8 +151,8 @@ export const sendPendingDonationReminders = async () => {
       reminderStatus: "reminder_sent",
       createdAt:      { $lte: threeDaysAgo },
     })
-    .populate("charityId", "userId charityName email")
-    .populate("donorId",   "userName")
+    .populate(charityPopulate)
+    .populate("donorId", "userName")
     .lean(),
   ]);
 
