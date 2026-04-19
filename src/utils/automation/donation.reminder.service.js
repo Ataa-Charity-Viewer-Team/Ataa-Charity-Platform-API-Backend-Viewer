@@ -78,7 +78,6 @@ const processDonations = async ({ donations, isFinal, now }) => {
   const idsToUpdate           = [];
 
   await Promise.all(donations.map(async (donation) => {
-    // ✅ إيميل الـ user بتاع الجمعية مش إيميل الجمعية
     const charityEmail  = donation.charityId?.userId?.email;
     const charityName   = donation.charityId?.charityName;
     const charityUserId = donation.charityId?.userId?._id;
@@ -128,24 +127,25 @@ const processDonations = async ({ donations, isFinal, now }) => {
 // ==================== Main Function ====================
 export const sendPendingDonationReminders = async () => {
   const now          = new Date();
-  const minDate      = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-  const maxDate      = new Date(now.getTime() - 1 * 60 * 1000);
+  const maxDate      = new Date(now.getTime() - 1 * 60 * 1000);       // ✅ دقيقة للخلف
   const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
 
   const [staleDonations, finalWarningDonations] = await Promise.all([
+    // ✅ كل التبرعات المعلقة اللي لسه ما اتبعتلهاش reminder — بدون حد زمني
     donationModel.find({
       status: donationStatus.pending,
       $or: [
-        { reminderStatus: "none"            },
-        { reminderStatus: { $exists: false }},
-        { reminderStatus: null              },
+        { reminderStatus: "none"             },
+        { reminderStatus: { $exists: false } },
+        { reminderStatus: null               },
       ],
-      createdAt: { $gte: minDate, $lte: maxDate },
+      createdAt: { $lte: maxDate },
     })
     .populate(charityPopulate)
     .populate("donorId", "userName")
     .lean(),
 
+    // ✅ التبرعات اللي اتبعتلها reminder عادي وعدت عليها 3 أيام
     donationModel.find({
       status:         donationStatus.pending,
       reminderStatus: "reminder_sent",
