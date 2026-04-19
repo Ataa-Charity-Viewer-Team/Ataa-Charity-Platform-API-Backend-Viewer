@@ -122,7 +122,7 @@ export const sendPendingDonationReminders = async () => {
   const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
 
   const [staleDonations, finalWarningDonations] = await Promise.all([
-    // ✅ لسه ما اتبعتلهاش أي reminder
+    //  لسه ما اتبعتلهاش أي reminder
     donationModel.find({
       status:         donationStatus.pending,
       reminderStatus: "none",
@@ -132,7 +132,7 @@ export const sendPendingDonationReminders = async () => {
     .populate("donorId",   "userName")
     .lean(),
 
-    // ✅ اتبعتلها reminder عادي بس لسه ما اتبعتلهاش final
+    //  اتبعتلها reminder عادي بس لسه ما اتبعتلهاش final
     donationModel.find({
       status:         donationStatus.pending,
       reminderStatus: "reminder_sent",
@@ -162,7 +162,6 @@ export const sendPendingDonationReminders = async () => {
       ? notificationModel.insertMany(allNotifications)
       : Promise.resolve(),
 
-    // ✅ بدل isReminderSent: true
     staleResult.idsToUpdate.length
       ? donationModel.updateMany(
           { _id: { $in: staleResult.idsToUpdate } },
@@ -170,7 +169,6 @@ export const sendPendingDonationReminders = async () => {
         )
       : Promise.resolve(),
 
-    // ✅ بدل isFinalReminderSent: true
     finalResult.idsToUpdate.length
       ? donationModel.updateMany(
           { _id: { $in: finalResult.idsToUpdate } },
