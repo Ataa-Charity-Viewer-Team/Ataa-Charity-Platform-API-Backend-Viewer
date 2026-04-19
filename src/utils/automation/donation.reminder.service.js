@@ -1,4 +1,4 @@
-import { donationModel, donationStatus, reminderStatus } from "../../database/model/donation.model.js";
+import { donationModel, donationStatus } from "../../database/model/donation.model.js";
 import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
 import { sendEmails } from "../sendemails/sendemail.nodemailer.js";
 
