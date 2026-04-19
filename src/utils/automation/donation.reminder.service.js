@@ -20,9 +20,9 @@ const buildEmailTemplate = ({ charityName, donorName, type, quantity, size, cond
     ["الكمية",       `${quantity} قطعة`],
     ["المقاس",       size],
     ["الحالة",       condition],
-    ["تاريخ التبرع", new Date(dateDonation).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric" })],
-    ["الساعة",       new Date(dateDonation).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit" })],
-  ];
+  ["تاريخ التبرع", new Date(dateDonation).toLocaleDateString("ar-EG", 
+    { year: "numeric", month: "long", day: "numeric", timeZone: "Africa/Cairo" })],
+  ["الساعة",  new Date(dateDonation).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Cairo" })],  ];
 
   const tableRows = rows.map(([label, value]) => `
     <tr style="border-bottom:1px solid #eee;">
