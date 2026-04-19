@@ -84,7 +84,7 @@ src/
 | Error Handling        | Custom Middleware    | Centralized Error Handling                   |
 | API Features          | Pagination System    | Data Pagination & Filtering                  |
 | API Features          | RESTful API          | Standard API Design                          |
-=======
+
 - Joi
   Strong validation layer to ensure request data integrity and prevent invalid inputs.
 
