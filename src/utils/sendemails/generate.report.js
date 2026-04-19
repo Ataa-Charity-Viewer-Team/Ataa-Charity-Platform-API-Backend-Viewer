@@ -29,12 +29,12 @@ export const generateAdminReportHTML = ({
   <div class="body">
     <p style="color:#555;font-size:14px;">البيانات المباشرة من قاعدة البيانات:</p>
     <div class="grid">
-      <div class="card"><div class="n">${totalUsers}</div><div class="l">👤 المستخدمون</div></div>
-      <div class="card"><div class="n">${totalCharities}</div><div class="l">🏛️ الجمعيات</div></div>
-      <div class="card"><div class="n">${totalDonations}</div><div class="l">🎁 إجمالي التبرعات</div></div>
-      <div class="card warn"><div class="n">${pendingDonations}</div><div class="l">⏳ معلّقة</div></div>
-      <div class="card ok"><div class="n">${acceptedDonations}</div><div class="l">✅ مقبولة</div></div>
-      <div class="card bad"><div class="n">${rejectedDonations}</div><div class="l">❌ مرفوضة</div></div>
+<div class="card"><div class="n">${totalUsers}</div><div class="l">👤 عدد المستخدمين</div></div>
+<div class="card"><div class="n">${totalCharities}</div><div class="l">🏛️ عدد الجمعيات</div></div>
+<div class="card"><div class="n">${totalDonations}</div><div class="l">🎁 إجمالي التبرعات</div></div>
+<div class="card warn"><div class="n">${pendingDonations}</div><div class="l">⏳ تبرعات قيد المراجعة</div></div>
+<div class="card ok"><div class="n">${acceptedDonations}</div><div class="l">✅ تبرعات تم قبولها</div></div>
+<div class="card bad"><div class="n">${rejectedDonations}</div><div class="l">❌ تبرعات تم رفضها</div></div>
     </div>
   </div>
   <div class="ftr">إيميل تلقائي من منصة عطاء — كل 3 أيام</div>
