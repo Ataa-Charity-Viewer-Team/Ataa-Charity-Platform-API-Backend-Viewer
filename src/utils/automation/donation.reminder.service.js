@@ -1,7 +1,6 @@
 // ===================== Donation Reminder Service =====================
 import { donationModel, donationStatus } from "../../database/model/donation.model.js";
 import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
-import { userModel } from "../../database/model/user.model.js";
 import { sendEmails } from "../sendemails/sendemail.nodemailer.js";
 
 export const sendPendingDonationReminders = async ({
@@ -94,8 +93,15 @@ export const sendPendingDonationReminders = async ({
       isReminderSent: { $ne: true },
       createdAt:      { $lte: thresholdDate },
     })
-    .populate("charityId", "userId charityName")
-    .populate("donorId",   "userName email")
+    .populate({
+      path:     "charityId",
+      select:   "userId charityName",
+      populate: {
+        path:   "userId",
+        select: "email",
+      },
+    })
+    .populate("donorId", "userName")
     .lean();
 
   if (!staleDonations.length) {
@@ -114,10 +120,16 @@ export const sendPendingDonationReminders = async ({
       continue;
     }
 
-    const donorName = donation.donorId?.userName || "متبرع";
+    const donorName   = donation.donorId?.userName          || "متبرع";
+    const charityEmail = donation.charityId?.userId?.email;
+
+    if (!charityEmail) {
+      console.warn(`[DonationReminder] ⚠️ Donation ${donation._id} — charity email missing. Skipping.`);
+      continue;
+    }
 
     notificationsToCreate.push({
-      userId:     donation.charityId.userId,
+      userId:     donation.charityId.userId._id,
       donationId: donation._id,
       content:    notificationContent({
         days:     daysThreshold,
@@ -129,27 +141,22 @@ export const sendPendingDonationReminders = async ({
 
     donationIdsToUpdate.push(donation._id);
 
-    const charityUser = await userModel
-      .findById(donation.charityId.userId, "email")
-      .lean();
+    await sendEmails({
+      to:      charityEmail,
+      subject: emailSubject({ days: daysThreshold }),
+      html:    emailTemplate({
+        charityName:  donation.charityId.charityName,
+        donorName,
+        type:         donation.type,
+        quantity:     donation.quantity,
+        size:         donation.size,
+        condition:    donation.condition,
+        dateDonation: donation.dateDonation || donation.createdAt,
+        days:         daysThreshold,
+      }),
+    });
 
-    if (charityUser?.email) {
-      await sendEmails({
-        to:      charityUser.email,
-        subject: emailSubject({ days: daysThreshold }),
-        html:    emailTemplate({
-          charityName:  donation.charityId.charityName,
-          donorName,
-          type:         donation.type,
-          quantity:     donation.quantity,
-          size:         donation.size,
-          condition:    donation.condition,
-          dateDonation: donation.dateDonation || donation.createdAt,
-          days:         daysThreshold,
-        }),
-      });
-      console.log(`[DonationReminder] 📧 Email sent to ${charityUser.email}`);
-    }
+    console.log(`[DonationReminder] 📧 Email sent to ${charityEmail}`);
   }
 
   if (!notificationsToCreate.length) return;
