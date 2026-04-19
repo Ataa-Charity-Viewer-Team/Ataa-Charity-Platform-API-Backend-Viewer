@@ -117,21 +117,24 @@ const processDonations = async ({ donations, isFinal, now }) => {
 // ==================== Main Function ====================
 export const sendPendingDonationReminders = async () => {
   const now          = new Date();
+  const minDate      = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
+  const maxDate      = new Date(now.getTime() - 1 * 60 * 1000);
   const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
-  const minDate = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000); // 3 أيام للخلف
-const maxDate = new Date(now.getTime() - 1 * 60 * 1000);            // دقيقة للخلف
+
   const [staleDonations, finalWarningDonations] = await Promise.all([
-    //  لسه ما اتبعتلهاش أي reminder
     donationModel.find({
-      status:         donationStatus.pending,
-      reminderStatus: "none",
-      createdAt:      { $gte: minDate, $lte: maxDate },
+      status: donationStatus.pending,
+      $or: [
+        { reminderStatus: "none" },
+        { reminderStatus: { $exists: false } }, // ✅ التبرعات القديمة
+        { reminderStatus: null },               // ✅ لو قيمتها null
+      ],
+      createdAt: { $gte: minDate, $lte: maxDate },
     })
     .populate("charityId", "userId charityName email")
     .populate("donorId",   "userName")
     .lean(),
 
-    //  اتبعتلها reminder عادي بس لسه ما اتبعتلهاش final
     donationModel.find({
       status:         donationStatus.pending,
       reminderStatus: "reminder_sent",
