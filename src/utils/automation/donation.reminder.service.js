@@ -22,21 +22,17 @@ export const sendPendingDonationReminders = async ({
 
     return `
       <div style="font-family: Arial, sans-serif; direction: rtl; padding: 32px; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 12px; background-color: #ffffff;">
-
         <div style="text-align: center; margin-bottom: 24px;">
           <h1 style="color: #2e7d32; font-size: 24px; margin: 0;">منصة عطاء 🤝</h1>
           <p style="color: #757575; font-size: 13px; margin: 6px 0 0;">تذكير تلقائي — تبرع معلق</p>
         </div>
-
         <hr style="border: none; border-top: 1px solid #e0e0e0; margin-bottom: 24px;" />
-
         <p style="font-size: 16px; color: #212121;">جمعية <strong>${charityName}</strong>،</p>
         <p style="font-size: 15px; color: #424242; line-height: 1.8;">
           نود إعلامكم بأن المتبرع <strong>${donorName}</strong> أرسل تبرعًا بانتظار مراجعتكم منذ أكثر من
           <strong>${days} ${days === 1 ? "يوم" : "أيام"}</strong>.
           يرجى اتخاذ الإجراء المناسب في أقرب وقت.
         </p>
-
         <div style="background-color: #f9f9f9; border-right: 4px solid #2e7d32; border-radius: 8px; padding: 16px 20px; margin: 24px 0;">
           <h3 style="margin: 0 0 14px; font-size: 15px; color: #2e7d32;">📦 تفاصيل التبرع</h3>
           <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #424242;">
@@ -70,13 +66,10 @@ export const sendPendingDonationReminders = async ({
             </tr>
           </table>
         </div>
-
         <p style="font-size: 14px; color: #757575; line-height: 1.8;">
           للحفاظ على ثقة المتبرعين يرجى مراجعة التبرع والرد في أقرب وقت ممكن.
         </p>
-
         <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 24px 0;" />
-
         <p style="text-align: center; font-size: 12px; color: #9e9e9e; margin: 0;">
           هذا البريد أُرسل تلقائيًا من منصة عطاء — يرجى عدم الرد عليه.
         </p>
@@ -84,6 +77,8 @@ export const sendPendingDonationReminders = async ({
     `;
   },
 } = {}) => {
+
+  // ✅ التبرعات الـ pending اللي فات عليها daysThreshold يوم أو أكتر
   const thresholdDate = new Date();
   thresholdDate.setDate(thresholdDate.getDate() - daysThreshold);
 
@@ -93,15 +88,8 @@ export const sendPendingDonationReminders = async ({
       isReminderSent: { $ne: true },
       createdAt:      { $lte: thresholdDate },
     })
-    .populate({
-      path:     "charityId",
-      select:   "userId charityName",
-      populate: {
-        path:   "userId",
-        select: "email",
-      },
-    })
-    .populate("donorId", "userName")
+    .populate("charityId", "userId charityName email") // ✅ email موجود في Charity مباشرة
+    .populate("donorId",   "userName")
     .lean();
 
   if (!staleDonations.length) {
@@ -115,21 +103,19 @@ export const sendPendingDonationReminders = async ({
   const donationIdsToUpdate   = [];
 
   for (const donation of staleDonations) {
-    if (!donation.charityId?.userId) {
-      console.warn(`[DonationReminder] ⚠️ Donation ${donation._id} — charityId missing. Skipping.`);
+    const charityEmail = donation.charityId?.email;
+    const charityName  = donation.charityId?.charityName;
+    const charityUserId = donation.charityId?.userId;
+
+    if (!charityEmail || !charityUserId) {
+      console.warn(`[DonationReminder] ⚠️ Donation ${donation._id} — charity data missing. Skipping.`);
       continue;
     }
 
-    const donorName   = donation.donorId?.userName          || "متبرع";
-    const charityEmail = donation.charityId?.userId?.email;
-
-    if (!charityEmail) {
-      console.warn(`[DonationReminder] ⚠️ Donation ${donation._id} — charity email missing. Skipping.`);
-      continue;
-    }
+    const donorName = donation.donorId?.userName || "متبرع";
 
     notificationsToCreate.push({
-      userId:     donation.charityId.userId._id,
+      userId:     charityUserId,
       donationId: donation._id,
       content:    notificationContent({
         days:     daysThreshold,
@@ -145,7 +131,7 @@ export const sendPendingDonationReminders = async ({
       to:      charityEmail,
       subject: emailSubject({ days: daysThreshold }),
       html:    emailTemplate({
-        charityName:  donation.charityId.charityName,
+        charityName,
         donorName,
         type:         donation.type,
         quantity:     donation.quantity,
