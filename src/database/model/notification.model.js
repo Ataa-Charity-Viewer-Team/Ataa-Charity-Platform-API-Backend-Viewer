@@ -1,10 +1,9 @@
 import mongoose from "mongoose";
 
-export const notificationStatus = [
-  { en: "unread", ar: "غير مقروء" },
-  { en: "read", ar: "مقروء" },
-];
-
+export const notificationStatus = {
+  unread: "unread",
+  read: "read",
+};
 export const notificationSchema = new mongoose.Schema(
   {
     userId: {
@@ -19,7 +18,7 @@ export const notificationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "unread",
+      default: notificationStatus.unread,
       required: true,
     },
     content: {

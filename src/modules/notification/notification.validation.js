@@ -4,7 +4,7 @@ import { monggoseID } from "../../middleware/validation.middleware.js";
 export const NOTIFICATION_STATUS = [
   { en: "unread", ar: "غير مقروء" },
   { en: "read", ar: "مقروء" },
-];
+  ];
 
 export const updatenotificationSchema = joi.object({
   id: monggoseID("Notification ID").required(),
