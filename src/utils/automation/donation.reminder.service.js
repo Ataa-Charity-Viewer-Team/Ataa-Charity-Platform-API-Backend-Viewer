@@ -20,9 +20,9 @@ const buildEmailTemplate = ({ charityName, donorName, type, quantity, size, cond
     ["الكمية",       `${quantity} قطعة`],
     ["المقاس",       size],
     ["الحالة",       condition],
-  ["تاريخ التبرع", new Date(dateDonation).toLocaleDateString("ar-EG", 
-    { year: "numeric", month: "long", day: "numeric", timeZone: "Africa/Cairo" })],
-  ["الساعة",  new Date(dateDonation).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Cairo" })],  ];
+    ["تاريخ التبرع", new Date(dateDonation).toLocaleDateString("ar-EG", { year: "numeric", month: "long", day: "numeric", timeZone: "Africa/Cairo" })],
+    ["الساعة",       new Date(dateDonation).toLocaleTimeString("ar-EG", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Cairo" })],
+  ];
 
   const tableRows = rows.map(([label, value]) => `
     <tr style="border-bottom:1px solid #eee;">
@@ -104,13 +104,15 @@ const processDonations = async ({ donations, isFinal, now }) => {
         }),
       });
 
+      // ✅ استخدم notificationStatus[0].en بدل notificationStatus.unread
       notificationsToCreate.push({
-        userId:     charityUserId,
-        donationId: donation._id,
+        userId:           charityUserId,
+        donationId:       donation._id,
         content: isFinal
           ? `⚠️ آخر تذكير — تبرع "${donation.type}" معلق منذ 3 أيام.`
           : `لديك تبرع معلق بـ ${donation.quantity} قطعة من "${donation.type}" منذ ${timeAgoText(hoursAgo)}، يرجى مراجعته.`,
-        status: notificationStatus.unread,
+        status:           "unread",
+        dateNotification: new Date(),
       });
 
       idsToUpdate.push(donation._id);
@@ -127,11 +129,16 @@ const processDonations = async ({ donations, isFinal, now }) => {
 // ==================== Main Function ====================
 export const sendPendingDonationReminders = async () => {
   const now          = new Date();
-  const maxDate      = new Date(now.getTime() - 1 * 60 * 1000);       // ✅ دقيقة للخلف
+  const maxDate      = new Date(now.getTime() - 1 * 60 * 1000);
   const threeDaysAgo = new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000);
 
+  // ✅ صلّح التبرعات القديمة اللي مفيهاش reminderStatus
+  await donationModel.updateMany(
+    { reminderStatus: { $exists: false } },
+    { $set: { reminderStatus: "none" } }
+  );
+
   const [staleDonations, finalWarningDonations] = await Promise.all([
-    // ✅ كل التبرعات المعلقة اللي لسه ما اتبعتلهاش reminder — بدون حد زمني
     donationModel.find({
       status: donationStatus.pending,
       $or: [
@@ -144,7 +151,6 @@ export const sendPendingDonationReminders = async () => {
     .populate("donorId", "userName")
     .lean(),
 
-    // ✅ التبرعات اللي اتبعتلها reminder عادي وعدت عليها 3 أيام
     donationModel.find({
       status:         donationStatus.pending,
       reminderStatus: "reminder_sent",
