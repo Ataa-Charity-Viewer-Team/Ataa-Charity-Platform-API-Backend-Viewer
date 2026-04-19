@@ -45,31 +45,15 @@ The project leverages a carefully selected set of modern backend technologies an
 ----------------------------------------
 
 🧾 Validation & Data Integrity
-
-<<<<<<< HEAD
-```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
-npm install
-npm run dev
-PORT=
-DB_URL=
-JWT_SECRET=
-CLOUDINARY_CLOUD_NAME=
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-EMAIL_USER=
-EMAIL_PASS=
-GROQ_API_KEY=
 src/
+ ├── cron/
  ├── modules/
+ ├── models/
  ├── middleware/
  ├── database/
  ├── utils/
  └── index.js
-
-
-
+ └── app.controller.js
 
 
 ## 🛠 Full Tech Stack & Tools
@@ -100,7 +84,7 @@ src/
 | Error Handling        | Custom Middleware    | Centralized Error Handling                   |
 | API Features          | Pagination System    | Data Pagination & Filtering                  |
 | API Features          | RESTful API          | Standard API Design                          |
-=======
+
 - Joi
   Strong validation layer to ensure request data integrity and prevent invalid inputs.
 
@@ -200,4 +184,3 @@ Unlike basic academic projects, this system is designed to simulate a real-world
 - Clean and scalable code structure
 - ------------------------------------------------
 https://ataa-charity-platform.vercel.app
->>>>>>> 5cf68579d5dd09e476f777e76c3d89de9fb09e56
