@@ -14,6 +14,7 @@ router.get("/stats", authAction, authorization(charityEndpoint.getStats), asyncH
 router.get("/donations", authAction, authorization(charityEndpoint.getCharityDonations), asyncHandler(charityService.getCharityDonations));
 // ====================== get requests ======================
 router.get("/requests", authAction, authorization(charityEndpoint.getCharityRequests), asyncHandler(charityService.getCharityRequests));
-// ======================  ======================
-router.get("/acceptedDonations", authAction, authorization(charityEndpoint.getAcceptedDonations), asyncHandler(charityService.getCharityDonations));
+// ====================== update request status ======================
+router.patch("/request/:id", authAction, authorization(charityEndpoint.updateRequestStatus), validation(dashboardValidation.updateRequestStatusSchema), asyncHandler(charityService.updateRequestStatus));
+
 export default router;
