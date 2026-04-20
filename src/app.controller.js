@@ -44,9 +44,6 @@ export const bootstrap = async (app, express) => {
   app.use("/notification", notificationRouter);
   // ======================= import error handlers ============================
   app.use(notFoundHandler);
-
-
-
   // =============================== global error ====================
   app.use(globalErrorHandler);
 }
