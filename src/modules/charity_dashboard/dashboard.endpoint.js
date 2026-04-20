@@ -3,5 +3,5 @@ export const charityEndpoint = {
   getStats: [roles.charity],
   getCharityDonations: [roles.charity],
   getCharityRequests: [roles.charity],
-  updateRequestStatus: [roles.charity]
+  getAcceptedDonations: [roles.charity],
 }

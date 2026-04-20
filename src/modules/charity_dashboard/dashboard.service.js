@@ -23,7 +23,7 @@ export const getCharityDonations = async (req, res, next) => {
   const charity = await charityModel.findOne({ userId: user._id });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
-  const data = await advancedPagination(donationModel, { charityId: charity._id });
+  const data = await advancedPagination(donationModel, { charityId: charity._id,  charityId: charity._id, status: { $ne: donationStatus.accepted } });
   return res.status(200).json({ success: true, data });
 };
 
@@ -36,37 +36,13 @@ export const getCharityRequests = async (req, res, next) => {
   const data = await advancedPagination(donationModel, { charityId: charity._id, status: donationStatus.pending });
   return res.status(200).json({ success: true, data });
 };
+// ===================== 4) get donations ================================
 
-// ===================== 4) Update Request Status ================================
-export const updateRequestStatus = async (req, res, next) => {
-  const { id } = req.params;
+export const getCharityDonations = async (req, res, next) => {
   const { user } = req;
-  const { status } = req.body;
-
   const charity = await charityModel.findOne({ userId: user._id });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
-  const request = await donationModel.findOne({ _id: id, charityId: charity._id });
-  if (!request) return next(new Error("Request not found", { cause: 404 }));
-
-  if (request.status === donationStatus.accepted) {
-    return next(new Error("Already accepted", { cause: 400 }));
-  }
-
-  const updatedRequest = await donationModel.findByIdAndUpdate(
-    id,
-    { status },
-    { new: true });
-
-  await notificationModel.create({
-    userId: request.donorId,
-    DonationId: request._id,
-    content: `Your donation request has been ${status}`,
-    status: notificationStatus.unread
-  });
-  return res.status(200).json({
-    success: true,
-    message: "Request updated successfully",
-    request: updatedRequest,
-  });
+  const data = await advancedPagination(donationModel, { charityId: charity._id, status: donationStatus.accepted });
+  return res.status(200).json({ success: true, data });
 };
