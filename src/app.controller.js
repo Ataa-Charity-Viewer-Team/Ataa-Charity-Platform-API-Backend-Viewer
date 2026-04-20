@@ -11,7 +11,6 @@ import evalutionRouter from "./modules/evaluation/evalution.controller.js"
 import reportRouter from "./modules/report/report.controller.js"
 import aiRouter from "./modules/ai/ai.controller.js"
 import limiter from "./middleware/express.limit.middleware.js";
-import adminRouter from "./modules/admin/admin.controller.js";
 import helmet from "helmet";
 import notificationRouter from "./modules/notification/notification.controller.js";
 import cors from "cors"
@@ -43,7 +42,6 @@ export const bootstrap = async (app, express) => {
   app.use("/report", reportRouter);
   app.use("/ai", aiRouter);
   app.use("/notification", notificationRouter);
-  app.use("/admin", adminRouter);
   // ======================= import error handlers ============================
   app.use(notFoundHandler);
 
