@@ -5,17 +5,14 @@ import mongoose from "mongoose";
 export const roles = {
   user: "user",
   charity: "charity",
-  admin: "admin"};
+  admin: "admin",
+};
 
 // ==================== User Schema ====================
 const userSchema = new mongoose.Schema(
   {
-        userName: {
+    userName: {
       type: String,
-      match: [
-        /^[a-zA-Z\u0621-\u064A][^#&<>"~;$^%{}]{2,29}$/,
-        "Username must contain only letters and valid characters"
-      ],
       required: [true, "Name is required"],
       minlength: [3, "Name must be at least 3 characters"],
       maxlength: [30, "Name must not exceed 30 characters"],
@@ -24,9 +21,6 @@ const userSchema = new mongoose.Schema(
 
     email: {
       type: String,
-      match: [
-     /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|edu)$/,"Invalid email format",
-      ],
       required: [true, "Email is required"],
       unique: true,
       lowercase: true,
@@ -64,13 +58,35 @@ const userSchema = new mongoose.Schema(
       enum: Object.values(roles),
       default: roles.user,
     },
-  passwordChangedAt: {
-  type: Date
-},
-licenseNumber: {
-  type: String,
-  trim: true,
-},
+
+    passwordChangedAt: {
+      type: Date,
+    },
+
+    // ✅ unique + sparse عشان non-charity يبقى null من غير مشكلة
+    // ✅ الـ format validation بيتعمل في Joi مش هنا
+    licenseNumber: {
+      type: String,
+      trim: true,
+      unique: true,
+      sparse: true,
+      required: function () {
+        return this.roleType === roles.charity;
+      },
+    },
+
+    // ✅ unique + sparse عشان non-admin يبقى null من غير مشكلة
+    // ✅ بيتشفر في الـ controller قبل الـ save
+    // ✅ الـ format validation بيتعمل في Joi مش هنا
+    nationalId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+      required: function () {
+        return this.roleType === roles.admin;
+      },
+    },
   },
   {
     timestamps: true,

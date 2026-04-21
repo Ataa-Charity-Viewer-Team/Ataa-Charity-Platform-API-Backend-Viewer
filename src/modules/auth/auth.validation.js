@@ -5,9 +5,10 @@ import joi from "joi";
 const nameRegex = /^[a-zA-Z\u0621-\u064A][^#&<>"~;$^%{}]{2,29}$/;
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 const phoneRegex = /^(002|\+2)?01[0125][0-9]{8}$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|edu)$/
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|edu)$/;
 const licenseRegex = /^(?=.{6,20}$)[A-Z0-9]{2,5}[-]?[A-Z0-9]{3,10}[-]?[0-9]{2,6}$/;
-const roles=["user","charity","admin"]
+const roles = ["user", "charity", "admin"];
+
 // ==================== 1) Register ====================
 export const registerSchema = joi.object({
   userName: joi
@@ -22,11 +23,12 @@ export const registerSchema = joi.object({
       "string.min": "Name must be at least 3 characters",
       "string.max": "Name must not exceed 30 characters",
       "string.pattern.base": "Name must contain only letters and valid characters",
-      "any.required": "Name is required"}),
+      "any.required": "Name is required",
+    }),
 
   email: joi
     .string()
-    .pattern(emailRegex) 
+    .pattern(emailRegex)
     .lowercase()
     .trim()
     .required()
@@ -54,8 +56,7 @@ export const registerSchema = joi.object({
     .messages({
       "string.empty": "Password is required",
       "string.min": "Password must be at least 8 characters",
-      "string.pattern.base":
-        "Password must contain uppercase, lowercase, and number",
+      "string.pattern.base": "Password must contain uppercase, lowercase, and number",
       "any.required": "Password is required",
     }),
 
@@ -81,21 +82,48 @@ export const registerSchema = joi.object({
       "string.max": "Address must not exceed 100 characters",
       "any.required": "Address is required",
     }),
-    roleType: joi
+
+  roleType: joi
     .string()
     .valid(...roles)
-    .default('user')
+    .default("user")
     .messages({
-      "any.only": "Role must be user, charity, or admin"
-}),
-licenseNumber: joi.when("roleType", {
-  is: "charity",
-  then: joi.string().pattern(licenseRegex).required().messages({
-    "any.required": "License number is required for charity",
-    "string.pattern.base": "Invalid license format"
+      "any.only": "Role must be user, charity, or admin",
+    }),
+
+  // ✅ مطلوب فقط لـ charity — الـ format بيتتحقق منه هنا مش في الـ Schema
+  licenseNumber: joi.when("roleType", {
+    is: "charity",
+    then: joi
+      .string()
+      .trim()
+      .pattern(licenseRegex)
+      .required()
+      .messages({
+        "string.empty": "License number is required",
+        "string.pattern.base": "Invalid license number format",
+        "any.required": "License number is required for charity",
+      }),
+    otherwise: joi.forbidden(),
   }),
-  otherwise: joi.forbidden()
-})});
+
+  // ✅ مطلوب فقط لـ admin — الـ format بيتتحقق منه هنا مش في الـ Schema
+  // ✅ بيتشفر في الـ controller بعد الـ validation
+  nationalId: joi.when("roleType", {
+    is: "admin",
+    then: joi
+      .string()
+      .pattern(/^\d{14}$/)
+      .required()
+      .messages({
+        "string.empty": "National ID is required",
+        "string.pattern.base": "National ID must be exactly 14 digits",
+        "any.required": "National ID is required for admin",
+      }),
+    otherwise: joi.forbidden(),
+  }),
+});
+
 // ==================== 2) Login ====================
 export const loginSchema = joi.object({
   email: joi
@@ -196,7 +224,7 @@ export const resetPasswordSchema = joi.object({
       "string.empty": "Password is required",
       "string.min": "Password must be at least 8 characters",
       "string.pattern.base": "Invalid password format",
-      "any.required": "Password is required"
+      "any.required": "Password is required",
     }),
 
   confirmPassword: joi
