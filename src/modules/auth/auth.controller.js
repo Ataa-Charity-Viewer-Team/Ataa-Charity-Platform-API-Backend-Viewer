@@ -20,3 +20,5 @@ router.post("/resetPassword", validation(authValidation.resetPasswordSchema), as
 router.post("/refreshToken", validation(authValidation.refreshTokenSchema), asyncHandler(authService.refreshToken))
 
 export default router
+
+
