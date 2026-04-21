@@ -91,7 +91,6 @@ export const registerSchema = joi.object({
       "any.only": "Role must be user, charity, or admin",
     }),
 
-  // ✅ مطلوب فقط لـ charity — الـ format بيتتحقق منه هنا مش في الـ Schema
   licenseNumber: joi.when("roleType", {
     is: "charity",
     then: joi
@@ -107,8 +106,6 @@ export const registerSchema = joi.object({
     otherwise: joi.forbidden(),
   }),
 
-  // ✅ مطلوب فقط لـ admin — الـ format بيتتحقق منه هنا مش في الـ Schema
-  // ✅ بيتشفر في الـ controller بعد الـ validation
   nationalId: joi.when("roleType", {
     is: "admin",
     then: joi

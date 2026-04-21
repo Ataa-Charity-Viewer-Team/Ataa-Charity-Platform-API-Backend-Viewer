@@ -17,7 +17,10 @@ export const registerAccount = async (req, res, next) => {
   if (existingUser) {
     return next(new Error("Email already exists", { cause: 409 }));
   }
-
+  // hash nationalId
+  if (req.body.nationalId) {
+    req.body.nationalId = encryptPhone({ plainText: req.body.nationalId });
+  }
 
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
