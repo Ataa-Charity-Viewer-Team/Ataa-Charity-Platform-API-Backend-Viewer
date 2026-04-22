@@ -1,23 +1,48 @@
-// ==================== Import Mongoose Framework ======================
 import mongoose from "mongoose";
 
-// ==================== Donation Size ======================
-export const donationSize = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
-export const donationCondition = [
-  "جديدة",
-  "مقبولة",
-  "جيدة",
-  "ممتازة"
-];
-export const reminderStatus=["none","reminder_sent","final_sent"];
-// ==================== Donation Status ======================
+export const donationSize      = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
+export const donationCondition = ["جديدة", "مقبولة", "جيدة", "ممتازة"];
+export const reminderStatus    = ["none", "reminder_sent", "final_sent"];
+
 export const donationStatus = {
-  pending: "pending",
+  pending:  "pending",
   accepted: "accepted",
   rejected: "rejected",
+  partial:  "partial",
 };
 
-// ==================== Donation Schema ======================
+// ==================== Item SubSchema ====================
+const itemSchema = new mongoose.Schema(
+  {
+    type: {
+      type: String,
+      required: [true, "Type is required"],
+    },
+    size: {
+      type: String,
+      enum: donationSize,
+      required: [true, "Size is required"],
+    },
+    quantity: {
+      type: Number,
+      min: [1, "Quantity must be at least 1"],
+      required: [true, "Quantity is required"],
+    },
+    condition: {
+      type: String,
+      enum: donationCondition,
+      required: [true, "Condition is required"],
+    },
+    status: {
+      type: String,
+      enum: Object.values(donationStatus),
+      default: donationStatus.pending,
+    },
+  },
+  { _id: false }
+);
+
+// ==================== Donation Schema ====================
 const donationSchema = new mongoose.Schema(
   {
     donorId: {
@@ -25,68 +50,55 @@ const donationSchema = new mongoose.Schema(
       ref: "User_Data",
       required: true,
     },
-
     charityId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Charity",
       required: true,
     },
-
-    type: {
-      type: String,
-      required: [true, "Type is required"],
+    items: {
+      type: [itemSchema],
+      validate: [(val) => val.length > 0, "At least one item is required"],
+      required: true,
     },
-
-    size: {
-      type: String,
-      enum: donationSize,
-      required: [true, "Size is required"],
-    },
-
-    quantity: {
-      type: Number,
-      min: [1, "Quantity must be at least 1"],
-      required: [true, "Quantity is required"],
-    },
-
     description: {
       type: String,
       maxlength: [500, "Description must not exceed 500 characters"],
     },
-
     imageUrl: [
       {
-        public_id: { type: String, required: true },
+        public_id:  { type: String, required: true },
         secure_url: { type: String, required: true },
       },
     ],
-
     status: {
       type: String,
       enum: Object.values(donationStatus),
       default: donationStatus.pending,
       required: true,
     },
-    condition :{
-      type: String,
-      enum: donationCondition,
-      required: [true, "Condition is required"],
-    },
     dateDonation: {
       type: Date,
       default: Date.now,
     },
-
-reminderStatus: {
-  type: String,
-  enum: reminderStatus,
-  default: "none",}, 
- },
-  {
-    timestamps: true,
-    collection: "Donation",
-  }
+    reminderStatus: {
+      type: String,
+      enum: reminderStatus,
+      default: "none",
+    },
+  },
+  { timestamps: true, collection: "Donation" }
 );
 
-// ==================== Donation Model ======================
+// ==================== Auto Calculate Status ====================
+donationSchema.pre("save", function (next) {
+  const statuses = this.items.map(i => i.status);
+
+  if (statuses.every(s => s === "accepted"))       this.status = "accepted";
+  else if (statuses.every(s => s === "rejected"))  this.status = "rejected";
+  else if (statuses.some(s => s === "accepted"))   this.status = "partial";
+  else                                              this.status = "pending";
+
+  next();
+});
+
 export const donationModel = mongoose.model("Donation", donationSchema);
