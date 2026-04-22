@@ -113,6 +113,7 @@ nationalId: joi.when("roleType", {
   then: joi
     .string()
     .pattern(nationalRegex)
+    .length(14)
     .required()
     .messages({
       "string.empty": "National ID is required",
