@@ -58,9 +58,8 @@ const userSchema = new mongoose.Schema(
       enum: Object.values(roles),
       default: roles.user,
     },
-
     passwordChangedAt: {
-      type: Date,a
+      type: Date,
     },
     licenseNumber: {
       type: String,
