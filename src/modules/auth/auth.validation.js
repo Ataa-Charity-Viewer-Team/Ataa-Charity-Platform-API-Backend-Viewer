@@ -111,7 +111,7 @@ export const registerSchema = joi.object({
     is: "admin",
     then: joi
       .string()
-      .pattern()
+      .pattern(nationalRegex)
       .required()
       .messages({
         "string.empty": "National ID is required",
