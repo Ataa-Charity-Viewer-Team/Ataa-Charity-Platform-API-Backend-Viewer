@@ -107,21 +107,20 @@ export const registerSchema = joi.object({
     otherwise: joi.forbidden(),
   }),
 
-  nationalId: joi.when("roleType", {
-    is: "admin",
-    then: joi
-      .string()
-      .pattern(nationalRegex)
-      .required()
-      .messages({
-        "string.empty": "National ID is required",
-        "string.pattern.base": "National ID must be exactly 14 digits",
-        "any.required": "National ID is required for admin",
-      }),
-    otherwise: joi.forbidden(),
-  }),
+nationalId: joi.when("roleType", {
+  is: "admin",
+  then: joi
+    .string()
+    .pattern(nationalRegex)
+    .required()
+    .messages({
+      "string.empty": "National ID is required",
+      "string.pattern.base": "Invalid National ID format",
+      "any.required": "National ID is required for admin",
+    }),
+  otherwise: joi.forbidden(),
+}),
 });
-
 // ==================== 2) Login ====================
 export const loginSchema = joi.object({
   email: joi
