@@ -48,6 +48,7 @@ const itemSchema = joi.object({
       "number.min": "Quantity must be at least 1",
       "number.integer": "Quantity must be a whole number",
     }),
+    
 
   condition: joi.string()
     .valid(...donationCondition)
