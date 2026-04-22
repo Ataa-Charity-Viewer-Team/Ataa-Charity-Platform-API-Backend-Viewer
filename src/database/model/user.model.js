@@ -60,11 +60,8 @@ const userSchema = new mongoose.Schema(
     },
 
     passwordChangedAt: {
-      type: Date,
+      type: Date,a
     },
-
-    // ✅ unique + sparse عشان non-charity يبقى null من غير مشكلة
-    // ✅ الـ format validation بيتعمل في Joi مش هنا
     licenseNumber: {
       type: String,
       trim: true,
@@ -74,10 +71,6 @@ const userSchema = new mongoose.Schema(
         return this.roleType === roles.charity;
       },
     },
-
-    // ✅ unique + sparse عشان non-admin يبقى null من غير مشكلة
-    // ✅ بيتشفر في الـ controller قبل الـ save
-    // ✅ الـ format validation بيتعمل في Joi مش هنا
     nationalId: {
       type: String,
       unique: true,

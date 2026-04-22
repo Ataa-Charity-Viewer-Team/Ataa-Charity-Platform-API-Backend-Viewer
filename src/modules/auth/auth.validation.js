@@ -7,6 +7,7 @@ const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 const phoneRegex = /^(002|\+2)?01[0125][0-9]{8}$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|edu)$/;
 const licenseRegex = /^(?=.{6,20}$)[A-Z0-9]{2,5}[-]?[A-Z0-9]{3,10}[-]?[0-9]{2,6}$/;
+const nationalRegex = /^(?:(?:2|3)\d{2})(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])(?:0[1-27-9]|[12]\d|3[0-5]|88)\d{6}$/; 
 const roles = ["user", "charity", "admin"];
 
 // ==================== 1) Register ====================
@@ -110,7 +111,7 @@ export const registerSchema = joi.object({
     is: "admin",
     then: joi
       .string()
-      .pattern(/^\d{14}$/)
+      .pattern()
       .required()
       .messages({
         "string.empty": "National ID is required",
