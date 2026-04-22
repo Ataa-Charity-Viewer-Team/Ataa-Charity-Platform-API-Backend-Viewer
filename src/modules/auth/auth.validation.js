@@ -7,8 +7,10 @@ const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 const phoneRegex = /^(002|\+2)?01[0125][0-9]{8}$/;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|edu)$/;
 const licenseRegex = /^(?=.{6,20}$)[A-Z0-9]{2,5}[-]?[A-Z0-9]{3,10}[-]?[0-9]{2,6}$/;
-const nationalRegex = /^(2\d{2}|30[0-9]|310)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|88)\d{4}[0-9]\d$/;const roles = ["user", "charity", "admin"];
 
+const nationalRegex = /^(2\d{2}|30[0-9]|310)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(0[1-9]|1[0-9]|2[0-9]|88)\d{5}$/;
+
+const roles = ["user", "charity", "admin"];
 // ==================== 1) Register ====================
 export const registerSchema = joi.object({
   userName: joi
