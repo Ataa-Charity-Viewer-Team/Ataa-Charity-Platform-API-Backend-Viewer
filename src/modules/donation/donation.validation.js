@@ -21,8 +21,10 @@ const STATUS_VALUES_EN  = Object.values(DONATION_STATUS).map(s => s.en);
 const STATUS_VALUES_AR  = Object.values(DONATION_STATUS).map(s => s.ar);
 const STATUS_VALUES_ALL = [...STATUS_VALUES_EN, ...STATUS_VALUES_AR];
 
-// ==================== Item Sub-Schema ====================
-const itemSchema = joi.object({
+// ==================== 1) Create Donation ====================
+export const createDonationSchema = joi.object({
+  charityId: monggoseID("charityId").required(),
+
   type: joi.string()
     .valid(...donationTypes.map(t => t.en), ...donationTypes.map(t => t.ar))
     .required()
@@ -39,16 +41,12 @@ const itemSchema = joi.object({
       "any.only": `Size must be one of: ${DONATION_SIZE.join(", ")}`,
     }),
 
-  quantity: joi.number()
-    .integer()
-    .min(1)
-    .required()
+  quantity: joi.number().integer().min(1).required()
     .messages({
-      "any.required": "Quantity is required",
-      "number.min": "Quantity must be at least 1",
+      "any.required":   "Quantity is required",
+      "number.min":     "Quantity must be at least 1",
       "number.integer": "Quantity must be a whole number",
     }),
-    
 
   condition: joi.string()
     .valid(...donationCondition)
@@ -57,8 +55,17 @@ const itemSchema = joi.object({
       "any.required": "Condition is required",
       "any.only": `Condition must be one of: ${donationCondition.join(", ")}`,
     }),
-});
 
+  description: joi.string().max(500).optional(),
+
+  file: checkFile(["image/jpeg", "image/png", "image/webp", "image/gif"])
+    .min(1).max(5).required()
+    .messages({
+      "array.min":    "At least 1 image is required",
+      "array.max":    "You can upload up to 5 images",
+      "any.required": "File is required",
+    }),
+});
 // ==================== 1) Create Donation ====================
 export const createDonationSchema = joi.object({
   charityId: monggoseID("charityId").required(),
