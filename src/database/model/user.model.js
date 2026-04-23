@@ -70,15 +70,15 @@ const userSchema = new mongoose.Schema(
         return this.roleType === roles.charity;
       },
     },
-    nationalId: {
-      type: String,
-      unique: true,
-      sparse: true,
-      trim: true,
-      required: function () {
-        return this.roleType === roles.admin;
-      },
-    },
+    // nationalId: {
+    //   type: String,
+    //   unique: true,
+    //   sparse: true,
+    //   trim: true,
+    //   required: function () {
+    //     return this.roleType === roles.admin;
+    //   },
+    // },
   },
   {
     timestamps: true,
