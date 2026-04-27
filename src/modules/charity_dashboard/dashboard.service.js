@@ -26,11 +26,13 @@ export const getCharityDonations = async (req, res, next) => {
 
   const data = await donationModel
     .find({ charityId: charity._id })
-    .populate("donorId", "name type imageUrl address")
-    .populate("charityId", "charityName address");
+    .populate("donorId", "name email phone imageUrl address")
+    .populate("charityId", "charityName address email")
+    .sort({ createdAt: -1 }); 
 
   return res.status(200).json({
     success: true,
+    count: data.length,
     data
   });
 };
