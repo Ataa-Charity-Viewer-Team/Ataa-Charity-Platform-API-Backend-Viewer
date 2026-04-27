@@ -8,7 +8,7 @@ import { charityEndpoint } from "./dashboard.endpoint.js";
 import { validation } from "../../middleware/validation.middleware.js";
 
 
-const router = Router({ mergeParams: true });
+const router = Router();
 //  ====================== get stats ======================
 router.get("/stats", authAction, authorization(charityEndpoint.getStats), asyncHandler(charityService.getStats));
 
