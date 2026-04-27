@@ -56,9 +56,20 @@ export const updateCharity = async (req, res, next) => {
 
 export const deleteCharity = async (req, res, next) => {
   const { id } = req.params;
-  const charity = await charityModel.findByIdAndDelete(id);
+  const { user } = req;
+
+  const charity = await charityModel.findById(id);
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));
   }
-  return res.status(200).json({ success: true, message: "Charity deleted successfully" });
+  if (charity.userId.toString() !== user._id.toString()) {
+    return next(new Error("Unauthorized", { cause: 403 }));
+  }
+
+  await charityModel.findByIdAndDelete(id);
+
+  return res.status(200).json({
+    success: true,
+    message: "Charity deleted successfully"
+  });
 };
