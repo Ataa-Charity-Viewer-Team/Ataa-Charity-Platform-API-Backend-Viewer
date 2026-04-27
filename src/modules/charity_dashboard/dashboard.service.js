@@ -20,13 +20,20 @@ export const getStats = async (req, res, next) => {
 // ===================== 2) Get Donations ================================
 export const getCharityDonations = async (req, res, next) => {
   const { user } = req;
+
   const charity = await charityModel.findOne({ userId: user._id });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
-  const data = await advancedPagination(donationModel, { charityId: charity._id });
-  return res.status(200).json({ success: true, data });
-};
+  const data = await donationModel
+    .find({ charityId: charity._id })
+    .populate("donorId", "name type imageUrl address")
+    .populate("charityId", "charityName address");
 
+  return res.status(200).json({
+    success: true,
+    data
+  });
+};
 // ===================== 3) Get Requests ================================
 export const getCharityRequests = async (req, res, next) => {
   const { user } = req;
