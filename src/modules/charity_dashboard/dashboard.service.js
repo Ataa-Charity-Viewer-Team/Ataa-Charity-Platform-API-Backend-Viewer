@@ -56,7 +56,6 @@ export const updateRequestStatus = async (req, res, next) => {
   const {user} = req;
   const { status } = req.body;
 
-  const { user } = req;
   const charity = await charityModel.findOne({ userId: user._id });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
