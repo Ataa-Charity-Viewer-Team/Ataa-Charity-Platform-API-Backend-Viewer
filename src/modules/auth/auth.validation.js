@@ -108,7 +108,7 @@ export const registerSchema = joi.object({
     otherwise: joi.forbidden(),
   }),
 
-nationalId: joi.when("roleType", {
+nationalID: joi.when("roleType", {
   is: "admin",
   then: joi
     .string()

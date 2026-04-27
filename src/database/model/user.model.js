@@ -70,7 +70,7 @@ const userSchema = new mongoose.Schema(
         return this.roleType === roles.charity;
       },
     },
-    nationalId: {
+    nationalID: {
       type: String,
       unique: true,
       sparse: true,
