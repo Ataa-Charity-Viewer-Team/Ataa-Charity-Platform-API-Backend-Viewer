@@ -29,7 +29,7 @@ export const createDonation = async (req, res, next) => {
     imageUrl.push({ public_id, secure_url });
   }
 
-  const donation = await donationModel.create({ ...req.body, donorId: user._id, imageUrl });
+  const donation = await donationModel.create({ ...req.body,charityId, donorId: user._id, imageUrl });
   return res.status(201).json({ success: true, message: "Donation created successfully", donation });
 };
 // ===================== get my donations ======================

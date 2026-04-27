@@ -7,8 +7,9 @@ import { authorization } from "../../middleware/authorization.middleware.js";
 import { charityEndpoint } from "./dashboard.endpoint.js";
 import { validation } from "../../middleware/validation.middleware.js";
 
-const router = Router();
-// ====================== get stats ======================
+
+const router = Router({ mergeParams: true });
+//  ====================== get stats ======================
 router.get("/stats", authAction, authorization(charityEndpoint.getStats), asyncHandler(charityService.getStats));
 
 router.get("/donations", authAction, authorization(charityEndpoint.getCharityDonations), asyncHandler(charityService.getCharityDonations));
