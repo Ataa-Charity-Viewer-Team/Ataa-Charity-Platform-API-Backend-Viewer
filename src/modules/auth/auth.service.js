@@ -1,6 +1,6 @@
 
 // ========================== # Auth Service and send email vercel # =======================
-import {  userModel } from "../../database/model/user.model.js";
+import {  roles, userModel } from "../../database/model/user.model.js";
 import { encryptPhone } from "../../utils/encryption/encryption.js";
 import { hashPassword, comparePassword } from "../../utils/hashing/hashing.js";
 import { createToken, verifyToken } from "../../utils/token/token.js";
@@ -12,7 +12,7 @@ import { waitUntil } from '@vercel/functions';
 
 // ===========================1) Register Account  ===========================
 export const registerAccount = async (req, res, next) => {
-  const { userName, email, phone, password, address } = req.body;
+  const { userName, email, phone, password, address, roleType } = req.body;
   const existingUser = await userModel.findOne({ email });
   if (existingUser) {
     return next(new Error("Email already exists", { cause: 409 }));
@@ -22,9 +22,9 @@ export const registerAccount = async (req, res, next) => {
     req.body.nationalID = encryptPhone({ plainText: req.body.nationalID });
   }
   // condation for charity role to have license number and charity name
- if (roleType === "charity" && !licenseNumber) {
-    return next(new Error("License number is required for charity accounts", { cause: 400 }));
-  }
+if (roleType === roles.charity && !req.body.licenseNumber) {
+  return next(new Error("License number is required for charity accounts", { cause: 400 }));
+}
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash});
