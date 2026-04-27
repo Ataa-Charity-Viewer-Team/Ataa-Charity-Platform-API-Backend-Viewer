@@ -100,7 +100,7 @@ export const createCharity = async (req, res, next) => {
   const { email, phone, userId } = req.body;
 
   // التحقق إن الـ userId بتاع charity account فعلاً
-  const charityUser = await userModel.findOne({ _id: userId, roleType: roles.charity });
+  const charityUser = await userModel.findOne({ _id: userId, roleType: roles.admin });
   if (!charityUser) {
     return next(new Error("User not found or is not a charity account", { cause: 404 }));
   }
