@@ -5,7 +5,7 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 // ===================== 1) Get Stats ===========================
 export const getStats = async (req, res, next) => {
   const {charityId} = req.params;
-  const charity = await charityModel.findOne(charityId);
+  const charity = await charityModel.findById(charityId);
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
  
   const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });
@@ -22,7 +22,7 @@ export const getStats = async (req, res, next) => {
 export const getCharityDonations = async (req, res, next) => {
   const { charityId } = req.params;
 
-  const charity = await charityModel.findOne(charityId);
+  const charity = await charityModel.findById(charityId);
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const data = await donationModel
@@ -40,7 +40,7 @@ export const getCharityDonations = async (req, res, next) => {
 // ===================== 3) Get Requests ================================
 export const getCharityRequests = async (req, res, next) => {
   const { charityId } = req.params;
-  const charity = await charityModel.findOne(charityId);
+  const charity = await charityModel.findById(charityId);
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const data = await advancedPagination(donationModel, { charityId: charity._id, status: donationStatus.pending });
@@ -52,7 +52,7 @@ export const updateRequestStatus = async (req, res, next) => {
   const { id , charityId} = req.params;
   const { status } = req.body;
 
-  const charity = await charityModel.findOne(charityId);
+  const charity = await charityModel.findById(charityId);
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const request = await donationModel.findOne({ _id: id, charityId: charity._id });
