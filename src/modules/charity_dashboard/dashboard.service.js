@@ -5,8 +5,9 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 // ===================== 1) Get Stats ================================
 export const getStats = async (req, res, next) => {
   const charity = await charityModel.findOne({ userId: req.user._id });
+  console.log(user._id);
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
-
+ 
   const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });
   const Pending_Donations = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.pending });
   const Accepted_Donations = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.accepted });
