@@ -57,6 +57,7 @@ export const updateRequestStatus = async (req, res, next) => {
   const { status } = req.body;
 
   const charity = await charityModel.findOne({ userId: user._id });
+  console.log(req.user);
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const request = await donationModel.findOne({ _id: id, charityId: charity._id });
