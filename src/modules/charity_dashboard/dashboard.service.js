@@ -4,8 +4,8 @@ import { charityModel } from "../../database/model/charity.model.js";
 import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
 // ===================== 1) Get Stats ================================
 export const getStats = async (req, res, next) => {
-  const charity = await charityModel.findOne({ userId: req.user._id });
-  console.log(user._id);
+  const { user } = req;
+  const charity = await charityModel.findOne({ userId: user._id });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
  
   const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });

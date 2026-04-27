@@ -20,13 +20,19 @@ const authAction = async (req, res, next) => {
     return next(new Error("unauthorized user not found", { cause: 401 }));
   }
 
-  jwt.verify(
-    authorization,
-    process.env.ACCESS_SECRET + user.createdAt.getTime()
-  );
-   if (decoded.iat * 1000 < user.passwordChangedAt) {
-  return next(new Error("Token expired"));
-}
+  try {
+    jwt.verify(
+      authorization,
+      process.env.ACCESS_SECRET + user.createdAt.getTime()
+    );
+  } catch (err) {
+    return next(new Error("Invalid or expired token", { cause: 401 }));
+  }
+
+  if (user.passwordChangedAt && decoded.iat * 1000 < new Date(user.passwordChangedAt).getTime()) {
+    return next(new Error("Token expired, please login again", { cause: 401 }));
+  }
+
   if (user.verify === false) {
     return next(new Error("verify your account", { cause: 401 }));
   }

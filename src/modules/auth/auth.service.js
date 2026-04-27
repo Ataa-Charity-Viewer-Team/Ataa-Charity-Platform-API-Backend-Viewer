@@ -21,7 +21,10 @@ export const registerAccount = async (req, res, next) => {
   if (req.body.nationalID) {
     req.body.nationalID = encryptPhone({ plainText: req.body.nationalID });
   }
-
+  // condation for charity role to have license number and charity name
+ if (roleType === "charity" && !licenseNumber) {
+    return next(new Error("License number is required for charity accounts", { cause: 400 }));
+  }
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash});
