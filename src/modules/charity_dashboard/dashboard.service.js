@@ -4,8 +4,9 @@ import { charityModel } from "../../database/model/charity.model.js";
 import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
 // ===================== 1) Get Stats ===========================
 export const getStats = async (req, res, next) => {
-  const {charityId} = req.params;
-  const charity = await charityModel.findById(charityId);
+  // const {charityId} = req.params;
+  const { user } = req;
+  const charity = await charityModel.findOne({ userId: user._id });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
  
   const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });
@@ -20,9 +21,9 @@ export const getStats = async (req, res, next) => {
 
 // ===================== 2) Get Donations ================================
 export const getCharityDonations = async (req, res, next) => {
-  const { charityId } = req.params;
-
-  const charity = await charityModel.findById(charityId);
+        // const { charityId } = req.params;
+  const { user } = req;
+  const charity = await charityModel.findOne({ userId: user._id });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const data = await donationModel
@@ -39,8 +40,9 @@ export const getCharityDonations = async (req, res, next) => {
 };
 // ===================== 3) Get Requests ================================
 export const getCharityRequests = async (req, res, next) => {
-  const { charityId } = req.params;
-  const charity = await charityModel.findById(charityId);
+  // const { charityId } = req.params;
+  const { user } = req;
+  const charity = await charityModel.findOne({ userId: user._id });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const data = await advancedPagination(donationModel, { charityId: charity._id, status: donationStatus.pending });
@@ -49,10 +51,13 @@ export const getCharityRequests = async (req, res, next) => {
 
 // ===================== 4) Update Request Status ================================
 export const updateRequestStatus = async (req, res, next) => {
-  const { id , charityId} = req.params;
+  // const { id , charityId} = req.params;
+  const { id } = req.params;
+  const {user} = req;
   const { status } = req.body;
 
-  const charity = await charityModel.findById(charityId);
+  const { user } = req;
+  const charity = await charityModel.findOne({ userId: user._id });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const request = await donationModel.findOne({ _id: id, charityId: charity._id });

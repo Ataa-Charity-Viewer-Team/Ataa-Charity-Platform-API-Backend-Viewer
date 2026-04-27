@@ -37,7 +37,7 @@ export const bootstrap = async (app, express) => {
   app.use("/users", userRouter);
   app.use("/donor", donationRouter);
   app.use("/charity", charityRouter);
-  app.use("/dashboard/:charityId", dashboardRouter);
+  app.use("/dashboard", dashboardRouter);
   app.use("/rating", evalutionRouter);
   app.use("/report", reportRouter);
   app.use("/ai", aiRouter);
