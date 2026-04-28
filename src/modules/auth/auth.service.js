@@ -205,11 +205,16 @@ export const registerAccount = async (req, res, next) => {
 
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash });
 if (roleType === roles.charity) {
-  await charityModel.findOneAndUpdate(
-    { email: email.toLowerCase() },
-    { userId: newUser._id }
-  );
-}  const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
+  await charityModel.create({
+    userId: newUser._id,
+    charityName,
+    email,
+    phone,
+    address,
+    description
+  });
+}
+  const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
   const sendCode = customAlphabet("0123456789", 6)();
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
   await otpModel.create({ userId: newUser._id, code: sendCode, codeType: codeOTP.activateAccount });
@@ -236,13 +241,13 @@ export const login = async (req, res, next) => {
   }
 
   const accessToken = createToken({
-    payload: { id: user._id, roleType: user.roleType,charityId: user.charityId },
+    payload: { id: user._id, roleType: user.roleType },
     secret: process.env.ACCESS_SECRET + user.createdAt.getTime(),
     options: { expiresIn: process.env.ACCESS_TOKEN }
   });
 
   const refreshToken = createToken({
-    payload: { id: user._id, roleType: user.roleType,charityId: user.charityId },
+    payload: { id: user._id, roleType: user.roleType },
     secret: process.env.REFRESH_SECRET,
     options: { expiresIn: process.env.REFRESH_TOKEN }
   });
@@ -337,7 +342,7 @@ export const refreshToken = async (req, res, next) => {
   }
 
   const newAccessToken = createToken({
-    payload: { id: user._id, roleType: user.roleType, charityId: user.charityId },
+    payload: { id: user._id, roleType: user.roleType },
     secret: process.env.ACCESS_SECRET + user.createdAt.getTime(),
     options: { expiresIn: process.env.ACCESS_TOKEN }
   });
