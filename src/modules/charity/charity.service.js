@@ -21,22 +21,6 @@ export const getCharity = async (req, res, next) => {
   return res.status(200).json({ success: true, charity });
 };
 
-// export const createCharity = async (req, res, next) => {
-//   const { email, phone } = req.body;
-//   const existing = await charityModel.findOne({ email });
-//   if (existing) {
-//     return next(new Error("Email already exists", { cause: 409 }));
-//   }
-//   const encryptedPhone = encryptPhone({ cipherText: phone });
-//   const charity = await charityModel.create({
-//     ...req.body,
-//     phone: encryptedPhone,
-//     userId: req.user._id
-//   });
-//   const result = await charityModel.findById(charity._id).select("-__v -phone");
-//   return res.status(201).json({ success: true, message: "Charity created successfully", charity: result });
-// };
-
 export const createCharity = async (req, res, next) => {
   const { email, phone } = req.body;
  
@@ -44,17 +28,12 @@ export const createCharity = async (req, res, next) => {
   if (existing) {
     return next(new Error("Email already exists", { cause: 409 }));
   }
- 
-  // const charityUser = await userModel.findById(userId);
-  // if (!charityUser || charityUser.roleType !== roles.charity) {
-  //   return next(new Error("userId must belong to a charity user", { cause: 400 }));
-  // }
- 
+  
   const encryptedPhone = encryptPhone({ cipherText: phone });
   const charity = await charityModel.create({
     ...req.body,
     phone: encryptedPhone,
-    adminId: req.user._id,
+    userId: req.user._id,
   });
  
   const result = await charityModel.findById(charity._id).select("-__v -phone");
@@ -69,8 +48,8 @@ export const updateCharity = async (req, res, next) => {
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));
   }
-if (charity.adminId?.toString() !== user._id.toString())
-      return next(new Error(" You don't have permission to update this charity", { cause: 403 }));
+if (charity.userId?.toString() !== user._id.toString())     
+   return next(new Error(" You don't have permission to update this charity", { cause: 403 }));
 
   if (phone) {
     req.body.phone = encryptPhone({ cipherText: phone });
@@ -87,8 +66,8 @@ export const deleteCharity = async (req, res, next) => {
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));
   }
-if (charity.adminId?.toString() !== user._id.toString())
-      return next(new Error(" You don't have permission to delete this charity", { cause: 403 }));
+if (charity.userId?.toString() !== user._id.toString())     
+   return next(new Error(" You don't have permission to delete this charity", { cause: 403 }));
   await charityModel.findByIdAndDelete(id);
 
   return res.status(200).json({

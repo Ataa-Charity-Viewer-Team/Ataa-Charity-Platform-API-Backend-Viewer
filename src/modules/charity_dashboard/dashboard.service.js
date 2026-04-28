@@ -6,7 +6,9 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 export const getStats = async (req, res, next) => {
   // const {charityId} = req.params;
   const { user } = req;
-  const charity = await charityModel.findOne({ userId: user._id });
+  const charity = await charityModel.findOne({
+  $or: [{ userId: user._id }, { adminId: user._id }]
+});
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
  
   const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });
@@ -23,7 +25,9 @@ export const getStats = async (req, res, next) => {
 export const getCharityDonations = async (req, res, next) => {
         // const { charityId } = req.params;
   const { user } = req;
-  const charity = await charityModel.findOne({ userId: user._id });
+  const charity = await charityModel.findOne({
+  $or: [{ userId: user._id }, { adminId: user._id }]
+});
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const data = await donationModel
@@ -42,7 +46,9 @@ export const getCharityDonations = async (req, res, next) => {
 export const getCharityRequests = async (req, res, next) => {
   // const { charityId } = req.params;
   const { user } = req;
-  const charity = await charityModel.findOne({ userId: user._id });
+  const charity = await charityModel.findOne({
+  $or: [{ userId: user._id }, { adminId: user._id }]
+});
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const data = await advancedPagination(donationModel, { charityId: charity._id, status: donationStatus.pending });
@@ -56,8 +62,9 @@ export const updateRequestStatus = async (req, res, next) => {
   const {user} = req;
   const { status } = req.body;
 
-  const charity = await charityModel.findOne({ userId: user._id });
-  console.log(req.user);
+  const charity = await charityModel.findOne({
+  $or: [{ userId: user._id }, { adminId: user._id }]
+});
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const request = await donationModel.findOne({ _id: id, charityId: charity._id });
