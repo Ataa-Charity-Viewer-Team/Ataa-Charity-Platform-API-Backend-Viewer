@@ -11,68 +11,68 @@ export const charityIdSchema = joi.object({
 });
 
 // ==================== 1) Create Charity ====================
-export const createCharitySchema = joi.object({
-  charityName: joi
-    .string()
-    .min(3)
-    .max(30)
-    .trim()
-    .required()
-    .messages({
-      "any.required": "Charity name is required",
-      "string.min": "Charity name must be at least 3 characters",
-      "string.max": "Charity name must not exceed 30 characters",
-      "string.empty": "Charity name is required",
-    }),
+// export const createCharitySchema = joi.object({
+//   charityName: joi
+//     .string()
+//     .min(3)
+//     .max(30)
+//     .trim()
+//     .required()
+//     .messages({
+//       "any.required": "Charity name is required",
+//       "string.min": "Charity name must be at least 3 characters",
+//       "string.max": "Charity name must not exceed 30 characters",
+//       "string.empty": "Charity name is required",
+//     }),
 
-  email: joi
-    .string()
-    .pattern(emailRegex)
-    .lowercase()
-    .trim()
-    .required()
-    .messages({
-      "any.required": "Email is required",
-      "string.pattern.base": "Invalid email format",
-      "string.empty": "Email is required",
-    }),
+//   email: joi
+//     .string()
+//     .pattern(emailRegex)
+//     .lowercase()
+//     .trim()
+//     .required()
+//     .messages({
+//       "any.required": "Email is required",
+//       "string.pattern.base": "Invalid email format",
+//       "string.empty": "Email is required",
+//     }),
 
-  phone: joi
-    .string()
-    .pattern(phoneRegex)
-    .required()
-    .messages({
-      "any.required": "Phone is required",
-      "string.pattern.base": "Invalid phone format",
-      "string.empty": "Phone is required",
-    }),
+//   phone: joi
+//     .string()
+//     .pattern(phoneRegex)
+//     .required()
+//     .messages({
+//       "any.required": "Phone is required",
+//       "string.pattern.base": "Invalid phone format",
+//       "string.empty": "Phone is required",
+//     }),
 
-  address: joi
-    .string()
-    .min(5)
-    .max(100)
-    .trim()
-    .required()
-    .messages({
-      "any.required": "Address is required",
-      "string.min": "Address must be at least 5 characters",
-      "string.max": "Address must not exceed 100 characters",
-      "string.empty": "Address is required",
-    }),
+//   address: joi
+//     .string()
+//     .min(5)
+//     .max(100)
+//     .trim()
+//     .required()
+//     .messages({
+//       "any.required": "Address is required",
+//       "string.min": "Address must be at least 5 characters",
+//       "string.max": "Address must not exceed 100 characters",
+//       "string.empty": "Address is required",
+//     }),
 
-  description: joi
-    .string()
-    .min(10)
-    .max(500)
-    .trim()
-    .required()
-    .messages({
-      "any.required": "Description is required",
-      "string.min": "Description must be at least 10 characters",
-      "string.max": "Description must not exceed 500 characters",
-      "string.empty": "Description is required",
-    }),
-});
+//   description: joi
+//     .string()
+//     .min(10)
+//     .max(500)
+//     .trim()
+//     .required()
+//     .messages({
+//       "any.required": "Description is required",
+//       "string.min": "Description must be at least 10 characters",
+//       "string.max": "Description must not exceed 500 characters",
+//       "string.empty": "Description is required",
+//     }),
+// });
 
 // ==================== 2) Update Charity ====================
 export const updateCharitySchema = joi

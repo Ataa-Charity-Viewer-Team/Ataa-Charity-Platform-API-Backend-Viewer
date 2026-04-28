@@ -20,21 +20,21 @@ export const getCharity = async (req, res, next) => {
   return res.status(200).json({ success: true, charity });
 };
 
-export const createCharity = async (req, res, next) => {
-  const { email, phone } = req.body;
-  const existing = await charityModel.findOne({ email });
-  if (existing) {
-    return next(new Error("Email already exists", { cause: 409 }));
-  }
-  const encryptedPhone = encryptPhone({ cipherText: phone });
-  const charity = await charityModel.create({
-    ...req.body,
-    phone: encryptedPhone,
-    userId: req.user._id
-  });
-  const result = await charityModel.findById(charity._id).select("-__v -phone");
-  return res.status(201).json({ success: true, message: "Charity created successfully", charity: result });
-};
+// export const createCharity = async (req, res, next) => {
+//   const { email, phone } = req.body;
+//   const existing = await charityModel.findOne({ email });
+//   if (existing) {
+//     return next(new Error("Email already exists", { cause: 409 }));
+//   }
+//   const encryptedPhone = encryptPhone({ cipherText: phone });
+//   const charity = await charityModel.create({
+//     ...req.body,
+//     phone: encryptedPhone,
+//     userId: req.user._id
+//   });
+//   const result = await charityModel.findById(charity._id).select("-__v -phone");
+//   return res.status(201).json({ success: true, message: "Charity created successfully", charity: result });
+// };
 
 export const updateCharity = async (req, res, next) => {
   const { id } = req.params;
