@@ -65,13 +65,8 @@ export const charitySchema = new mongoose.Schema(
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User_Data",
-    required: false,
+    required: true,
   },
-  adminId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User_Data",
-    required: false,
-  },    
   charityName: {
       type: String,
       required: [true, "Name is required"],
