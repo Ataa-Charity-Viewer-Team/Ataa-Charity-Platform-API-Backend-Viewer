@@ -16,7 +16,7 @@ console.log(user.roleType);
   const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });
   const Pending_Donations = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.pending });
   const Accepted_Donations = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.accepted });
-
+console.log(Total_Donations, Pending_Donations, Accepted_Donations, charity._id,"charityId");
   return res.status(200).json({
     success: true,
     stats: { Total_Donations, Pending_Donations, Accepted_Donations }
