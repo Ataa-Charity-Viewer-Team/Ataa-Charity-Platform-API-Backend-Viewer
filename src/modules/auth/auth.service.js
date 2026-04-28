@@ -9,6 +9,7 @@ import { sendEmails } from '../../utils/sendemails/sendemail.nodemailer.js';
 import { templet } from '../../utils/sendemails/generate.html.js';
 import { codeOTP, otpModel } from "../../database/model/otp.model.js";
 import { waitUntil } from '@vercel/functions';
+import { charityModel } from "../../database/model/charity.model.js";
 
 // ===========================1) Register Account  ===========================
 export const registerAccount = async (req, res, next) => {
