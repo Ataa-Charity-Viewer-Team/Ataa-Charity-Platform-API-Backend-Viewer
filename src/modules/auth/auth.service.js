@@ -200,13 +200,13 @@ export const registerAccount = async (req, res, next) => {
     return next(new Error("License number is required for charity accounts", { cause: 400 }));
   }
 
-  // charity لازم يكون Admin عمل الجمعية بنفس الـ email الأول
-  if (roleType === roles.charity) {
-    const charityExists = await charityModel.findOne({ email });
-    if (!charityExists) {
-      return next(new Error("No charity found with this email. Please contact the admin.", { cause: 404 }));
-    }
-  }
+  // // charity لازم يكون Admin عمل الجمعية بنفس الـ email الأول
+  // if (roleType === roles.charity) {
+  //   const charityExists = await charityModel.findOne({ email });
+  //   if (!charityExists) {
+  //     return next(new Error("No charity found with this email. Please contact the admin.", { cause: 404 }));
+  //   }
+  // }
 
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
