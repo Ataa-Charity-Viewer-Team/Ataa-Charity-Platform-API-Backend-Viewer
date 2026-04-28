@@ -62,12 +62,17 @@ import mongoose from "mongoose";
 export const charitySchema = new mongoose.Schema(
   {
     // الـ charity user اللي بيستخدم الداشبورد
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User_Data",
-      required: false,
-    },
-    charityName: {
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User_Data",
+    required: false,
+  },
+  adminId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User_Data",
+    required: false,
+  },    
+  charityName: {
       type: String,
       required: [true, "Name is required"],
       minlength: [3, "Name must be at least 3 characters"],

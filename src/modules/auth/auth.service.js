@@ -212,13 +212,12 @@ export const registerAccount = async (req, res, next) => {
   const encryptedPhone = encryptPhone({ cipherText: phone });
 
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash });
-  if (roleType === roles.charity) {
+if (roleType === roles.charity) {
   await charityModel.findOneAndUpdate(
-    { licenseNumber: req.body.licenseNumber },
+    { email: email.toLowerCase() },
     { userId: newUser._id }
   );
-}
-  const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
+}  const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
   const sendCode = customAlphabet("0123456789", 6)();
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
   await otpModel.create({ userId: newUser._id, code: sendCode, codeType: codeOTP.activateAccount });

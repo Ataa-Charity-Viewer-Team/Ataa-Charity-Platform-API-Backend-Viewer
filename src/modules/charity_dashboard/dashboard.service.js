@@ -7,7 +7,7 @@ export const getStats = async (req, res, next) => {
   // const {charityId} = req.params;
   const { user } = req;
 const charity = await charityModel.findOne({
-  userId: req.user._id
+  $or: [{ userId: user._id }, { adminId: user._id }]
 });
 console.log(user._id);
 console.log(user.roleType);
@@ -28,7 +28,7 @@ export const getCharityDonations = async (req, res, next) => {
         // const { charityId } = req.params;
   const { user } = req;
   const charity = await charityModel.findOne({
-  userId: user._id
+  $or: [{ userId: user._id }, { adminId: user._id }]
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
@@ -49,7 +49,7 @@ export const getCharityRequests = async (req, res, next) => {
   // const { charityId } = req.params;
   const { user } = req;
   const charity = await charityModel.findOne({
-  userId: user._id
+  $or: [{ userId: user._id }, { adminId: user._id }]
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
@@ -65,7 +65,7 @@ export const updateRequestStatus = async (req, res, next) => {
   const { status } = req.body;
 
   const charity = await charityModel.findOne({
-  userId: user._id
+  $or: [{ userId: user._id }, { adminId: user._id }]
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
