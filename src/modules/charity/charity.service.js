@@ -1,3 +1,4 @@
+import { userModel, roles } from "../../database/model/user.model.js";
 import { charityModel } from "../../database/model/charity.model.js";
 import { advancedPagination } from "../../middleware/pagination.middleware.js";
 import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
@@ -37,7 +38,7 @@ export const getCharity = async (req, res, next) => {
 // };
 
 export const createCharity = async (req, res, next) => {
-  const { email, phone, userId } = req.body;
+  const { email, phone } = req.body;
  
   const existing = await charityModel.findOne({ email });
   if (existing) {
@@ -70,7 +71,7 @@ export const updateCharity = async (req, res, next) => {
   }
 if (user.roleType !== roles.admin && charity.userId?.toString() !== user._id.toString())
     return next(new Error(" You don't have permission to update this charity", { cause: 403 }));
-  
+
   if (phone) {
     req.body.phone = encryptPhone({ cipherText: phone });
   }
