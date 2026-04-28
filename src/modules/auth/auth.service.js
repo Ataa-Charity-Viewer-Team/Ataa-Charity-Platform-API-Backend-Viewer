@@ -1,4 +1,3 @@
-
 // ========================== # Auth Service and send email vercel # =======================
 import { roles, userModel } from "../../database/model/user.model.js";
 import { charityModel } from "../../database/model/charity.model.js";
@@ -20,12 +19,10 @@ export const registerAccount = async (req, res, next) => {
     return next(new Error("Email already exists", { cause: 409 }));
   }
 
-  // hash nationalID
   if (req.body.nationalID) {
     req.body.nationalID = encryptPhone({ plainText: req.body.nationalID });
   }
 
-  // charity لازم يكون عنده licenseNumber
   if (roleType === roles.charity && !req.body.licenseNumber) {
     return next(new Error("License number is required for charity accounts", { cause: 400 }));
   }
@@ -34,6 +31,21 @@ export const registerAccount = async (req, res, next) => {
   const encryptedPhone = encryptPhone({ cipherText: phone });
 
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash });
+
+  // ✅ ربط الـ charity بالـ user الجديد
+  if (roleType === roles.charity) {
+    const updated = await charityModel.findOneAndUpdate(
+      { licenseNumber: req.body.licenseNumber },
+      { userId: newUser._id },
+      { new: true }
+    );
+
+    if (!updated) {
+      await userModel.findByIdAndDelete(newUser._id); // rollback
+      return next(new Error("No charity found with this license number. Contact admin.", { cause: 404 }));
+    }
+  }
+
   const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
   const sendCode = customAlphabet("0123456789", 6)();
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
