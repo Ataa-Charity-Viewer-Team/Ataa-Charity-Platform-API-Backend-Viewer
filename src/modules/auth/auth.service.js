@@ -200,14 +200,6 @@ export const registerAccount = async (req, res, next) => {
     return next(new Error("License number is required for charity accounts", { cause: 400 }));
   }
 
-  // // charity لازم يكون Admin عمل الجمعية بنفس الـ email الأول
-  // if (roleType === roles.charity) {
-  //   const charityExists = await charityModel.findOne({ email });
-  //   if (!charityExists) {
-  //     return next(new Error("No charity found with this email. Please contact the admin.", { cause: 404 }));
-  //   }
-  // }
-
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
 
@@ -244,13 +236,13 @@ export const login = async (req, res, next) => {
   }
 
   const accessToken = createToken({
-    payload: { id: user._id, roleType: user.roleType },
+    payload: { id: user._id, roleType: user.roleType,charityId: user.charityId },
     secret: process.env.ACCESS_SECRET + user.createdAt.getTime(),
     options: { expiresIn: process.env.ACCESS_TOKEN }
   });
 
   const refreshToken = createToken({
-    payload: { id: user._id, roleType: user.roleType },
+    payload: { id: user._id, roleType: user.roleType,charityId: user.charityId },
     secret: process.env.REFRESH_SECRET,
     options: { expiresIn: process.env.REFRESH_TOKEN }
   });
@@ -345,7 +337,7 @@ export const refreshToken = async (req, res, next) => {
   }
 
   const newAccessToken = createToken({
-    payload: { id: user._id, roleType: user.roleType },
+    payload: { id: user._id, roleType: user.roleType, charityId: user.charityId },
     secret: process.env.ACCESS_SECRET + user.createdAt.getTime(),
     options: { expiresIn: process.env.ACCESS_TOKEN }
   });
