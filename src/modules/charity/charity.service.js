@@ -33,7 +33,7 @@ export const createCharity = async (req, res, next) => {
   const charity = await charityModel.create({
     ...req.body,
     phone: encryptedPhone,
-    userId: req.user._id,
+    adminId: req.user._id
   });
  
   const result = await charityModel.findById(charity._id).select("-__v -phone");
@@ -48,7 +48,7 @@ export const updateCharity = async (req, res, next) => {
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));
   }
-if (charity.userId?.toString() !== user._id.toString())     
+if (charity.adminId?.toString() !== user._id.toString())     
    return next(new Error(" You don't have permission to update this charity", { cause: 403 }));
 
   if (phone) {
@@ -66,7 +66,7 @@ export const deleteCharity = async (req, res, next) => {
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));
   }
-if (charity.userId?.toString() !== user._id.toString())     
+if (charity.adminId?.toString() !== user._id.toString())     
    return next(new Error(" You don't have permission to delete this charity", { cause: 403 }));
   await charityModel.findByIdAndDelete(id);
 
