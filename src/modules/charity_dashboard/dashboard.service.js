@@ -9,6 +9,8 @@ export const getStats = async (req, res, next) => {
   const charity = await charityModel.findOne({
   $or: [{ userId: user._id }, { adminId: user._id }]
 });
+console.log(user._id);
+console.log(user.roleType);
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
  
   const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });
