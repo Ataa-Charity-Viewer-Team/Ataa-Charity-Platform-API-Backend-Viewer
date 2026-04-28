@@ -29,7 +29,17 @@ if (roleType === roles.charity && !req.body.licenseNumber) {
   const encryptedPhone = encryptPhone({ cipherText: phone });
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash});
   const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId ");
-
+   if (roleType === roles.charity) {
+    const { charityName, address, description } = req.body;
+    await charityModel.create({
+      userId: newUser._id,
+      charityName,
+      email,
+      phone: encryptedPhone,
+      address,
+      description: description || "No description provided",
+    });
+  }
   
   const sendCode = customAlphabet("0123456789",6)();
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
