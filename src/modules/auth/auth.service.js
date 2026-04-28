@@ -35,14 +35,15 @@ export const registerAccount = async (req, res, next) => {
 
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash });
 if (roleType === roles.charity) {
-  await charityModel.create({
-    userId: newUser._id,
-    charityName,
-    email,
-    phone,
-    address,
-    description
-  });
+  const updated = await charityModel.findOneAndUpdate(
+    { licenseNumber: req.body.licenseNumber },
+    { userId: newUser._id },
+    { new: true }
+  );
+  if (!updated) {
+    await userModel.findByIdAndDelete(newUser._id);
+    return next(new Error("No charity found with this license number", { cause: 404 }));
+  }
 }
   const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
   const sendCode = customAlphabet("0123456789", 6)();
