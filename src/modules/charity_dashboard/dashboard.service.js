@@ -74,7 +74,7 @@ export const updateRequestStatus = async (req, res, next) => {
 
   await notificationModel.create({
     userId: request.donorId,
-    DonationId: request._id,
+    donationId: request._id,
     content: `Your donation request has been ${status}`,
     status: notificationStatus.unread
   });

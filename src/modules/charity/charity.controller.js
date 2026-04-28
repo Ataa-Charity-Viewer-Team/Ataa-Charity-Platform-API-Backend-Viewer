@@ -10,7 +10,7 @@ import { charityEndpoint } from './charity.endpoint.js';
 const router = Router();
 
 router.get("/charities", authAction, authorization(charityEndpoint.getAllCharities), asyncHandler(charityService.getAllCharities));
-// router.post("/", authAction, authorization(charityEndpoint.createCharity), validation(charityValidation.createCharitySchema), asyncHandler(charityService.createCharity));
+router.post("/", authAction, authorization(charityEndpoint.createCharity), validation(charityValidation.createCharitySchema), asyncHandler(charityService.createCharity));
 router.get("/:id", authAction, authorization(charityEndpoint.getCharity), validation(charityValidation.charityIdSchema), asyncHandler(charityService.getCharity)); // ✓ getCharity
 router.patch("/:id", authAction, authorization(charityEndpoint.updateCharity), validation(charityValidation.updateCharitySchema), asyncHandler(charityService.updateCharity));
 router.delete("/:id", authAction, authorization(charityEndpoint.deleteCharity), validation(charityValidation.charityIdSchema), asyncHandler(charityService.deleteCharity));
