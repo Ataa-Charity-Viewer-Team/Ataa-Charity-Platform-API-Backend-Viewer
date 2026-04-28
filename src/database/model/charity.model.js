@@ -67,12 +67,6 @@ export const charitySchema = new mongoose.Schema(
       ref: "User_Data",
       required: false,
     },
-    // الـ admin اللي أنشأ الجمعية
-    adminId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User_Data",
-      required: true,
-    },
     charityName: {
       type: String,
       required: [true, "Name is required"],
