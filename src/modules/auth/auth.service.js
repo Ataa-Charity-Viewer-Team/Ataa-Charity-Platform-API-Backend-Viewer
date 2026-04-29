@@ -23,45 +23,10 @@ export const registerAccount = async (req, res, next) => {
     req.body.nationalID = encryptPhone({ plainText: req.body.nationalID });
   }
 
-  if (roleType === roles.charity && !req.body.licenseNumber) {
-    return next(new Error("License number is required for charity accounts", { cause: 400 }));
-  }
-
-  let charityRecord = null;
-  if (roleType === roles.charity) {
-    charityRecord = await charityModel.findOne({
-      licenseNumber: req.body.licenseNumber
-    });
-
-    if (!charityRecord) {
-      return next(new Error("No charity found with this license number. Contact admin.", { cause: 404 }));
-    }
-    if (charityRecord.userId) {
-      const alreadyLinked = await userModel.findById(charityRecord.userId);
-      if (alreadyLinked) {
-        return next(new Error("This charity already has a registered account.", { cause: 409 }));
-      }
-    }
-  }
-
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
 
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash });
-
-  if (roleType === roles.charity) {
-    const updated = await charityModel.findOneAndUpdate(
-      { licenseNumber: req.body.licenseNumber },
-      { userId: newUser._id },
-      { new: true }
-    );
-
-    if (!updated) {
-      await userModel.findByIdAndDelete(newUser._id); // rollback
-      return next(new Error("Failed to link charity. Contact admin.", { cause: 404 }));
-    }
-  }
-
   const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
   const sendCode = customAlphabet("0123456789", 6)();
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
