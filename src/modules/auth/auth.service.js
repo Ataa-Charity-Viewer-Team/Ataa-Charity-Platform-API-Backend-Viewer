@@ -68,7 +68,7 @@ import { waitUntil } from '@vercel/functions';
 //   return res.status(201).json({ success: true, user: userData, message: "User registered successfully. Please check your email for OTP." });
 // };
 export const registerAccount = async (req, res, next) => {
-  const {userName,email, phone,password,address,roleType,licenseNumber,} = req.body;
+  const {userName,email, phone,password,address,roleType,licenseNumber,nationalID} = req.body;
 
   // 🔥 1) check email
   const existingUser = await userModel.findOne({ email });
