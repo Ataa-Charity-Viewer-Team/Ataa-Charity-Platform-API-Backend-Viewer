@@ -1,14 +1,11 @@
-// ==================== Import Mongoose Framework ======================
 import mongoose from "mongoose";
 
-// ==================== User Roles ====================
 export const roles = {
   user: "user",
   charity: "charity",
   admin: "admin",
 };
 
-// ==================== User Schema ====================
 const userSchema = new mongoose.Schema(
   {
     userName: {
@@ -18,7 +15,6 @@ const userSchema = new mongoose.Schema(
       maxlength: [30, "Name must not exceed 30 characters"],
       trim: true,
     },
-
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -27,13 +23,11 @@ const userSchema = new mongoose.Schema(
       immutable: true,
       trim: true,
     },
-
     password: {
       type: String,
       required: [true, "Password is required"],
       minlength: [8, "Password must be at least 8 characters"],
     },
-
     address: {
       type: String,
       required: [true, "Address is required"],
@@ -41,18 +35,15 @@ const userSchema = new mongoose.Schema(
       maxlength: [100, "Address must not exceed 100 characters"],
       trim: true,
     },
-
     phone: {
       type: String,
       required: [true, "Phone is required"],
       trim: true,
     },
-
     verify: {
       type: Boolean,
       default: false,
     },
-
     roleType: {
       type: String,
       enum: Object.values(roles),
@@ -66,18 +57,12 @@ const userSchema = new mongoose.Schema(
       trim: true,
       unique: true,
       sparse: true,
-      required: function () {
-        return this.roleType === roles.charity;
-      },
     },
     nationalID: {
       type: String,
       unique: true,
       sparse: true,
       trim: true,
-      required: function () {
-        return this.roleType === roles.admin;
-      },
     },
   },
   {
@@ -86,5 +71,4 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// ==================== User Model ====================
 export const userModel = mongoose.model("User_Data", userSchema);

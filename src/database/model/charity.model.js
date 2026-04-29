@@ -1,16 +1,13 @@
-
-// ==================== Import Mongoose Framework ======================
 import mongoose from "mongoose";
 
-// ==================== Charity Schema ======================
 export const charitySchema = new mongoose.Schema(
   {
-  userId: {
-    type:mongoose.Schema.Types.ObjectId,
-    ref:"User_Data",
-    required: true,
-  },
-  charityName: {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User_Data",
+      required: true,
+    },
+    charityName: {
       type: String,
       required: [true, "Name is required"],
       minlength: [3, "Name must be at least 3 characters"],
@@ -33,7 +30,6 @@ export const charitySchema = new mongoose.Schema(
       required: [true, "Phone is required"],
       trim: true,
     },
-
     address: {
       type: String,
       minlength: [5, "Address must be at least 5 characters"],
@@ -54,5 +50,4 @@ export const charitySchema = new mongoose.Schema(
   }
 );
 
-// ==================== Charity Model ======================
 export const charityModel = mongoose.model("Charity", charitySchema);
