@@ -27,16 +27,20 @@ export const registerAccount = async (req, res, next) => {
     return next(new Error("License number is required for charity accounts", { cause: 400 }));
   }
 
-  // ✅ تأكد إن الـ licenseNumber موجود في DB قبل ما تعمل الـ user
-  let adminUser = null;
+  let charityRecord = null;
   if (roleType === roles.charity) {
-    adminUser = await userModel.findOne({
-      licenseNumber: req.body.licenseNumber,
-      roleType: roles.admin
+    charityRecord = await charityModel.findOne({
+      licenseNumber: req.body.licenseNumber
     });
 
-    if (!adminUser) {
+    if (!charityRecord) {
       return next(new Error("No charity found with this license number. Contact admin.", { cause: 404 }));
+    }
+    if (charityRecord.userId) {
+      const alreadyLinked = await userModel.findById(charityRecord.userId);
+      if (alreadyLinked) {
+        return next(new Error("This charity already has a registered account.", { cause: 409 }));
+      }
     }
   }
 
@@ -45,17 +49,16 @@ export const registerAccount = async (req, res, next) => {
 
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash });
 
-  // ✅ ربط الـ charity بالـ user الجديد
   if (roleType === roles.charity) {
     const updated = await charityModel.findOneAndUpdate(
-      { userId: adminUser._id },
+      { licenseNumber: req.body.licenseNumber },
       { userId: newUser._id },
       { new: true }
     );
 
     if (!updated) {
       await userModel.findByIdAndDelete(newUser._id); // rollback
-      return next(new Error("No charity found with this license number. Contact admin.", { cause: 404 }));
+      return next(new Error("Failed to link charity. Contact admin.", { cause: 404 }));
     }
   }
 
