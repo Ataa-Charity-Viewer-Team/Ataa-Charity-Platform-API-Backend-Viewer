@@ -22,11 +22,43 @@ export const registerAccount = async (req, res, next) => {
   if (req.body.nationalID) {
     req.body.nationalID = encryptPhone({ plainText: req.body.nationalID });
   }
+    // 🔥 3️⃣ لو Charity → هات الـ admin
+  let adminUser = null;
+
+  if (roleType === roles.charity) {
+    if (!licenseNumber) {
+      return next(new Error("License number is required", { cause: 400 }));
+    }
+
+    adminUser = await userModel.findOne({
+      licenseNumber,
+      roleType: roles.admin
+    });
+
+    if (!adminUser) {
+      return next(new Error("No charity found with this license number", { cause: 404 }));
+    }
+  }
 
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
 
   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash });
+   // 🔥 5️⃣ نقل الملكية
+  if (roleType === roles.charity) {
+
+    const charity = await charityModel.findOne({
+      userId: adminUser._id
+    });
+
+    if (!charity) {
+      await userModel.findByIdAndDelete(newUser._id); // rollback
+      return next(new Error("Charity already claimed or not found", { cause: 400 }));
+    }
+
+    charity.userId = newUser._id;
+    await charity.save();
+  }
   const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
   const sendCode = customAlphabet("0123456789", 6)();
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });

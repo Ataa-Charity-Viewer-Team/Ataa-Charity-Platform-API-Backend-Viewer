@@ -33,7 +33,7 @@ export const createCharity = async (req, res, next) => {
   const charity = await charityModel.create({
     ...req.body,
     phone: encryptedPhone,
-    userId: req.body.userId || req.user._id
+    userId: req.user._id
   }); 
   const result = await charityModel.findById(charity._id).select("-__v -phone");
   return res.status(201).json({ success: true, message: "Charity created successfully", charity: result });
