@@ -43,12 +43,12 @@ export const charitySchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      crequired: [true, "Description is required"],
+      required: [true, "Description is required"],
       minlength: [10, "Description must be at least 10 characters"],
       maxlength: [500, "Description must not exceed 500 characters"],
     },
   },
-  {a
+  {
     timestamps: true,
     collection: "Charity",
   }
