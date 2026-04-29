@@ -27,6 +27,19 @@ export const registerAccount = async (req, res, next) => {
     return next(new Error("License number is required for charity accounts", { cause: 400 }));
   }
 
+  // ✅ تأكد إن الـ licenseNumber موجود في DB قبل ما تعمل الـ user
+  let adminUser = null;
+  if (roleType === roles.charity) {
+    adminUser = await userModel.findOne({
+      licenseNumber: req.body.licenseNumber,
+      roleType: roles.admin
+    });
+
+    if (!adminUser) {
+      return next(new Error("No charity found with this license number. Contact admin.", { cause: 404 }));
+    }
+  }
+
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
 
@@ -35,7 +48,7 @@ export const registerAccount = async (req, res, next) => {
   // ✅ ربط الـ charity بالـ user الجديد
   if (roleType === roles.charity) {
     const updated = await charityModel.findOneAndUpdate(
-      { licenseNumber: req.body.licenseNumber },
+      { userId: adminUser._id },
       { userId: newUser._id },
       { new: true }
     );
