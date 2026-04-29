@@ -12,7 +12,7 @@ import { waitUntil } from '@vercel/functions';
 
 // ===========================1) Register Account  ===========================
 export const registerAccount = async (req, res, next) => {
-  const { userName, email, phone, password, address, roleType } = req.body;
+  const { userName, email, phone, password, address, roleType, licenseNumber } = req.body;
 
   const existingUser = await userModel.findOne({ email });
   if (existingUser) {
