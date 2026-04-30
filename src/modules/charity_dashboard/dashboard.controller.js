@@ -16,6 +16,6 @@ router.get("/donations/:id", authAction, authorization(charityEndpoint.getCharit
 // ====================== get requests ======================
 router.get("/requests/:id", authAction, authorization(charityEndpoint.getCharityRequests), asyncHandler(charityService.getCharityRequests));
 // ====================== update request status ======================
-router.patch("/request/:id", authAction, authorization(charityEndpoint.updateRequestStatus), validation(dashboardValidation.updateRequestStatusSchema), asyncHandler(charityService.updateRequestStatus));
+router.patch("/request/:id/:licenseNumber", authAction, authorization(charityEndpoint.updateRequestStatus), validation(dashboardValidation.updateRequestStatusSchema), asyncHandler(charityService.updateRequestStatus));
 
 export default router;
