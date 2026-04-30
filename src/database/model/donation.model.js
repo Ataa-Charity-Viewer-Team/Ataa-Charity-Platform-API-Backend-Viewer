@@ -1,18 +1,104 @@
+// // ==================== Import Mongoose Framework ======================
+// import mongoose from "mongoose";
+
+// // ==================== Donation Size ======================
+// export const donationSize = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
+// export const donationCondition = [
+//   "جديدة",
+//   "مقبولة",
+//   "جيدة",
+//   "ممتازة"
+// ];
+// export const reminderStatus=["none","reminder_sent","final_sent"];
+// // ==================== Donation Status ======================
+// export const donationStatus = {
+//   pending: "pending",
+//   accepted: "accepted",
+//   rejected: "rejected",
+// };
+
+// // ==================== Donation Schema ======================
+// const donationSchema = new mongoose.Schema(
+//   {
+//     donorId: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "User_Data",
+//       required: true,
+//     },
+
+//     charityId: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "Charity",
+//       required: false
+//     },
+
+//     type: {
+//       type: String,
+//       required: [true, "Type is required"],
+//     },
+
+//     size: {
+//       type: String,
+//       enum: donationSize,
+//       required: [true, "Size is required"],
+//     },
+
+//     quantity: {
+//       type: Number,
+//       min: [1, "Quantity must be at least 1"],
+//       required: [true, "Quantity is required"],
+//     },
+
+//     description: {
+//       type: String,
+//       maxlength: [500, "Description must not exceed 500 characters"],
+//     },
+
+//     imageUrl: [
+//       {
+//         public_id: { type: String, required: true },
+//         secure_url: { type: String, required: true },
+//       },
+//     ],
+
+//     status: {
+//       type: String,
+//       enum: Object.values(donationStatus),
+//       default: donationStatus.pending,
+//       required: true,
+//     },
+//     condition :{
+//       type: String,
+//       enum: donationCondition,
+//       required: [true, "Condition is required"],
+//     },
+//     dateDonation: {
+//       type: Date,
+//       default: Date.now,
+//     },
+
+// reminderStatus: {
+//   type: String,
+//   enum: reminderStatus,
+//   default: "none",}, 
+//  },
+//   {
+//     timestamps: true,
+//     collection: "Donation",
+//   }
+// );
+
+// // ==================== Donation Model ======================
+// export const donationModel = mongoose.model("Donation", donationSchema);
 // ==================== Import Mongoose Framework ======================
 import mongoose from "mongoose";
 
-// ==================== Donation Size ======================
 export const donationSize = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
-export const donationCondition = [
-  "جديدة",
-  "مقبولة",
-  "جيدة",
-  "ممتازة"
-];
-export const reminderStatus=["none","reminder_sent","final_sent"];
-// ==================== Donation Status ======================
+export const donationCondition = ["جديدة","مقبولة","جيدة","ممتازة"];
+export const reminderStatus = ["none","reminder_sent","final_sent"];
+
 export const donationStatus = {
-  pending: "pending",
+  pending:  "pending",
   accepted: "accepted",
   rejected: "rejected",
 };
@@ -26,10 +112,12 @@ const donationSchema = new mongoose.Schema(
       required: true,
     },
 
+    // charityId = null حتى جمعية تقبل التبرع
     charityId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Charity",
-      required: true,
+      ref: "User_Data",          // الجمعية هي user بـ roleType: "charity"
+      required: false,
+      default: null,
     },
 
     type: {
@@ -67,26 +155,28 @@ const donationSchema = new mongoose.Schema(
       default: donationStatus.pending,
       required: true,
     },
-    condition :{
+
+    condition: {
       type: String,
       enum: donationCondition,
       required: [true, "Condition is required"],
     },
+
     dateDonation: {
       type: Date,
       default: Date.now,
     },
 
-reminderStatus: {
-  type: String,
-  enum: reminderStatus,
-  default: "none",}, 
- },
+    reminderStatus: {
+      type: String,
+      enum: reminderStatus,
+      default: "none",
+    },
+  },
   {
     timestamps: true,
     collection: "Donation",
   }
 );
 
-// ==================== Donation Model ======================
 export const donationModel = mongoose.model("Donation", donationSchema);
