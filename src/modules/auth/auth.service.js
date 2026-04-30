@@ -553,7 +553,6 @@ import { waitUntil } from '@vercel/functions';
 export const registerAccount = async (req, res, next) => {
   const { userName, email, phone, password, address, roleType } = req.body;
 
-  // ← الأدمن مش بيسجل من هنا خالص
   if (roleType === roles.admin) {
     return next(new Error("Admin registration is not allowed", { cause: 403 }));
   }
@@ -590,10 +589,10 @@ export const registerAccount = async (req, res, next) => {
     const charityPhone = encryptPhone({ cipherText: phone });
 
     const charity = await charityModel.create({
-      userId:         newUser._id,
+      userId: newUser._id,
       charityName,
       licenseNumber,
-      phone:          charityPhone,
+      phone:charityPhone,
       address,
       description:    charityDescription || "No description provided",
       approvalStatus: charityApprovalStatus.pending,  // ← ينتظر موافقة الأدمن
