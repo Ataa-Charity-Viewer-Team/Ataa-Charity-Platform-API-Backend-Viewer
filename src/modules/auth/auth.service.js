@@ -11,61 +11,108 @@ import { codeOTP, otpModel } from "../../database/model/otp.model.js";
 import { waitUntil } from '@vercel/functions';
 
 // ===========================1) Register Account  ===========================
+// export const registerAccount = async (req, res, next) => {
+//   const { userName, email, phone, password, address, roleType, licenseNumber } = req.body;
+
+//   const existingUser = await userModel.findOne({ email });
+//   if (existingUser) {
+//     return next(new Error("Email already exists", { cause: 409 }));
+//   }
+
+//   if (req.body.nationalID) {
+//     req.body.nationalID = encryptPhone({ plainText: req.body.nationalID });
+//   }
+//     // 🔥 3️⃣ لو Charity → هات الـ admin
+//   let adminUser = null;
+
+//   if (roleType === roles.charity) {
+//     if (!licenseNumber) {
+//       return next(new Error("License number is required", { cause: 400 }));
+//     }
+
+// const charity = await charityModel.findOne({
+//   licenseNumber
+// });
+//     if (!charity) {
+//       return next(new Error("No charity found with this license number", { cause: 404 }));
+//     }
+//     adminUser = await userModel.findById(charity.userId);
+//   }
+
+//   const passwordHash = hashPassword({ plainText: password });
+//   const encryptedPhone = encryptPhone({ cipherText: phone });
+
+//   const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash });
+//    // 🔥 5️⃣ نقل الملكية
+//   if (roleType === roles.charity) {
+
+//     const charity = await charityModel.findOne({
+//       userId: adminUser._id
+//     });
+
+//     if (!charity) {
+//       await userModel.findByIdAndDelete(newUser._id); // rollback
+//       return next(new Error("Charity already claimed or not found", { cause: 400 }));
+//     }
+
+//     charity.userId = newUser._id;
+//     await charity.save();
+//   }
+//   const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
+//   const sendCode = customAlphabet("0123456789", 6)();
+//   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
+//   await otpModel.create({ userId: newUser._id, code: sendCode, codeType: codeOTP.activateAccount });
+
+//   waitUntil(sendEmails({ to: email, subject: codeOTP.activateAccount, html: templet({ sendCode }) }));
+
+//   return res.status(201).json({ success: true, user: userData, message: "User registered successfully. Please check your email for OTP." });
+// };
 export const registerAccount = async (req, res, next) => {
   const { userName, email, phone, password, address, roleType, licenseNumber } = req.body;
-
+  
   const existingUser = await userModel.findOne({ email });
-  if (existingUser) {
-    return next(new Error("Email already exists", { cause: 409 }));
-  }
+  if (existingUser) return next(new Error("Email already exists", { cause: 409 }));
 
   if (req.body.nationalID) {
     req.body.nationalID = encryptPhone({ plainText: req.body.nationalID });
   }
-    // 🔥 3️⃣ لو Charity → هات الـ admin
-  let adminUser = null;
 
+  let targetCharity = null;
   if (roleType === roles.charity) {
-    if (!licenseNumber) {
-      return next(new Error("License number is required", { cause: 400 }));
-    }
-
-const charity = await charityModel.findOne({
-  licenseNumber
-});
-    if (!charity) {
-      return next(new Error("No charity found with this license number", { cause: 404 }));
-    }
-    adminUser = await userModel.findById(charity.userId);
+    if (!licenseNumber) return next(new Error("License number is required", { cause: 400 }));
+    
+    targetCharity = await charityModel.findOne({ licenseNumber });
+    if (!targetCharity) return next(new Error("No charity found with this license number", { cause: 404 }));
   }
 
   const passwordHash = hashPassword({ plainText: password });
   const encryptedPhone = encryptPhone({ cipherText: phone });
+  
+  const newUser = await userModel.create({ 
+    ...req.body, 
+    phone: encryptedPhone, 
+    password: passwordHash 
+  });
 
-  const newUser = await userModel.create({ ...req.body, phone: encryptedPhone, password: passwordHash });
-   // 🔥 5️⃣ نقل الملكية
-  if (roleType === roles.charity) {
-
-    const charity = await charityModel.findOne({
-      userId: adminUser._id
-    });
-
-    if (!charity) {
-      await userModel.findByIdAndDelete(newUser._id); // rollback
-      return next(new Error("Charity already claimed or not found", { cause: 400 }));
-    }
-
-    charity.userId = newUser._id;
-    await charity.save();
+  // 🔥 نقل ملكية الجمعية بأمان
+  if (roleType === roles.charity && targetCharity) {
+    targetCharity.userId = newUser._id;
+    await targetCharity.save();
   }
+
   const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
   const sendCode = customAlphabet("0123456789", 6)();
+  
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
   await otpModel.create({ userId: newUser._id, code: sendCode, codeType: codeOTP.activateAccount });
-
+  
   waitUntil(sendEmails({ to: email, subject: codeOTP.activateAccount, html: templet({ sendCode }) }));
-
-  return res.status(201).json({ success: true, user: userData, message: "User registered successfully. Please check your email for OTP." });
+  
+  return res.status(201).json({ 
+    success: true, 
+    user: userData, 
+    message: "User registered successfully. Please check your email for OTP." 
+  });
 };
 
 // ===========================2) Login  ===========================

@@ -104,7 +104,6 @@ const processDonations = async ({ donations, isFinal, now }) => {
         }),
       });
 
-      // ✅ استخدم notificationStatus[0].en بدل notificationStatus.unread
       notificationsToCreate.push({
         userId:           charityUserId,
         donationId:       donation._id,
