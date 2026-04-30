@@ -76,81 +76,184 @@
 //     message: "Charity deleted successfully"
 //   });
 // };
+// import { userModel, roles } from "../../database/model/user.model.js";
+// import { charityModel } from "../../database/model/charity.model.js";
+// import { advancedPagination } from "../../middleware/pagination.middleware.js";
+// import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
+// import { customAlphabet } from "nanoid";
+
+// export const getAllCharities = async (req, res, next) => {
+//   const data = await advancedPagination(charityModel); 
+//   res.status(200).json({ success: true, data });
+// };
+
+// export const getCharity = async (req, res, next) => {
+//   const { id } = req.params;
+//   const charity = await charityModel.findById(id);
+//   if (!charity) {
+//     return next(new Error("Charity not found", { cause: 404 }));
+//   }
+//   if (!charity.phone) {
+//     return next(new Error("Charity phone not found", { cause: 404 }));
+//   }
+//   charity.phone = decryptPhone({ cipherText: charity.phone });
+//   return res.status(200).json({ success: true, charity });
+// };
+
+// export const createCharity = async (req, res, next) => {
+//   const { email, phone } = req.body;
+ 
+//   const existing = await charityModel.findOne({ email });
+//   if (existing) {
+//     return next(new Error("Email already exists", { cause: 409 }));
+//   }
+  
+//   const encryptedPhone = encryptPhone({ cipherText: phone });
+//   const charity = await charityModel.create({
+//     ...req.body,
+//     phone: encryptedPhone,
+//     license: customAlphabet("0123456789", 8)(),
+//     userId: req.user._id
+//   }); 
+//   const result = await charityModel.findById(charity._id).select("-__v -phone");
+//   return res.status(201).json({ success: true, message: "Charity created successfully", charity: result });
+// };
+
+// export const updateCharity = async (req, res, next) => {
+//   const { id } = req.params;
+//   const { user } = req;
+//   const { phone } = req.body;
+//   const charity = await charityModel.findById(id);
+//   if (!charity) {
+//     return next(new Error("Charity not found", { cause: 404 }));
+//   }
+// if (charity.createdBy?.toString() !== user._id.toString())     
+//    return next(new Error(" You don't have permission to update this charity", { cause: 403 }));
+
+//   if (phone) {
+//     req.body.phone = encryptPhone({ cipherText: phone });
+//   }
+//   const updated = await charityModel.findByIdAndUpdate(id, req.body, { new: true }).select("-__v -phone");
+//   return res.status(200).json({ success: true, message: "Charity updated successfully", charity: updated });
+// };
+
+// export const deleteCharity = async (req, res, next) => {
+//   const { id } = req.params;
+//   const { user } = req;
+
+//   const charity = await charityModel.findById(id);
+//   if (!charity) {
+//     return next(new Error("Charity not found", { cause: 404 }));
+//   }
+// if (charity.createdBy?.toString() !== user._id.toString())     
+//    return next(new Error(" You don't have permission to delete this charity", { cause: 403 }));
+//   await charityModel.findByIdAndDelete(id);
+
+//   return res.status(200).json({
+//     success: true,
+//     message: "Charity deleted successfully"
+//   });
+// };
 import { userModel, roles } from "../../database/model/user.model.js";
-import { charityModel } from "../../database/model/charity.model.js";
+import { charityModel, charityApprovalStatus } from "../../database/model/charity.model.js";
 import { advancedPagination } from "../../middleware/pagination.middleware.js";
 import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
-import { customAlphabet } from "nanoid";
+import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
 
+// ===================== Get All Charities =====================
 export const getAllCharities = async (req, res, next) => {
-  const data = await advancedPagination(charityModel); 
+  const data = await advancedPagination(charityModel);
   res.status(200).json({ success: true, data });
 };
 
+// ===================== Get Single Charity =====================
 export const getCharity = async (req, res, next) => {
   const { id } = req.params;
   const charity = await charityModel.findById(id);
-  if (!charity) {
-    return next(new Error("Charity not found", { cause: 404 }));
-  }
-  if (!charity.phone) {
-    return next(new Error("Charity phone not found", { cause: 404 }));
-  }
+  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
+  if (!charity.phone) return next(new Error("Charity phone not found", { cause: 404 }));
+
   charity.phone = decryptPhone({ cipherText: charity.phone });
   return res.status(200).json({ success: true, charity });
 };
 
-export const createCharity = async (req, res, next) => {
-  const { email, phone } = req.body;
- 
-  const existing = await charityModel.findOne({ email });
-  if (existing) {
-    return next(new Error("Email already exists", { cause: 409 }));
-  }
-  
-  const encryptedPhone = encryptPhone({ cipherText: phone });
-  const charity = await charityModel.create({
-    ...req.body,
-    phone: encryptedPhone,
-    license: customAlphabet("0123456789", 8)(),
-    userId: req.user._id
-  }); 
-  const result = await charityModel.findById(charity._id).select("-__v -phone");
-  return res.status(201).json({ success: true, message: "Charity created successfully", charity: result });
-};
-
+// ===================== Update Charity (Admin) =====================
 export const updateCharity = async (req, res, next) => {
   const { id } = req.params;
   const { user } = req;
   const { phone } = req.body;
-  const charity = await charityModel.findById(id);
-  if (!charity) {
-    return next(new Error("Charity not found", { cause: 404 }));
-  }
-if (charity.createdBy?.toString() !== user._id.toString())     
-   return next(new Error(" You don't have permission to update this charity", { cause: 403 }));
 
-  if (phone) {
-    req.body.phone = encryptPhone({ cipherText: phone });
-  }
+  const charity = await charityModel.findById(id);
+  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
+
+  // إصلاح: userId بدل createdBy
+  if (charity.userId?.toString() !== user._id.toString())
+    return next(new Error("You don't have permission to update this charity", { cause: 403 }));
+
+  if (phone) req.body.phone = encryptPhone({ cipherText: phone });
+
   const updated = await charityModel.findByIdAndUpdate(id, req.body, { new: true }).select("-__v -phone");
   return res.status(200).json({ success: true, message: "Charity updated successfully", charity: updated });
 };
 
+// ===================== Delete Charity (Admin) =====================
 export const deleteCharity = async (req, res, next) => {
   const { id } = req.params;
   const { user } = req;
 
   const charity = await charityModel.findById(id);
-  if (!charity) {
-    return next(new Error("Charity not found", { cause: 404 }));
-  }
-if (charity.createdBy?.toString() !== user._id.toString())     
-   return next(new Error(" You don't have permission to delete this charity", { cause: 403 }));
-  await charityModel.findByIdAndDelete(id);
+  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
-  return res.status(200).json({
-    success: true,
-    message: "Charity deleted successfully"
+  // إصلاح: userId بدل createdBy
+  if (charity.userId?.toString() !== user._id.toString())
+    return next(new Error("You don't have permission to delete this charity", { cause: 403 }));
+
+  await charityModel.findByIdAndDelete(id);
+  return res.status(200).json({ success: true, message: "Charity deleted successfully" });
+};
+
+// ===================== Admin: Approve Charity =====================
+export const approveCharity = async (req, res, next) => {
+  const { id } = req.params;
+
+  const charity = await charityModel.findByIdAndUpdate(
+    id,
+    { approvalStatus: charityApprovalStatus.approved, rejectionReason: null },
+    { new: true }
+  );
+  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
+
+  // إضافة: notification للجمعية حسب الفلو
+  await notificationModel.create({
+    userId:  charity.userId,
+    content: "Your charity account has been approved. You can now login.",
+    status:  notificationStatus.unread,
   });
+
+  return res.status(200).json({ success: true, message: "Charity approved successfully", charity });
+};
+
+// ===================== Admin: Reject Charity =====================
+export const rejectCharity = async (req, res, next) => {
+  const { id } = req.params;
+  const { reason } = req.body;
+
+  const charity = await charityModel.findByIdAndUpdate(
+    id,
+    {
+      approvalStatus:  charityApprovalStatus.rejected,
+      rejectionReason: reason || "No reason provided",
+    },
+    { new: true }
+  );
+  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
+
+  // إضافة: notification للجمعية حسب الفلو
+  await notificationModel.create({
+    userId:  charity.userId,
+    content: `Your charity account has been rejected. Reason: ${charity.rejectionReason}`,
+    status:  notificationStatus.unread,
+  });
+
+  return res.status(200).json({ success: true, message: "Charity rejected", charity });
 };

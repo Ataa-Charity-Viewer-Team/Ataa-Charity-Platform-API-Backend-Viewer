@@ -90,7 +90,9 @@
 
 // // ==================== Donation Model ======================
 // export const donationModel = mongoose.model("Donation", donationSchema);
+
 // ==================== Import Mongoose Framework ======================
+
 import mongoose from "mongoose";
 
 export const donationSize = ["XS","S","M","L","XL","XXL","3XL","4XL","5XL"];
@@ -115,7 +117,7 @@ const donationSchema = new mongoose.Schema(
     // charityId = null حتى جمعية تقبل التبرع
     charityId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User_Data",          // الجمعية هي user بـ roleType: "charity"
+      ref: "Charity",            // ref الصح على Charity collection
       required: false,
       default: null,
     },
