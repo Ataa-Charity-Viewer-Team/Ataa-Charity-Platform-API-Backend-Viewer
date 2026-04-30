@@ -1,5 +1,6 @@
 import joi from "joi";
 import { monggoseID } from "../../middleware/validation.middleware.js";
+import { lib } from "crypto-js";
 
 // ==================== Regex ====================
 const phoneRegex = /^(002|\+2)?01[0125][0-9]{8}$/;
@@ -72,6 +73,7 @@ export const createCharitySchema = joi.object({
       "string.max": "Description must not exceed 500 characters",
       "string.empty": "Description is required",
     }),
+    licenseNumber: joi.string().length(8)
 });
 
 // ==================== 2) Update Charity ====================
