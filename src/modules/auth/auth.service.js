@@ -68,21 +68,13 @@ import { waitUntil } from '@vercel/functions';
 //   return res.status(201).json({ success: true, user: userData, message: "User registered successfully. Please check your email for OTP." });
 // };
 export const registerAccount = async (req, res, next) => {
-  const { userName, email, phone, password, address, roleType, licenseNumber } = req.body;
+  const { userName, email, phone, password, address, roleType } = req.body;
   
   const existingUser = await userModel.findOne({ email });
   if (existingUser) return next(new Error("Email already exists", { cause: 409 }));
 
   if (req.body.nationalID) {
     req.body.nationalID = encryptPhone({ plainText: req.body.nationalID });
-  }
-
-  let targetCharity = null;
-  if (roleType === roles.charity) {
-    if (!licenseNumber) return next(new Error("License number is required", { cause: 400 }));
-    
-    targetCharity = await charityModel.findOne({ licenseNumber });
-    if (!targetCharity) return next(new Error("No charity found with this license number", { cause: 404 }));
   }
 
   const passwordHash = hashPassword({ plainText: password });
@@ -94,13 +86,7 @@ export const registerAccount = async (req, res, next) => {
     password: passwordHash 
   });
 
-  // 🔥 نقل ملكية الجمعية بأمان
-  if (roleType === roles.charity && targetCharity) {
-    targetCharity.userId = newUser._id;
-    await targetCharity.save();
-  }
-
-  const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalId");
+  const userData = await userModel.findById(newUser._id).select("-password -__v -phone -nationalID");
   const sendCode = customAlphabet("0123456789", 6)();
   
   await otpModel.deleteMany({ userId: newUser._id, codeType: codeOTP.activateAccount });
@@ -114,7 +100,6 @@ export const registerAccount = async (req, res, next) => {
     message: "User registered successfully. Please check your email for OTP." 
   });
 };
-
 // ===========================2) Login  ===========================
 export const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -212,6 +197,7 @@ export const resetPassword = async (req, res, next) => {
   }
 
   user.password = hashPassword({ plainText: password });
+  user.passwordChangedAt = new Date();
   await user.save();
   await otpModel.deleteOne({ _id: otpRecord._id });
 

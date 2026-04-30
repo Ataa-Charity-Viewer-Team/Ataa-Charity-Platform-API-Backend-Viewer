@@ -4,19 +4,12 @@ import { charityModel } from "../../database/model/charity.model.js";
 import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
 // ===================== 1) Get Stats ===========================
 export const getStats = async (req, res, next) => {
-  // const {charityId} = req.params;
   const { user } = req;
 const charity = await charityModel.findOne({
-  userId: user.id
+  licenseNumber: user.licenseNumber
+
 });
 
-console.log(user._id);
-console.log(user.roleType);
-if (!charity) {
-    console.log("❌ Debug: userId searched =", user.id);
-    console.log("❌ Debug: user object =", user);
-    return next(new Error("Charity not found", { cause: 404 }));
-  }
     const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });
   const Pending_Donations = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.pending });
   const Accepted_Donations = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.accepted });
@@ -29,16 +22,15 @@ console.log(Total_Donations, Pending_Donations, Accepted_Donations, charity._id,
 
 // ===================== 2) Get Donations ================================
 export const getCharityDonations = async (req, res, next) => {
-        // const { charityId } = req.params;
   const { user } = req;
 const charity = await charityModel.findOne({
-  userId: user.id
+  licenseNumber: user.licenseNumber
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   const data = await donationModel
     .find({ charityId: charity._id })
-    .populate("donorId", "name email phone imageUrl address")
+    .populate("donorId", "  _id  imageUrl address")
     .populate("charityId", "charityName address email")
     .sort({ createdAt: -1 }); 
 
@@ -50,10 +42,9 @@ const charity = await charityModel.findOne({
 };
 // ===================== 3) Get Requests ================================
 export const getCharityRequests = async (req, res, next) => {
-  // const { charityId } = req.params;
   const { user } = req;
 const charity = await charityModel.findOne({
-  userId: user.id
+  licenseNumber: user.licenseNumber
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
@@ -63,13 +54,12 @@ const charity = await charityModel.findOne({
 
 // ===================== 4) Update Request Status ================================
 export const updateRequestStatus = async (req, res, next) => {
-  // const { id , charityId} = req.params;
   const { id } = req.params;
   const {user} = req;
   const { status } = req.body;
 
   const charity = await charityModel.findOne({
-  userId: user.id
+  licenseNumber: user.licenseNumber
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 

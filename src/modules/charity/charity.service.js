@@ -2,6 +2,7 @@ import { userModel, roles } from "../../database/model/user.model.js";
 import { charityModel } from "../../database/model/charity.model.js";
 import { advancedPagination } from "../../middleware/pagination.middleware.js";
 import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
+import { customAlphabet } from "nanoid";
 
 export const getAllCharities = async (req, res, next) => {
   const data = await advancedPagination(charityModel); 
@@ -33,6 +34,7 @@ export const createCharity = async (req, res, next) => {
   const charity = await charityModel.create({
     ...req.body,
     phone: encryptedPhone,
+    licenseNumber: customAlphabet("0123456789", 8)(), // ID وسيط
     userId: req.user._id
   }); 
   const result = await charityModel.findById(charity._id).select("-__v -phone");
@@ -47,7 +49,7 @@ export const updateCharity = async (req, res, next) => {
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));
   }
-if (charity.userId?.toString() !== user._id.toString())     
+if (charity.createdBy?.toString() !== user._id.toString())     
    return next(new Error(" You don't have permission to update this charity", { cause: 403 }));
 
   if (phone) {
@@ -65,7 +67,7 @@ export const deleteCharity = async (req, res, next) => {
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));
   }
-if (charity.userId?.toString() !== user._id.toString())     
+if (charity.createdBy?.toString() !== user._id.toString())     
    return next(new Error(" You don't have permission to delete this charity", { cause: 403 }));
   await charityModel.findByIdAndDelete(id);
 
