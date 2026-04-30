@@ -10,12 +10,12 @@ import { validation } from "../../middleware/validation.middleware.js";
 
 const router = Router();
 //  ====================== get stats ======================
-router.get("/stats/:id", authAction, authorization(charityEndpoint.getStats), asyncHandler(charityService.getStats));
+router.get("/stats/:license", authAction, authorization(charityEndpoint.getStats), asyncHandler(charityService.getStats));
 
-router.get("/donations/:id", authAction, authorization(charityEndpoint.getCharityDonations), asyncHandler(charityService.getCharityDonations));
+router.get("/donations/:license", authAction, authorization(charityEndpoint.getCharityDonations), asyncHandler(charityService.getCharityDonations));
 // ====================== get requests ======================
-router.get("/requests/:id", authAction, authorization(charityEndpoint.getCharityRequests), asyncHandler(charityService.getCharityRequests));
+router.get("/requests/:license", authAction, authorization(charityEndpoint.getCharityRequests), asyncHandler(charityService.getCharityRequests));
 // ====================== update request status ======================
-router.patch("/request/:id/:licenseNumber", authAction, authorization(charityEndpoint.updateRequestStatus), validation(dashboardValidation.updateRequestStatusSchema), asyncHandler(charityService.updateRequestStatus));
+router.patch("/request/:id/:license", authAction, authorization(charityEndpoint.updateRequestStatus), validation(dashboardValidation.updateRequestStatusSchema), asyncHandler(charityService.updateRequestStatus));
 
 export default router;
