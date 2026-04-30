@@ -56,7 +56,7 @@ const charity = await charityModel.findOne({
 
 // ===================== 4) Update Request Status ================================
 export const updateRequestStatus = async (req, res, next) => {
-  const { id } = req.params;
+  const { id,licenseNumber } = req.params;
   const {user} = req;
   const { status } = req.body;
 
