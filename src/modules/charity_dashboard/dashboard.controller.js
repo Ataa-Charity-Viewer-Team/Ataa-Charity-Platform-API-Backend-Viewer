@@ -10,11 +10,11 @@ import { validation } from "../../middleware/validation.middleware.js";
 
 const router = Router();
 //  ====================== get stats ======================
-router.get("/stats", authAction, authorization(charityEndpoint.getStats), asyncHandler(charityService.getStats));
+router.get("/stats/:id", authAction, authorization(charityEndpoint.getStats), asyncHandler(charityService.getStats));
 
-router.get("/donations", authAction, authorization(charityEndpoint.getCharityDonations), asyncHandler(charityService.getCharityDonations));
+router.get("/donations/:id", authAction, authorization(charityEndpoint.getCharityDonations), asyncHandler(charityService.getCharityDonations));
 // ====================== get requests ======================
-router.get("/requests", authAction, authorization(charityEndpoint.getCharityRequests), asyncHandler(charityService.getCharityRequests));
+router.get("/requests/:id", authAction, authorization(charityEndpoint.getCharityRequests), asyncHandler(charityService.getCharityRequests));
 // ====================== update request status ======================
 router.patch("/request/:id", authAction, authorization(charityEndpoint.updateRequestStatus), validation(dashboardValidation.updateRequestStatusSchema), asyncHandler(charityService.updateRequestStatus));
 

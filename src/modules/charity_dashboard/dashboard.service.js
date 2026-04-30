@@ -5,10 +5,11 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 // ===================== 1) Get Stats ===========================
 export const getStats = async (req, res, next) => {
   const { user } = req;
+  const {licenseNumber} = req.params;
 const charity = await charityModel.findOne({
-  userId: user._id, licenseNumber: user.licenseNumber 
-
+  licenseNumber: licenseNumber
 });
+  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
     const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });
   const Pending_Donations = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.pending });
@@ -23,8 +24,9 @@ console.log(Total_Donations, Pending_Donations, Accepted_Donations, charity._id,
 // ===================== 2) Get Donations ================================
 export const getCharityDonations = async (req, res, next) => {
   const { user } = req;
+    const {licenseNumber} = req.params;
 const charity = await charityModel.findOne({
-  licenseNumber: user.licenseNumber
+  licenseNumber: licenseNumber
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
@@ -43,11 +45,11 @@ const charity = await charityModel.findOne({
 // ===================== 3) Get Requests ================================
 export const getCharityRequests = async (req, res, next) => {
   const { user } = req;
+  const {licenseNumber} = req.params;
 const charity = await charityModel.findOne({
-  licenseNumber: user.licenseNumber
+  licenseNumber: licenseNumber
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
-
   const data = await advancedPagination(donationModel, { charityId: charity._id, status: donationStatus.pending });
   return res.status(200).json({ success: true, data });
 };
