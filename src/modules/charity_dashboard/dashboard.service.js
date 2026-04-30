@@ -9,11 +9,15 @@ export const getStats = async (req, res, next) => {
 const charity = await charityModel.findOne({
   userId: user.id
 });
+
 console.log(user._id);
 console.log(user.roleType);
-  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
- 
-  const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });
+if (!charity) {
+    console.log("❌ Debug: userId searched =", user.id);
+    console.log("❌ Debug: user object =", user);
+    return next(new Error("Charity not found", { cause: 404 }));
+  }
+    const Total_Donations = await donationModel.countDocuments({ charityId: charity._id });
   const Pending_Donations = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.pending });
   const Accepted_Donations = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.accepted });
 console.log(Total_Donations, Pending_Donations, Accepted_Donations, charity._id,"charityId");
