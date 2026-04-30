@@ -6,7 +6,7 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 export const getStats = async (req, res, next) => {
   const { user } = req;
 const charity = await charityModel.findOne({
-  licenseNumber: user.licenseNumber
+  userId: user._id, licenseNumber: user.licenseNumber 
 
 });
 
