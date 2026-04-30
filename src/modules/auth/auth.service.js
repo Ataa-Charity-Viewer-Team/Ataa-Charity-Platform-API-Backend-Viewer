@@ -354,6 +354,7 @@ import { templet } from '../../utils/sendemails/generate.html.js';
 import { codeOTP, otpModel } from "../../database/model/otp.model.js";
 import { waitUntil } from '@vercel/functions';
 
+
 // ===========================1) Register Account===========================
 export const registerAccount = async (req, res, next) => {
   const { userName, email, phone, password, address, roleType } = req.body;
