@@ -84,7 +84,9 @@ const userSchema = new mongoose.Schema(
   {
     userName: {
       type: String,
-      required: [true, "Name is required"],
+      required: function() {
+        return this.roleType === roles.user || this.roleType === roles.admin;
+      },
       minlength: [3, "Name must be at least 3 characters"],
       maxlength: [30, "Name must not exceed 30 characters"],
       trim: true,
