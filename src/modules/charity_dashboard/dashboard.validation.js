@@ -14,5 +14,5 @@ export const updateRequestStatusSchema = joi.object({
       "any.required": "Status is required",
       "any.only": `Status must be one of: pending, accepted, rejected`,
     }),
-  licenseNumber: joi.string().length(8)
+  license: joi.string().length(8)
 });

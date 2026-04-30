@@ -34,7 +34,7 @@ export const createCharity = async (req, res, next) => {
   const charity = await charityModel.create({
     ...req.body,
     phone: encryptedPhone,
-    licenseNumber: customAlphabet("0123456789", 8)(), // ID وسيط
+    license: customAlphabet("0123456789", 8)(),
     userId: req.user._id
   }); 
   const result = await charityModel.findById(charity._id).select("-__v -phone");

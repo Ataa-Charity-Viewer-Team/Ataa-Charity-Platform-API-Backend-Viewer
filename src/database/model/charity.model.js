@@ -43,7 +43,7 @@ export const charitySchema = new mongoose.Schema(
       minlength: [10, "Description must be at least 10 characters"],
       maxlength: [500, "Description must not exceed 500 characters"],
     },
-    licenseNumber: {
+    license: {
     type: String,
     trim: true,
     unique: true

@@ -5,9 +5,9 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 // ===================== 1) Get Stats ===========================
 export const getStats = async (req, res, next) => {
   const { user } = req;
-  const {licenseNumber} = req.params;
+  const {license} = req.params;
 const charity = await charityModel.findOne({
-  licenseNumber: licenseNumber
+  license: license
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
@@ -24,9 +24,9 @@ console.log(Total_Donations, Pending_Donations, Accepted_Donations, charity._id,
 // ===================== 2) Get Donations ================================
 export const getCharityDonations = async (req, res, next) => {
   const { user } = req;
-    const {licenseNumber} = req.params;
+    const {license} = req.params;
 const charity = await charityModel.findOne({
-  licenseNumber: licenseNumber
+  license: license
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
@@ -45,9 +45,9 @@ const charity = await charityModel.findOne({
 // ===================== 3) Get Requests ================================
 export const getCharityRequests = async (req, res, next) => {
   const { user } = req;
-  const {licenseNumber} = req.params;
+  const {license} = req.params;
 const charity = await charityModel.findOne({
-  licenseNumber: licenseNumber
+  license: license
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
   const data = await advancedPagination(donationModel, { charityId: charity._id, status: donationStatus.pending });
@@ -56,12 +56,12 @@ const charity = await charityModel.findOne({
 
 // ===================== 4) Update Request Status ================================
 export const updateRequestStatus = async (req, res, next) => {
-  const { id,licenseNumber } = req.params;
+  const { id,license } = req.params;
   const {user} = req;
   const { status } = req.body;
 
   const charity = await charityModel.findOne({
-  licenseNumber: user.licenseNumber
+  license: license
 });
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 

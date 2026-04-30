@@ -72,7 +72,7 @@ export const createCharitySchema = joi.object({
       "string.max": "Description must not exceed 500 characters",
       "string.empty": "Description is required",
     }),
-    licenseNumber: joi.string().length(8)
+    license: joi.string().length(8)
 });
 
 // ==================== 2) Update Charity ====================
