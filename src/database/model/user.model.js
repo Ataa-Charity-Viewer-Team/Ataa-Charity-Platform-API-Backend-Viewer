@@ -70,12 +70,6 @@ const userSchema = new mongoose.Schema(
     passwordChangedAt: {
       type: Date,
     },
-    // licenseNumber: {
-    //   type: String,
-    //   trim: true,
-    //   unique: true,
-    //   sparse: true,
-    // },
     nationalID: {
       type: String,
       unique: true,
