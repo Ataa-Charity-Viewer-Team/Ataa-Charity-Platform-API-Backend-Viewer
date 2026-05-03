@@ -59,8 +59,7 @@ export const updateRequestStatus = async (req, res, next) => {
   const charity = await getCharityByLicense(license, next);
   if (!charity) return;
 
-  // إصلاح: تحقق إن الـ donation فعلاً بتاع الجمعية دي
-  const request = await donationModel.findOne({ _id: id, charityId: charity._id });
+  const request = await donationModel.findById(id);
   if (!request) return next(new Error("Request not found or not yours", { cause: 404 }));
 
   if (request.status === donationStatus.accepted) {
