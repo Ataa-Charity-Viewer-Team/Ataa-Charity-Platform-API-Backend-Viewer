@@ -99,10 +99,16 @@ export const registerSchema = joi.object({
     otherwise: joi.forbidden(),
   }),
 
-  // nationalID ممنوع كلياً من الـ register العام
-  nationalID: joi.forbidden().messages({
-    "any.unknown": "National ID is not allowed in registration",
-  }),
+  nationalID:joi.when("roleType", {
+    is:"admin",
+    then:  joi.string().trim().pattern(nationalRegex).required()
+      .messages({
+"string.empty":"National ID is required",
+"string.pattern.base": "Invalid national ID format",
+"any.required":"National ID is required for admin",
+      }),
+    otherwise: joi.forbidden(),
+    })
 });
 
 // ==================== 2) Login ====================

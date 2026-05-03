@@ -55,6 +55,7 @@ export const registerAccount = async (req, res, next) => {
       userId: newUser._id,
       charityName,
       licenseNumber,
+      email,
       phone:charityPhone,
       address,
       description:    charityDescription || "No description provided",
