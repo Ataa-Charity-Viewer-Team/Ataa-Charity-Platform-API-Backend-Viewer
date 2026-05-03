@@ -3,7 +3,7 @@ import { monggoseID } from "../../middleware/validation.middleware.js";
 
 // ==================== Regex ====================
 const phoneRegex = /^(002|\+2)?01[0125][0-9]{8}$/;
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|edu)$/
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.(com|net|edu)$/;
 
 // ==================== Charity ID Schema ====================
 export const charityIdSchema = joi.object({
@@ -129,3 +129,64 @@ export const updateCharitySchema = joi
   .messages({
     "object.missing": "At least one field must be provided",
   });
+
+// ==================== 3) Update Charity Approval Status ====================
+export const updateCharityApprovalStatusSchema = joi.object({
+  id: monggoseID("Charity ID").required(),
+
+  
+  status: joi
+    .string()
+    .valid("pending", "approved", "rejected")
+    .required()
+    .messages({
+      "any.required": "Status is required",
+      "any.only": `Status must be one of: pending, approved, rejected`,
+    }),
+
+  rejectionReason: joi.string().when("status", {
+    is: "rejected",
+    then: joi
+      .string()
+      .required()
+      .messages({
+        "any.required": "Rejection reason is required when status is rejected",
+        "string.empty": "Rejection reason is required when status is rejected",
+      }),
+    otherwise: joi.string().optional(),
+  }),
+});
+
+// ==================== 4) Admin: Approve Charity ====================
+export const approveCharitySchema = joi.object({
+  id: monggoseID("Charity ID").required(),
+});
+
+// ==================== 5) Admin: Reject Charity ====================
+export const rejectCharitySchema = joi.object({
+  id: monggoseID("Charity ID").required(),
+
+  rejectionReason: joi
+    .string()
+    .min(10)
+    .max(300)
+    .trim()
+    .required()
+    .messages({
+      "any.required": "Rejection reason is required",
+      "string.empty": "Rejection reason cannot be empty",
+      "string.min": "Rejection reason must be at least 10 characters",
+      "string.max": "Rejection reason must not exceed 300 characters",
+    }),
+});
+
+// ==================== 6) Update Charity License ====================
+export const updateCharityLicenseSchema = joi
+  .object({
+    id: monggoseID("Charity ID").required(),
+    license: joi.string().required().messages({
+      "any.required": "License is required",
+      "string.empty": "License is required",
+    }),
+  })
+  .or("license");

@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
 export const charityApprovalStatus = {
-  pending:  "pending",
+  pending: "pending",
   approved: "approved",
   rejected: "rejected",
 };
 
-export const charitySchema = new mongoose.Schema(
+const charitySchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,6 +14,7 @@ export const charitySchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+
     charityName: {
       type: String,
       required: [true, "Charity name is required"],
@@ -21,27 +22,32 @@ export const charitySchema = new mongoose.Schema(
       maxlength: [30, "Name must not exceed 30 characters"],
       trim: true,
     },
-   email: {
+
+    email: {
       type: String,
       match: [
         /^[a-zA-Z]{1,}\d{0,}[a-zA-Z0-9]{1,}[@][a-z]{1,}[\.](com|\.edu|\.net){1,3}$/,
-        "Invalid email format"],
+        "Invalid email format",
+      ],
       required: [true, "Email is required"],
       unique: true,
       lowercase: true,
       trim: true,
     },
+
     licenseNumber: {
       type: String,
       required: [true, "License number is required"],
       unique: true,
       trim: true,
     },
+
     phone: {
       type: String,
       required: [true, "Phone is required"],
       trim: true,
     },
+
     address: {
       type: String,
       required: [true, "Address is required"],
@@ -49,19 +55,25 @@ export const charitySchema = new mongoose.Schema(
       maxlength: [100, "Address must not exceed 100 characters"],
       trim: true,
     },
+
     description: {
       type: String,
       required: [true, "Description is required"],
       minlength: [10, "Description must be at least 10 characters"],
       maxlength: [500, "Description must not exceed 500 characters"],
     },
+
     approvalStatus: {
       type: String,
       enum: Object.values(charityApprovalStatus),
       default: charityApprovalStatus.pending,
     },
+
     rejectionReason: {
       type: String,
+      required: function () {
+        return this.approvalStatus === charityApprovalStatus.rejected;
+      },
       default: null,
     },
   },
