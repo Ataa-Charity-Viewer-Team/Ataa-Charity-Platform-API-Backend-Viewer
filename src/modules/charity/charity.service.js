@@ -14,19 +14,15 @@ export const getAllCharities = async (req, res, next) => {
 // ===================== Get Single Charity =====================
 export const getCharity = async (req, res, next) => {
   const { id } = req.params;
-  const charity = await charityModel.findById(id).populate("_id charityName email address description approvalStatus");
-  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
-  if (!charity.phone) return next(new Error("Charity phone not found", { cause: 404 }));
-
-  try {
-    charity.phone = decryptPhone({ cipherText: charity.phone });
-  } catch (err) {
-    return next(new Error("Failed to decrypt phone number", { cause: 500 }));
+  const charity = await charityModel.findById(id);
+  if (!charity) {
+    return next(new Error("Charity not found", { cause: 404 }));
   }
-
+  if (charity.phone) {
+    charity.phone = decryptPhone({ cipherText: charity.phone });
+  }
   return res.status(200).json({ success: true, charity });
 };
-
 // ===================== Update Charity (Charity Owner Only) =====================
 export const updateCharity = async (req, res, next) => {
   const { id } = req.params;
