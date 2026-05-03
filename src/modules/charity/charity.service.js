@@ -6,14 +6,17 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 
 // ===================== Get All Charities =====================
 export const getAllCharities = async (req, res, next) => {
-  const data = await advancedPagination(charityModel, { select: "-phone -__v" }).populate("_id charityName email address description approvalStatus");
+  const data = await advancedPagination(charityModel, {
+    select: "-phone -__v",
+    populate: "_id charityName email address description approvalStatus",
+  });
+
   res.status(200).json({ success: true, data });
 };
-
 // ===================== Get Single Charity =====================
 export const getCharity = async (req, res, next) => {
   const { id } = req.params;
-  const charity = await charityModel.findById(id);
+  const charity = await charityModel.findById(id).populate("_id charityName email address description approvalStatus");
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
   if (!charity.phone) return next(new Error("Charity phone not found", { cause: 404 }));
 
