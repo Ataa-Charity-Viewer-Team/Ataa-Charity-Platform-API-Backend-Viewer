@@ -9,7 +9,7 @@ export const getAllCharities = async (req, res, next) => {
   const data = await advancedPagination(charityModel,{},1,10,
    "charityName email address charityDescription phone licenseNumber" );
  if(data.phone || data.licenseNumber){
-    data.phone = decryptPhone({ cipherText: data.phone || data.licenseNumber });
+     data = decryptPhone({ cipherText: data.phone || data.licenseNumber });
   }
   res.status(200).json({ success: true, data });
 };
@@ -20,8 +20,8 @@ export const getCharity = async (req, res, next) => {
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));
   }
-  if (charity.phone) {
-    charity.phone = decryptPhone({ cipherText: charity.phone });
+  if (charity.phone || charity.licenseNumber) {
+    charity = decryptPhone({ cipherText: charity.phone|| charity.licenseNumber });
   }
   return res.status(200).json({ success: true, charity });
 };
