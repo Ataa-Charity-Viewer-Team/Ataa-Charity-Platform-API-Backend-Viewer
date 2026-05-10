@@ -1,6 +1,6 @@
 
 import { donationModel } from "../../database/model/donation.model.js";
-import { charityModel, charityApprovalStatus } from "../../database/model/charity.model.js";
+import {  charityApprovalStatus } from "../../database/model/charity.model.js";
 import { advancedPagination } from '../../middleware/pagination.middleware.js';
 import cloudinary from "../../utils/uploadfile/cloudnairy.uploadserver.js";
 
@@ -24,9 +24,15 @@ export const createDonation = async (req, res, next) => {
   // const charity = await charityModel.findById(charityId);
   // if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
-  // إصلاح: تحقق إن الجمعية approved قبل ما تقبل تبرع
-  if (charity.approvalStatus !== charityApprovalStatus.approved) {
-    return next(new Error("This charity is not approved to receive donations", { cause: 400 }));
+  // if (charity.approvalStatus !== charityApprovalStatus.approved) {
+  //   return next(new Error("This charity is not approved to receive donations", { cause: 400 }));
+  // }
+  const approvedCharities = await charityModel.find({
+    approvalStatus: charityApprovalStatus.approved,
+  });
+
+  if (!approvedCharities.length) {
+    return next(new Error("No approved charities available to receive donations", { cause: 400 }));
   }
 
   const imageUrl = [];

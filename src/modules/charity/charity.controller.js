@@ -50,7 +50,6 @@ router.get("/:id",      authAction, authorization(charityEndpoint.getCharity),  
 router.patch("/:id",    authAction, authorization(charityEndpoint.updateCharity),   validation(charityValidation.updateCharitySchema), asyncHandler(charityService.updateCharity));
 router.delete("/:id",   authAction, authorization(charityEndpoint.deleteCharity),   validation(charityValidation.charityIdSchema), asyncHandler(charityService.deleteCharity));
 
-// إضافة: routes للـ approve/reject حسب الفلو
 router.patch("/:id/approve", authAction, authorization(charityEndpoint.approveCharity), asyncHandler(charityService.approveCharity));
 router.patch("/:id/reject",  authAction, authorization(charityEndpoint.rejectCharity),  asyncHandler(charityService.rejectCharity));
 
