@@ -3,7 +3,7 @@ import { advancedPagination } from "../../middleware/pagination.middleware.js";
 
 // =================================== 1) Get All Reports ================================
 export const getAllReports = async (req, res, next) => {
-  const data = await advancedPagination(reportModel);
+  const data = await advancedPagination(reportModel,'userId userName charityName description senderType createdAt' );
   return res.status(200).json({ success: true, data });
 };
 // =================================== 2) Create Report ================================
