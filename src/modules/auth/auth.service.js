@@ -55,7 +55,7 @@ export const registerAccount = async (req, res, next) => {
       phone:charityPhone,
       address,
       description:    charityDescription || "No description provided",
-      approvalStatus: charityApprovalStatus.pending,  // ← ينتظر موافقة الأدمن
+      approvalStatus: charityApprovalStatus.pending,  
     });
 
     if (!charity) {
