@@ -47,7 +47,8 @@ export const getCharityRequests = async (req, res, next) => {
   const charity = await getCharityByLicense(license, next);
   if (!charity) return;
 
-  const data = await advancedPagination(donationModel, { charityId: charity._id, status: donationStatus.pending });
+  const data = await advancedPagination(donationModel,{},1,10,
+   "donorId charityId status createdAt" );
   return res.status(200).json({ success: true, data });
 };
 
