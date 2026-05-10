@@ -16,10 +16,6 @@ import { waitUntil } from '@vercel/functions';
 export const registerAccount = async (req, res, next) => {
   const { userName, email, phone, password, address, roleType } = req.body;
 
-  if (roleType === roles.admin) {
-    return next(new Error("Admin registration is not allowed", { cause: 403 }));
-  }
-
   const existingUser = await userModel.findOne({ email });
   if (existingUser) return next(new Error("Email already exists", { cause: 409 }));
 
