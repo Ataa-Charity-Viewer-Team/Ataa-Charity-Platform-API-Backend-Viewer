@@ -20,8 +20,8 @@ export const getCharity = async (req, res, next) => {
   if (!charity) {
     return next(new Error("Charity not found", { cause: 404 }));
   }
-  if (charity.phone || charity.licenseNumber) {
-    charity = decryptPhone({ cipherText: charity.phone|| charity.licenseNumber });
+  if (charity.phone) {
+    charity.phone = decryptPhone({ cipherText: charity.phone });
   }
   return res.status(200).json({ success: true, charity });
 };
