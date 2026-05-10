@@ -11,7 +11,7 @@ import { validation } from "../../middleware/validation.middleware.js";
 
 const router = Router();
 //  ====================== get stats ======================
-router.get("/stats/:license", authAction, authorization(charityEndpoint.getStats), asyncHandler(charityService.getStats));
+router.get("/stats", authAction, authorization(charityEndpoint.getStats), asyncHandler(charityService.getStats));
 
 router.get("/donations", authAction, authorization(charityEndpoint.getCharityDonations), asyncHandler(charityService.getCharityDonations));
 // ====================== get requests ======================
