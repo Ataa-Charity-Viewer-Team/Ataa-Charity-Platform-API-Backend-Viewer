@@ -58,7 +58,7 @@ export const updateRequestStatus = async (req, res, next) => {
 
   // const charity = await getCharityByLicense(license, next);
   // if (!charity) return;
-
+ const charityId = req.user._id; // Assuming the charity ID is stored in the user object after authentication
   const request = await donationModel.findById(id);
   if (!request) return next(new Error("Request not found with this id by donation", { cause: 404 }));
 
@@ -66,7 +66,7 @@ export const updateRequestStatus = async (req, res, next) => {
     return next(new Error("Already accepted", { cause: 400 }));
   }
 
-  const updatedRequest = await donationModel.findByIdAndUpdate(id, { status }, { new: true });
+  const updatedRequest = await donationModel.findByIdAndUpdate(id, { status, charityId: charityId }, { new: true });
 
   await notificationModel.create({
     userId:     request.donorId,
