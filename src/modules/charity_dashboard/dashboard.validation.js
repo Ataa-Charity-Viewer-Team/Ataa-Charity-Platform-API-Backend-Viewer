@@ -15,8 +15,8 @@ export const updateRequestStatusSchema = joi.object({
       "any.required": "Status is required",
       "any.only": `Status must be one of: pending, accepted, rejected`,
     }),
-  license: joi.string().required().messages({
-    "any.required": "License is required",
-    "string.empty": "License is required",
-  }),
+  // license: joi.string().required().messages({
+  //   "any.required": "License is required",
+  //   "string.empty": "License is required",
+  // }),
 });
