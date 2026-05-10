@@ -12,9 +12,9 @@ const getCharityByLicense = async (license, next) => {
 
 // ===================== 1) Get Stats ===========================
 export const getStats = async (req, res, next) => {
-  const { license } = req.params;
-  const charity = await getCharityByLicense(license, next);
-  if (!charity) return;
+  // const { license } = req.params;
+  // const charity = await getCharityByLicense(license, next);
+  // if (!charity) return;
 
   const Total_Donations    = await donationModel.countDocuments();
   const Pending_Donations  = await donationModel.countDocuments({  status: donationStatus.pending });
