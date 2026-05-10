@@ -16,9 +16,9 @@ export const getStats = async (req, res, next) => {
   const charity = await getCharityByLicense(license, next);
   if (!charity) return;
 
-  const Total_Donations    = await donationModel.countDocuments({ charityId: charity._id });
-  const Pending_Donations  = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.pending });
-  const Accepted_Donations = await donationModel.countDocuments({ charityId: charity._id, status: donationStatus.accepted });
+  const Total_Donations    = await donationModel.countDocuments();
+  const Pending_Donations  = await donationModel.countDocuments({  status: donationStatus.pending });
+  const Accepted_Donations = await donationModel.countDocuments({ status: donationStatus.accepted });
 
   return res.status(200).json({
     success: true,
@@ -28,14 +28,13 @@ export const getStats = async (req, res, next) => {
 
 // ===================== 2) Get Donations ================================
 export const getCharityDonations = async (req, res, next) => {
-  const { license } = req.params;
-  const charity = await getCharityByLicense(license, next);
-  if (!charity) return;
+  // const { license } = req.params;
+  // const charity = await getCharityByLicense(license, next);
+  // if (!charity) return;
 
   const data = await donationModel
-    .find({ charityId: charity._id })
-    .populate("donorId", "_id imageUrl address")
-    .populate("charityId", "charityName address")
+    .find({ status:"pending" })
+    .populate("donorId", "_id imageUrl address description type size quantity condition createdAt")
     .sort({ createdAt: -1 });
 
   return res.status(200).json({ success: true, count: data.length, data });
@@ -43,22 +42,22 @@ export const getCharityDonations = async (req, res, next) => {
 
 // ===================== 3) Get Requests ================================
 export const getCharityRequests = async (req, res, next) => {
-  const { license } = req.params;
-  const charity = await getCharityByLicense(license, next);
-  if (!charity) return;
+  // const { license } = req.params;
+  // const charity = await getCharityByLicense(license, next);
+  // if (!charity) return;
 
   const data = await advancedPagination(donationModel,{},1,10,
-   "donorId charityId status createdAt" );
+   "donorId secure_url type size quantity condition description status createdAt" );
   return res.status(200).json({ success: true, data });
 };
 
 // ===================== 4) Update Request Status ================================
 export const updateRequestStatus = async (req, res, next) => {
-  const { id, license } = req.params;
+  const { id } = req.params;
   const { status } = req.body;
 
-  const charity = await getCharityByLicense(license, next);
-  if (!charity) return;
+  // const charity = await getCharityByLicense(license, next);
+  // if (!charity) return;
 
   const request = await donationModel.findById(id);
   if (!request) return next(new Error("Request not found or not yours", { cause: 404 }));
