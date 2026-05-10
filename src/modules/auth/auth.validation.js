@@ -59,11 +59,7 @@ export const registerSchema = joi.object({
       "any.required": "Address is required",
     }),
 
-  // ← فقط user أو charity — admin مش بيسجل من هنا
-  roleType: joi.string().valid("user", "charity").default("user")
-    .messages({
-      "any.only": "Role must be user or charity",
-    }),
+  roleType: joi.string().valid("user", "charity","admin").default("user"),
 
   // ===== Charity-only fields =====
   licenseNumber: joi.when("roleType", {

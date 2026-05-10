@@ -1,19 +1,4 @@
-// const userSchema = new mongoose.Schema(
-//   {
-//     nationalID: {
-//       type: String,
-//       unique: true,
-//       sparse: true,
-//       trim: true,
-//     },
-//   },
-//   {
-//     timestamps: true,
-//     collection: "User_Data",
-//   }
-// );
 
-// export const userModel = mongoose.model("User_Data", userSchema);
 import mongoose from "mongoose";
 
 export const roles = {
