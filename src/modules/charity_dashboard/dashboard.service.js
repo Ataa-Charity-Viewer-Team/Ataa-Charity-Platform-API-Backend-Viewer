@@ -60,7 +60,7 @@ export const updateRequestStatus = async (req, res, next) => {
   // if (!charity) return;
 
   const request = await donationModel.findById(id);
-  if (!request) return next(new Error("Request not found or not yours", { cause: 404 }));
+  if (!request) return next(new Error("Request not found with this id by donation", { cause: 404 }));
 
   if (request.status === donationStatus.accepted) {
     return next(new Error("Already accepted", { cause: 400 }));
