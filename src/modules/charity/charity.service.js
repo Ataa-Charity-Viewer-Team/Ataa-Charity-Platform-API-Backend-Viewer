@@ -7,7 +7,7 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 // ===================== Get All Charities =====================
 export const getAllCharities = async (req, res, next) => {
   const data = await advancedPagination(charityModel,{},1,10,
-   "charityName email address charityDescription phone licenseNumber" );
+   "charityName email address charityDescription phone licenseNumber approvalStatus " );
  if(data.phone){
      data = decryptPhone({ cipherText: data.phone });
   }
