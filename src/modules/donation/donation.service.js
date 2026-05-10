@@ -19,10 +19,10 @@ const uploadToCloud = (buffer, userId) => {
 // ===================== create donation ======================
 export const createDonation = async (req, res, next) => {
   const { user } = req;
-  const { charityId, type, size, quantity, description, condition } = req.body;
-
-  const charity = await charityModel.findById(charityId);
-  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
+  const {  type, size, quantity, description, condition } = req.body;
+// remove choose charityId from body and get it from params
+  // const charity = await charityModel.findById(charityId);
+  // if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   // إصلاح: تحقق إن الجمعية approved قبل ما تقبل تبرع
   if (charity.approvalStatus !== charityApprovalStatus.approved) {
