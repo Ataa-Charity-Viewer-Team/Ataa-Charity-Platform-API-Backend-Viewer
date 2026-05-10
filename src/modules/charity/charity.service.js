@@ -6,12 +6,13 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 
 // ===================== Get All Charities =====================
 export const getAllCharities = async (req, res, next) => {
-  const data = await advancedPagination(charityModel,{},1,10,
+  const result = await advancedPagination(charityModel,{},1,10,
    "charityName email address charityDescription phone licenseNumber approvalStatus " );
- if(data.phone){
-     data = decryptPhone({ cipherText: data.phone });
-  }
-  res.status(200).json({ success: true, data });
+   result.Data = result.Data.map((item) => {
+    if (item.phone) {
+      item.phone = decryptPhone({ cipherText: item.phone });
+    }
+  res.status(200).json({ success: true, result });
 };
 // ===================== Get Single Charity =====================
 export const getCharity = async (req, res, next) => {
