@@ -23,7 +23,7 @@ const STATUS_VALUES_ALL = [...STATUS_VALUES_EN, ...STATUS_VALUES_AR];
 
 // ==================== 1) Create Donation ====================
 export const createDonationSchema = joi.object({
-  charityId: monggoseID("charityId").required(),
+  // charityId: monggoseID("charityId").required(),
 
   type: joi.string()
     .valid(...donationTypes.map(t => t.en), ...donationTypes.map(t => t.ar))
@@ -69,27 +69,27 @@ export const createDonationSchema = joi.object({
     }),
 });
 
-// ==================== 2) Update Donation Status ====================
-export const updateDonationStatusSchema = joi.object({
-  id: monggoseID("Donation ID").required(),
-  status: joi.string().valid(...STATUS_VALUES_ALL).required()
-    .messages({
-      "any.required": "Status is required",
-      "any.only": `Status must be one of: ${STATUS_VALUES_AR.join(", ")}`,
-    }),
-});
+// // ==================== 2) Update Donation Status ====================
+// export const updateDonationStatusSchema = joi.object({
+//   id: monggoseID("Donation ID").required(),
+//   status: joi.string().valid(...STATUS_VALUES_ALL).required()
+//     .messages({
+//       "any.required": "Status is required",
+//       "any.only": `Status must be one of: ${STATUS_VALUES_AR.join(", ")}`,
+//     }),
+// });
 
-// ==================== 3) Accept Donation (Charity) ====================
-export const acceptDonationSchema = joi.object({
-  id: monggoseID("Donation ID").required(),
-});
+// // ==================== 3) Accept Donation (Charity) ====================
+// export const acceptDonationSchema = joi.object({
+//   id: monggoseID("Donation ID").required(),
+// });
 
-// ==================== 4) Update Request Status (Charity) ====================
-export const updateRequestStatusSchema = joi.object({
-  id: monggoseID("Request ID").required(),
-  status: joi.string().valid(...STATUS_VALUES_ALL).required()
-    .messages({
-      "any.required": "Status is required",
-      "any.only": `Status must be one of: ${STATUS_VALUES_AR.join(", ")}`,
-    }),
-});
+// // ==================== 4) Update Request Status (Charity) ====================
+// export const updateRequestStatusSchema = joi.object({
+//   id: monggoseID("Request ID").required(),
+//   status: joi.string().valid(...STATUS_VALUES_ALL).required()
+//     .messages({
+//       "any.required": "Status is required",
+//       "any.only": `Status must be one of: ${STATUS_VALUES_AR.join(", ")}`,
+//     }),
+// });
