@@ -2,6 +2,7 @@ import { advancedPagination } from "../../middleware/pagination.middleware.js";
 import { donationModel, donationStatus } from "../../database/model/donation.model.js";
 import { charityModel } from "../../database/model/charity.model.js";
 import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
+import { decryptPhone } from "../../utils/encryption/encryption.js";
 
 // helper: جيب الجمعية وتحقق إنها موجودة
 const getCharityByLicense = async (license, next) => {
@@ -35,6 +36,27 @@ export const getCharityDonations = async (req, res, next) => {
 
   const data = await advancedPagination(donationModel,{},1,10,
    "donorId secure_url type size quantity condition description status createdAt, address" );
+     const populatedData = await donationModel.populate(data.Data, {
+    path: "donorId",
+    select: "userName phone"
+  });
+      const decryptedDonations = populatedData.map(donation => {
+      const donationObj = donation.toObject ? donation.toObject() : { ...donation };
+      
+      if (donationObj.donorId && donationObj.donorId.phone) {
+        donationObj.donorId.phone = decryptPhone({ 
+          cipherText: donationObj.donorId.phone 
+        });
+      }
+      
+      return donationObj;
+    });
+
+    // تحديث البيانات المفككة
+    data.Data = decryptedDonations;
+
+    
+  data.Data = populatedData.Data
 
 
   return res.status(200).json({ success: true, count: data.length, data });
