@@ -22,10 +22,9 @@ const donationSchema = new mongoose.Schema(
       required: true,
     },
 
-    // charityId = null حتى جمعية تقبل التبرع
     charityId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Charity",            // ref الصح على Charity collection
+      ref: "Charity",           
       required: false,
       default: null,
     },
