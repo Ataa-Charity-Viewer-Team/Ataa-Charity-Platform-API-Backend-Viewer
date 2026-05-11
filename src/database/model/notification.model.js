@@ -14,7 +14,7 @@ export const notificationSchema = new mongoose.Schema(
     donationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Donation",
-      required: true,
+      required: false,
     },
     status: {
       type: String,
