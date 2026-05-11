@@ -19,10 +19,11 @@ export const getStats = async (req, res, next) => {
   const Total_Donations    = await donationModel.countDocuments();
   const Pending_Donations  = await donationModel.countDocuments({  status: donationStatus.pending });
   const Accepted_Donations = await donationModel.countDocuments({ status: donationStatus.accepted });
+  const Rejected_Donations = await donationModel.countDocuments({ status: donationStatus.rejected });
 
   return res.status(200).json({
     success: true,
-    stats: { Total_Donations, Pending_Donations, Accepted_Donations },
+    stats: { Total_Donations, Pending_Donations, Accepted_Donations, Rejected_Donations },
   });
 };
 
