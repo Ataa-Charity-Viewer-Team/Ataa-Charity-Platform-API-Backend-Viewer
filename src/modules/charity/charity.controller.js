@@ -47,10 +47,12 @@ const router = Router();
 
 router.get("/charities", authAction, authorization(charityEndpoint.getAllCharities), asyncHandler(charityService.getAllCharities));
 router.get("/:id",      authAction, authorization(charityEndpoint.getCharity),     validation(charityValidation.charityIdSchema), asyncHandler(charityService.getCharity));
-router.patch("/:id",    authAction, authorization(charityEndpoint.updateCharity),   validation(charityValidation.updateCharitySchema), asyncHandler(charityService.updateCharity));
-router.delete("/:id",   authAction, authorization(charityEndpoint.deleteCharity),   validation(charityValidation.charityIdSchema), asyncHandler(charityService.deleteCharity));
 
-router.patch("/:id/approve", authAction, authorization(charityEndpoint.approveCharity), asyncHandler(charityService.approveCharity));
-router.patch("/:id/reject",  authAction, authorization(charityEndpoint.rejectCharity),  asyncHandler(charityService.rejectCharity));
+router.patch("/:id",    authAction, authorization(charityEndpoint.updateCharity),   validation(charityValidation.updateCharitySchema), asyncHandler(charityService.updateCharity));
+
+router.delete("/:id",   authAction, authorization(charityEndpoint.deleteCharity),   validation(charityValidation.deleteCharitySchema), asyncHandler(charityService.deleteCharity));
+
+router.patch("/:id/approve", authAction, authorization(charityEndpoint.approveCharity),validation(charityValidation.approvalReasonSchema) ,asyncHandler(charityService.approveCharity));
+router.patch("/:id/reject",  authAction, authorization(charityEndpoint.rejectCharity),  validation(charityValidation.rejectionReasonSchema), asyncHandler(charityService.rejectCharity));
 
 export default router;

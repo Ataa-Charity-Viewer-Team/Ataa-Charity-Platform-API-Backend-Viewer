@@ -7,7 +7,7 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 // ===================== Get All Charities =====================
 export const getAllCharities = async (req, res, next) => {
   const result = await advancedPagination(
-    charityModel,{},1,10,"charityName email address charityDescription phone licenseNumber approvalStatus");
+    charityModel,{},1,10,"charityName email address description phone licenseNumber approvalStatus");
   result.Data = result.Data.map((item) => {
     return {
       ...item,
@@ -75,7 +75,7 @@ export const deleteCharity = async (req, res, next) => {
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   if (
-    user.role !== roles.admin &&
+    user.roleType !== roles.admin &&
     charity.userId?.toString() !== user._id.toString()
   ) {
     return next(
@@ -96,10 +96,10 @@ export const approveCharity = async (req, res, next) => {
     { approvalStatus: charityApprovalStatus.approved, rejectionReason: null },
     { new: true }
   );
+  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
   if(charity.phone){
     charity.phone = decryptPhone({ cipherText: charity.phone });
   }
-  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   await notificationModel.create({
     userId: charity.userId,
@@ -127,11 +127,11 @@ export const rejectCharity = async (req, res, next) => {
     },
     { new: true }
   );
+  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
+  
   if(charity.phone){
     charity.phone = decryptPhone({ cipherText: charity.phone });
   }
-  if (!charity) return next(new Error("Charity not found", { cause: 404 }));
-
   await notificationModel.create({
     userId: charity.userId,
     content: `Your charity account has been rejected. Reason: ${charity.rejectionReason}`,
