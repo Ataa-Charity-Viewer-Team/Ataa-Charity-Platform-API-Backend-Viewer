@@ -96,6 +96,9 @@ export const approveCharity = async (req, res, next) => {
     { approvalStatus: charityApprovalStatus.approved, rejectionReason: null },
     { new: true }
   );
+  if(charity.phone){
+    charity.phone = decryptPhone({ cipherText: charity.phone });
+  }
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   await notificationModel.create({
@@ -124,6 +127,9 @@ export const rejectCharity = async (req, res, next) => {
     },
     { new: true }
   );
+  if(charity.phone){
+    charity.phone = decryptPhone({ cipherText: charity.phone });
+  }
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   await notificationModel.create({
