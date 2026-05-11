@@ -39,7 +39,7 @@ export const updateCharity = async (req, res, next) => {
   if (!charity) return next(new Error("Charity not found", { cause: 404 }));
 
   if (
-    user.role !== roles.admin &&
+    user.roleType !== roles.admin &&
     charity.userId?.toString() !== user._id.toString()
   ) {
     return next(

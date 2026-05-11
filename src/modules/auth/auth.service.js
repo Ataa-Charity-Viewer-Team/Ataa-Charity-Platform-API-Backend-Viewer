@@ -175,11 +175,19 @@ export const resetPassword = async (req, res, next) => {
 export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;
 
-  const decoded = verifyToken({ token: refreshToken, secret: process.env.REFRESH_SECRET });
+  let decoded;
+    decoded = verifyToken({ token: refreshToken, secret: process.env.REFRESH_SECRET });
+  }
   if (!decoded?.id) return next(new Error("Invalid Token", { cause: 400 }));
 
   const user = await userModel.findById(decoded.id);
   if (!user) return next(new Error("User not found", { cause: 404 }));
+
+  if (!user.verify) return next(new Error("Account not verified", { cause: 403 }));
+
+  if (user.passwordChangedAt && decoded.iat * 1000 < new Date(user.passwordChangedAt).getTime()) {
+    return next(new Error("Token expired due to password change, please login again", { cause: 401 }));
+  }
 
   const newAccessToken = createToken({
     payload: { id: user._id, roleType: user.roleType },
@@ -188,4 +196,5 @@ export const refreshToken = async (req, res, next) => {
   });
 
   return res.status(200).json({ success: true, accessToken: newAccessToken });
-};
+
+

@@ -1,78 +1,204 @@
-// import { advancedPagination } from "../../middleware/pagination.middleware.js";
-// import { donationModel, donationStatus } from "../../database/model/donation.model.js";
-// import { charityModel } from "../../database/model/charity.model.js";
-// import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
-// import { decryptPhone } from "../../utils/encryption/encryption.js";
+// // import { advancedPagination } from "../../middleware/pagination.middleware.js";
+// // import { donationModel, donationStatus } from "../../database/model/donation.model.js";
+// // import { charityModel } from "../../database/model/charity.model.js";
+// // import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
+// // import { decryptPhone } from "../../utils/encryption/encryption.js";
 
-// // helper: جيب الجمعية وتحقق إنها موجودة
-// const getCharityByLicense = async (license, next) => {
-//   const charity = await charityModel.findOne({ licenseNumber: license });
-//   if (!charity) { next(new Error("Charity not found", { cause: 404 })); return null; }
-//   return charity;
-// };
+// // // helper: جيب الجمعية وتحقق إنها موجودة
+// // const getCharityByLicense = async (license, next) => {
+// //   const charity = await charityModel.findOne({ licenseNumber: license });
+// //   if (!charity) { next(new Error("Charity not found", { cause: 404 })); return null; }
+// //   return charity;
+// // };
 
-// // ===================== 1) Get Stats ===========================
-// export const getStats = async (req, res, next) => {
-//   // const { license } = req.params;
-//   // const charity = await getCharityByLicense(license, next);
-//   // if (!charity) return;
-
-//   const Total_Donations    = await donationModel.countDocuments();
-//   const Pending_Donations  = await donationModel.countDocuments({  status: donationStatus.pending });
-//   const Accepted_Donations = await donationModel.countDocuments({ status: donationStatus.accepted });
-//   const Rejected_Donations = await donationModel.countDocuments({ status: donationStatus.rejected });
-
-//   return res.status(200).json({
-//     success: true,
-//     stats: { Total_Donations, Pending_Donations, Accepted_Donations, Rejected_Donations },
-//   });
-// };
-
-// // ===================== 2) Get Donations ================================
-// // export const getCharityDonations = async (req, res, next) => {
+// // // ===================== 1) Get Stats ===========================
+// // export const getStats = async (req, res, next) => {
 // //   // const { license } = req.params;
 // //   // const charity = await getCharityByLicense(license, next);
 // //   // if (!charity) return;
 
-// //   const data = await advancedPagination(donationModel,{},1,10,
-// //    "donorId secure_url type size quantity condition description status createdAt, address" );
-// //      const populatedData = await donationModel.populate(data.Data, {
-// //     path: "donorId",
-// //     select: "userName phone"
-// //   });
-// //       const decryptedDonations = populatedData.map(donation => {
-// //       const donationObj = donation.toObject ? donation.toObject() : { ...donation };
-      
-// //       if (donationObj.donorId && donationObj.donorId.phone) {
-// //         donationObj.donorId.phone = decryptPhone({ 
-// //           cipherText: donationObj.donorId.phone 
-// //         });
-// //       }
-      
-// //       return donationObj;
-// //     });
+// //   const Total_Donations    = await donationModel.countDocuments();
+// //   const Pending_Donations  = await donationModel.countDocuments({  status: donationStatus.pending });
+// //   const Accepted_Donations = await donationModel.countDocuments({ status: donationStatus.accepted });
+// //   const Rejected_Donations = await donationModel.countDocuments({ status: donationStatus.rejected });
 
-// //     data.Data = decryptedDonations;
+// //   return res.status(200).json({
+// //     success: true,
+// //     stats: { Total_Donations, Pending_Donations, Accepted_Donations, Rejected_Donations },
+// //   });
+// // };
+
+// // // ===================== 2) Get Donations ================================
+// // // export const getCharityDonations = async (req, res, next) => {
+// // //   // const { license } = req.params;
+// // //   // const charity = await getCharityByLicense(license, next);
+// // //   // if (!charity) return;
+
+// // //   const data = await advancedPagination(donationModel,{},1,10,
+// // //    "donorId secure_url type size quantity condition description status createdAt, address" );
+// // //      const populatedData = await donationModel.populate(data.Data, {
+// // //     path: "donorId",
+// // //     select: "userName phone"
+// // //   });
+// // //       const decryptedDonations = populatedData.map(donation => {
+// // //       const donationObj = donation.toObject ? donation.toObject() : { ...donation };
+      
+// // //       if (donationObj.donorId && donationObj.donorId.phone) {
+// // //         donationObj.donorId.phone = decryptPhone({ 
+// // //           cipherText: donationObj.donorId.phone 
+// // //         });
+// // //       }
+      
+// // //       return donationObj;
+// // //     });
+
+// // //     data.Data = decryptedDonations;
 
     
-// //   data.Data = populatedData.Data
+// // //   data.Data = populatedData.Data
 
 
-// //   return res.status(200).json({ success: true, count: data.length, data });
+// // //   return res.status(200).json({ success: true, count: data.length, data });
+// // // };
+// // export const getCharityDonations = async (req, res, next) => {
+// //     const paginationResult = await advancedPagination(
+// //       donationModel, 
+// //       {}, 1, 10,
+// //       "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
+// //     );
+    
+// //     const donationsWithDonor = await donationModel.populate(paginationResult.Data, {
+// //       path: "donorId",
+// //       select: "userName phone"
+// //     });
+
+// //     const decryptedDonations = populatedData.map(donation => {
+// //       if (donation.donorId && donation.donorId.phone) {
+// //         donation.donorId.phone = decryptPhone({ 
+// //           cipherText: donation.donorId.phone 
+// //         });
+// //       }
+// //       return donation;
+// //     });
+// //     data.Data = decryptedDonations;
+// //     return res.status(200).json({ 
+// //       success: true,
+// //       pagination: {
+// //         currentPage: paginationResult.Current_Page,
+// //         totalPages: paginationResult.Total_Pages,
+// //         totalItems: paginationResult.Total_Items,
+// //         count: finalData.length
+// //       },
+// //       donations: finalData
+// //     });
+    
+// //   }
+
+// // // ===================== 3) Get Requests ================================
+// // // export const getCharityRequests = async (req, res, next) => {
+// // //   // const { license } = req.params;
+// // //   // const charity = await getCharityByLicense(license, next);
+// // //   // if (!charity) return;
+
+// // //   const data = await advancedPagination(donationModel,{},1,10,
+// // //    "donorId secure_url type size quantity condition description status createdAt" );
+// // //   return res.status(200).json({ success: true, data });
+// // // };
+// // export const getCharityRequests = async (req, res, next) => {
+// //     const data = await advancedPagination(
+// //       donationModel, 
+// //       {}, 1, 10,
+// //       "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
+// //     );
+    
+// //     const requestsWithDonorData = await Promise.all(
+// //       data.Data.map(async (donation) => {
+// //         const donationObj = donation.toObject();
+        
+// //         const donor = await userModel.findById(donationObj.donorId).select("userName phone address");
+        
+// //         if (donor) {
+// //           const decryptedPhone = decryptPhone({ cipherText: donor.phone });
+          
+// //           donationObj.donorId = {
+// //             _id: donor._id,
+// //             userName: donor.userName,
+// //             phone: decryptedPhone,
+// //             address: donor.address
+// //           };
+// //         }
+        
+// //         return donationObj;
+// //       })
+// //     );
+    
+// //     data.Data = requestsWithDonorData;
+    
+// //     return res.status(200).json({ 
+// //       success: true, 
+// //       data 
+// //     });
+    
+// //   }
+// // // ===================== 4) Update Request Status ================================
+// // export const updateRequestStatus = async (req, res, next) => {
+// //   const { id } = req.params;
+// //   const { status } = req.body;
+
+// //   // const charity = await getCharityByLicense(license, next);
+// //   // if (!charity) return;
+// //  const charityId = req.user._id; // Assuming the charity ID is stored in the user object after authentication
+// //   const request = await donationModel.findById(id);
+// //   if (!request) return next(new Error("Request not found with this id by donation", { cause: 404 }));
+
+// //   if (request.status === donationStatus.accepted) {
+// //     return next(new Error("Already accepted", { cause: 400 }));
+// //   }
+
+// //   const updatedRequest = await donationModel.findByIdAndUpdate(id, { status, charityId: charityId }, { new: true });
+
+// //   await notificationModel.create({
+// //     userId:     request.donorId,
+// //     donationId: request._id,
+// //     content:    `Your donation request has been ${status}`,
+// //     status:     notificationStatus.unread,
+// //   });
+
+// //   return res.status(200).json({ success: true, message: "Request updated successfully", request: updatedRequest });
 // // };
+// import { advancedPagination } from "../../middleware/pagination.middleware.js";
+// import { donationModel, donationStatus } from "../../database/model/donation.model.js";
+// import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
+// import { userModel } from "../../database/model/user.model.js";
+// import { decryptPhone } from "../../utils/encryption/encryption.js";
+
+// // ===================== 1) Get Stats ===========================
+// export const getStats = async (req, res, next) => {
+//     const Total_Donations    = await donationModel.countDocuments();
+//     const Pending_Donations  = await donationModel.countDocuments({ status: donationStatus.pending });
+//     const Accepted_Donations = await donationModel.countDocuments({ status: donationStatus.accepted });
+//     const Rejected_Donations = await donationModel.countDocuments({ status: donationStatus.rejected });
+
+//     return res.status(200).json({
+//       success: true,
+//       stats: { Total_Donations, Pending_Donations, Accepted_Donations, Rejected_Donations },
+//     });
+//   } 
+
+// // ===================== 2) Get Donations ================================
 // export const getCharityDonations = async (req, res, next) => {
 //     const paginationResult = await advancedPagination(
 //       donationModel, 
-//       {}, 1, 10,
+//       {},1, 10,
 //       "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
 //     );
     
 //     const donationsWithDonor = await donationModel.populate(paginationResult.Data, {
 //       path: "donorId",
-//       select: "userName phone"
+//       select: "userName phone address"
 //     });
 
-//     const decryptedDonations = populatedData.map(donation => {
+//     const decryptedDonations = donationsWithDonor.map(donation => {
 //       if (donation.donorId && donation.donorId.phone) {
 //         donation.donorId.phone = decryptPhone({ 
 //           cipherText: donation.donorId.phone 
@@ -80,47 +206,38 @@
 //       }
 //       return donation;
 //     });
-//     data.Data = decryptedDonations;
+    
 //     return res.status(200).json({ 
 //       success: true,
 //       pagination: {
 //         currentPage: paginationResult.Current_Page,
 //         totalPages: paginationResult.Total_Pages,
 //         totalItems: paginationResult.Total_Items,
-//         count: finalData.length
+//         count: decryptedDonations.length
 //       },
-//       donations: finalData
+//       donations: decryptedDonations
 //     });
     
 //   }
 
 // // ===================== 3) Get Requests ================================
-// // export const getCharityRequests = async (req, res, next) => {
-// //   // const { license } = req.params;
-// //   // const charity = await getCharityByLicense(license, next);
-// //   // if (!charity) return;
-
-// //   const data = await advancedPagination(donationModel,{},1,10,
-// //    "donorId secure_url type size quantity condition description status createdAt" );
-// //   return res.status(200).json({ success: true, data });
-// // };
 // export const getCharityRequests = async (req, res, next) => {
-//     const data = await advancedPagination(
+//     const paginationResult = await advancedPagination(
 //       donationModel, 
-//       {}, 1, 10,
+//       {},1, 10,
 //       "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
 //     );
     
 //     const requestsWithDonorData = await Promise.all(
-//       data.Data.map(async (donation) => {
-//         const donationObj = donation.toObject();
+//       paginationResult.Data.map(async (donation) => {
+//         const donor = await userModel.findById(donation.donorId).select("userName phone address");
         
-//         const donor = await userModel.findById(donationObj.donorId).select("userName phone address");
+//         const donationCopy = { ...donation };
         
 //         if (donor) {
 //           const decryptedPhone = decryptPhone({ cipherText: donor.phone });
           
-//           donationObj.donorId = {
+//           donationCopy.donorId = {
 //             _id: donor._id,
 //             userName: donor.userName,
 //             phone: decryptedPhone,
@@ -128,172 +245,199 @@
 //           };
 //         }
         
-//         return donationObj;
+//         return donationCopy;
 //       })
 //     );
     
-//     data.Data = requestsWithDonorData;
-    
 //     return res.status(200).json({ 
-//       success: true, 
-//       data 
+//       success: true,
+//       pagination: {
+//         currentPage: paginationResult.Current_Page,
+//         totalPages: paginationResult.Total_Pages,
+//         totalItems: paginationResult.Total_Items,
+//         count: requestsWithDonorData.length
+//       },
+//       requests: requestsWithDonorData 
 //     });
     
-//   }
+//   } 
+
 // // ===================== 4) Update Request Status ================================
 // export const updateRequestStatus = async (req, res, next) => {
-//   const { id } = req.params;
-//   const { status } = req.body;
+//     const { id } = req.params;
+//     const { status } = req.body;
+//     const charityId = req.user._id;
+    
+//     const request = await donationModel.findById(id);
+//     if (!request) {
+//       return next(new Error("Request not found with this id by donation", { cause: 404 }));
+//     }
 
-//   // const charity = await getCharityByLicense(license, next);
-//   // if (!charity) return;
-//  const charityId = req.user._id; // Assuming the charity ID is stored in the user object after authentication
-//   const request = await donationModel.findById(id);
-//   if (!request) return next(new Error("Request not found with this id by donation", { cause: 404 }));
+//     if (request.status === donationStatus.accepted) {
+//       return next(new Error("Already accepted", { cause: 400 }));
+//     }
 
-//   if (request.status === donationStatus.accepted) {
-//     return next(new Error("Already accepted", { cause: 400 }));
-//   }
+//     const updatedRequest = await donationModel.findByIdAndUpdate(
+//       id, 
+//       { status, charityId: charityId }, 
+//       { new: true }
+//     );
 
-//   const updatedRequest = await donationModel.findByIdAndUpdate(id, { status, charityId: charityId }, { new: true });
+//     await notificationModel.create({
+//       userId: request.donorId,
+//       donationId: request._id,
+//       content: `Your donation request has been ${status}`,
+//       status: notificationStatus.unread,
+//     });
 
-//   await notificationModel.create({
-//     userId:     request.donorId,
-//     donationId: request._id,
-//     content:    `Your donation request has been ${status}`,
-//     status:     notificationStatus.unread,
-//   });
-
-//   return res.status(200).json({ success: true, message: "Request updated successfully", request: updatedRequest });
-// };
+//     return res.status(200).json({ 
+//       success: true, 
+//       message: "Request updated successfully", 
+//       request: updatedRequest 
+//     });
+    
+//   } 
+  
 import { advancedPagination } from "../../middleware/pagination.middleware.js";
 import { donationModel, donationStatus } from "../../database/model/donation.model.js";
+import { charityModel } from "../../database/model/charity.model.js";
 import { notificationModel, notificationStatus } from "../../database/model/notification.model.js";
-import { userModel } from "../../database/model/user.model.js";
 import { decryptPhone } from "../../utils/encryption/encryption.js";
+
+// ── helper ──
+const getMyCharity = async (userId, next) => {
+  const charity = await charityModel.findOne({ userId });
+  if (!charity) { next(new Error("Charity profile not found", { cause: 404 })); return null; }
+  return charity;
+};
 
 // ===================== 1) Get Stats ===========================
 export const getStats = async (req, res, next) => {
-    const Total_Donations    = await donationModel.countDocuments();
-    const Pending_Donations  = await donationModel.countDocuments({ status: donationStatus.pending });
-    const Accepted_Donations = await donationModel.countDocuments({ status: donationStatus.accepted });
-    const Rejected_Donations = await donationModel.countDocuments({ status: donationStatus.rejected });
+  const charity = await getMyCharity(req.user._id, next);
+  if (!charity) return;
 
-    return res.status(200).json({
-      success: true,
-      stats: { Total_Donations, Pending_Donations, Accepted_Donations, Rejected_Donations },
-    });
-  } 
+  const filter = { charityId: charity._id };
+  const [total, pending, accepted, rejected] = await Promise.all([
+    donationModel.countDocuments(filter),
+    donationModel.countDocuments({ ...filter, status: donationStatus.pending }),
+    donationModel.countDocuments({ ...filter, status: donationStatus.accepted }),
+    donationModel.countDocuments({ ...filter, status: donationStatus.rejected }),
+  ]);
+
+  return res.status(200).json({
+    success: true,
+    stats: { Total_Donations: total, Pending_Donations: pending, Accepted_Donations: accepted, Rejected_Donations: rejected },
+  });
+};
 
 // ===================== 2) Get Donations ================================
 export const getCharityDonations = async (req, res, next) => {
-    const paginationResult = await advancedPagination(
-      donationModel, 
-      {},1, 10,
-      "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
-    );
-    
-    const donationsWithDonor = await donationModel.populate(paginationResult.Data, {
-      path: "donorId",
-      select: "userName phone address"
-    });
+  const charity = await getMyCharity(req.user._id, next);
+  if (!charity) return;
 
-    const decryptedDonations = donationsWithDonor.map(donation => {
-      if (donation.donorId && donation.donorId.phone) {
-        donation.donorId.phone = decryptPhone({ 
-          cipherText: donation.donorId.phone 
-        });
-      }
-      return donation;
-    });
-    
-    return res.status(200).json({ 
-      success: true,
-      pagination: {
-        currentPage: paginationResult.Current_Page,
-        totalPages: paginationResult.Total_Pages,
-        totalItems: paginationResult.Total_Items,
-        count: decryptedDonations.length
-      },
-      donations: decryptedDonations
-    });
-    
-  }
+  const page  = Math.max(1, parseInt(req.query.page)  || 1);
+  const limit = Math.min(50, parseInt(req.query.limit) || 10);
+
+  const paginationResult = await advancedPagination(
+    donationModel,
+    { charityId: charity._id }, 
+    page, limit,
+    "donorId imageUrl type size quantity condition description status createdAt"
+  );
+
+  // populate بدون N+1
+  const populated = await donationModel.populate(paginationResult.Data, {
+    path: "donorId", select: "userName phone address"
+  });
+
+  const decrypted = populated.map(d => {
+    if (d.donorId?.phone) d.donorId.phone = decryptPhone({ cipherText: d.donorId.phone });
+    return d;
+  });
+
+  return res.status(200).json({
+    success: true,
+    pagination: {
+      currentPage: paginationResult.Current_Page,
+      totalPages:  paginationResult.Total_Pages,
+      totalItems:  paginationResult.Total_Items,
+    },
+    donations: decrypted,
+  });
+};
 
 // ===================== 3) Get Requests ================================
 export const getCharityRequests = async (req, res, next) => {
-    const paginationResult = await advancedPagination(
-      donationModel, 
-      {},1, 10,
-      "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
-    );
-    
-    const requestsWithDonorData = await Promise.all(
-      paginationResult.Data.map(async (donation) => {
-        const donor = await userModel.findById(donation.donorId).select("userName phone address");
-        
-        const donationCopy = { ...donation };
-        
-        if (donor) {
-          const decryptedPhone = decryptPhone({ cipherText: donor.phone });
-          
-          donationCopy.donorId = {
-            _id: donor._id,
-            userName: donor.userName,
-            phone: decryptedPhone,
-            address: donor.address
-          };
-        }
-        
-        return donationCopy;
-      })
-    );
-    
-    return res.status(200).json({ 
-      success: true,
-      pagination: {
-        currentPage: paginationResult.Current_Page,
-        totalPages: paginationResult.Total_Pages,
-        totalItems: paginationResult.Total_Items,
-        count: requestsWithDonorData.length
-      },
-      requests: requestsWithDonorData 
-    });
-    
-  } 
+  const charity = await getMyCharity(req.user._id, next);
+  if (!charity) return;
+
+  const page  = Math.max(1, parseInt(req.query.page)  || 1);
+  const limit = Math.min(50, parseInt(req.query.limit) || 10);
+
+  const filter = {
+    status: donationStatus.pending,
+    $or: [{ charityId: null }, { charityId: charity._id }],
+  };
+
+  const paginationResult = await advancedPagination(
+    donationModel, filter, page, limit,
+    "donorId imageUrl type size quantity condition description status createdAt"
+  );
+
+  const populated = await donationModel.populate(paginationResult.Data, {
+    path: "donorId", select: "userName phone address"
+  });
+
+  const decrypted = populated.map(d => {
+    if (d.donorId?.phone) d.donorId.phone = decryptPhone({ cipherText: d.donorId.phone });
+    return d;
+  });
+
+  return res.status(200).json({
+    success: true,
+    pagination: {
+      currentPage: paginationResult.Current_Page,
+      totalPages:  paginationResult.Total_Pages,
+      totalItems:  paginationResult.Total_Items,
+    },
+    requests: decrypted,
+  });
+};
 
 // ===================== 4) Update Request Status ================================
 export const updateRequestStatus = async (req, res, next) => {
-    const { id } = req.params;
-    const { status } = req.body;
-    const charityId = req.user._id;
-    
-    const request = await donationModel.findById(id);
-    if (!request) {
-      return next(new Error("Request not found with this id by donation", { cause: 404 }));
-    }
+  const { id } = req.params;
+  const { status } = req.body;
 
-    if (request.status === donationStatus.accepted) {
-      return next(new Error("Already accepted", { cause: 400 }));
-    }
+  const charity = await getMyCharity(req.user._id, next);
+  if (!charity) return;
 
-    const updatedRequest = await donationModel.findByIdAndUpdate(
-      id, 
-      { status, charityId: charityId }, 
-      { new: true }
-    );
+  const request = await donationModel.findOne({
+    _id: id,
+    $or: [{ charityId: null }, { charityId: charity._id }],
+  });
+  if (!request) return next(new Error("Request not found or belongs to another charity", { cause: 404 }));
 
-    await notificationModel.create({
-      userId: request.donorId,
-      donationId: request._id,
-      content: `Your donation request has been ${status}`,
-      status: notificationStatus.unread,
-    });
+  if (request.status === donationStatus.accepted) {
+    return next(new Error("Request already accepted", { cause: 400 }));
+  }
 
-    return res.status(200).json({ 
-      success: true, 
-      message: "Request updated successfully", 
-      request: updatedRequest 
-    });
-    
-  } 
+  const updatedRequest = await donationModel.findByIdAndUpdate(
+    id,
+    { status, charityId: charity._id },  
+    { new: true }
+  );
+
+  await notificationModel.create({
+    userId:     request.donorId,
+    donationId: request._id,
+    content:    `Your donation "${request.type}" has been ${status} by ${charity.charityName}`,
+    status:     notificationStatus.unread,
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Request updated successfully",
+    request: updatedRequest,
+  });
+};

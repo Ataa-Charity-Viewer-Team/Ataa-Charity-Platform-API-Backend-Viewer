@@ -1,14 +1,16 @@
 import joi from "joi";
 import { monggoseID } from "../../middleware/validation.middleware.js";
+const phoneRegex = /^(002|\+2)?01[0125][0-9]{8}$/;
 // =================1)  Update Profile ======================
 export const updateProfileSchema = joi.object({
   userName: joi.string().min(3).max(30).trim().messages({
     "string.min": "Name must be at least 3 characters",
     "string.max": "Name must not exceed 30 characters"
   }),
-  phone: joi.string().messages({
-    "string.empty": "Phone cannot be empty"
-  }),
+phone: joi.string().pattern(phoneRegex).messages({
+  "string.empty": "Phone cannot be empty",
+  "string.pattern.base": "Invalid phone format",
+}),
   address: joi.string().min(5).max(100).trim().messages({
     "string.min": "Address must be at least 5 characters",
     "string.max": "Address must not exceed 100 characters"
