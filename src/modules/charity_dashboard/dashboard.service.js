@@ -33,10 +33,9 @@ export const getCharityDonations = async (req, res, next) => {
   // const charity = await getCharityByLicense(license, next);
   // if (!charity) return;
 
-  const data = await donationModel
-    .find({ status:"pending" })
-    .populate("donorId", "_id imageUrl address description type size quantity condition createdAt")
-    .sort({ createdAt: -1 });
+  const data = await advancedPagination(donationModel,{},1,10,
+   "donorId secure_url type size quantity condition description status createdAt, address" );
+
 
   return res.status(200).json({ success: true, count: data.length, data });
 };
