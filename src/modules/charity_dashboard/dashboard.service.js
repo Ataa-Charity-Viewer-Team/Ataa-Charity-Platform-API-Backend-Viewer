@@ -29,21 +29,53 @@ export const getStats = async (req, res, next) => {
 };
 
 // ===================== 2) Get Donations ================================
-export const getCharityDonations = async (req, res, next) => {
-  // const { license } = req.params;
-  // const charity = await getCharityByLicense(license, next);
-  // if (!charity) return;
+// export const getCharityDonations = async (req, res, next) => {
+//   // const { license } = req.params;
+//   // const charity = await getCharityByLicense(license, next);
+//   // if (!charity) return;
 
-  const data = await advancedPagination(donationModel,{},1,10,
-   "donorId secure_url type size quantity condition description status createdAt, address" );
-     const populatedData = await donationModel.populate(data.Data, {
-    path: "donorId",
-    select: "userName phone"
-  });
-      const decryptedDonations = populatedData.map(donation => {
-      const donationObj = donation.toObject ? donation.toObject() : { ...donation };
+//   const data = await advancedPagination(donationModel,{},1,10,
+//    "donorId secure_url type size quantity condition description status createdAt, address" );
+//      const populatedData = await donationModel.populate(data.Data, {
+//     path: "donorId",
+//     select: "userName phone"
+//   });
+//       const decryptedDonations = populatedData.map(donation => {
+//       const donationObj = donation.toObject ? donation.toObject() : { ...donation };
       
-      if (donationObj.donorId && donationObj.donorId.phone) {
+//       if (donationObj.donorId && donationObj.donorId.phone) {
+//         donationObj.donorId.phone = decryptPhone({ 
+//           cipherText: donationObj.donorId.phone 
+//         });
+//       }
+      
+//       return donationObj;
+//     });
+
+//     data.Data = decryptedDonations;
+
+    
+//   data.Data = populatedData.Data
+
+
+//   return res.status(200).json({ success: true, count: data.length, data });
+// };
+export const getCharityDonations = async (req, res, next) => {
+    const paginationResult = await advancedPagination(
+      donationModel, 
+      {}, 1, 10,
+      "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
+    );
+    
+    const donationsWithDonor = await donationModel.populate(paginationResult.Data, {
+      path: "donorId",
+      select: "userName phone"
+    });
+
+    const finalData = donationsWithDonor.map(donation => {
+      const donationObj = donation.toObject();
+      
+      if (donationObj.donorId?.phone) {
         donationObj.donorId.phone = decryptPhone({ 
           cipherText: donationObj.donorId.phone 
         });
@@ -52,27 +84,65 @@ export const getCharityDonations = async (req, res, next) => {
       return donationObj;
     });
 
-    // تحديث البيانات المفككة
-    data.Data = decryptedDonations;
-
+    return res.status(200).json({ 
+      success: true,
+      pagination: {
+        currentPage: paginationResult.Current_Page,
+        totalPages: paginationResult.Total_Pages,
+        totalItems: paginationResult.Total_Items,
+        count: finalData.length
+      },
+      donations: finalData
+    });
     
-  data.Data = populatedData.Data
-
-
-  return res.status(200).json({ success: true, count: data.length, data });
-};
+  }
 
 // ===================== 3) Get Requests ================================
+// export const getCharityRequests = async (req, res, next) => {
+//   // const { license } = req.params;
+//   // const charity = await getCharityByLicense(license, next);
+//   // if (!charity) return;
+
+//   const data = await advancedPagination(donationModel,{},1,10,
+//    "donorId secure_url type size quantity condition description status createdAt" );
+//   return res.status(200).json({ success: true, data });
+// };
 export const getCharityRequests = async (req, res, next) => {
-  // const { license } = req.params;
-  // const charity = await getCharityByLicense(license, next);
-  // if (!charity) return;
-
-  const data = await advancedPagination(donationModel,{},1,10,
-   "donorId secure_url type size quantity condition description status createdAt" );
-  return res.status(200).json({ success: true, data });
-};
-
+    const data = await advancedPagination(
+      donationModel, 
+      {}, 1, 10,
+      "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
+    );
+    
+    const requestsWithDonorData = await Promise.all(
+      data.Data.map(async (donation) => {
+        const donationObj = donation.toObject();
+        
+        const donor = await userModel.findById(donationObj.donorId).select("userName phone address");
+        
+        if (donor) {
+          const decryptedPhone = decryptPhone({ cipherText: donor.phone });
+          
+          donationObj.donorId = {
+            _id: donor._id,
+            userName: donor.userName,
+            phone: decryptedPhone,
+            address: donor.address
+          };
+        }
+        
+        return donationObj;
+      })
+    );
+    
+    data.Data = requestsWithDonorData;
+    
+    return res.status(200).json({ 
+      success: true, 
+      data 
+    });
+    
+  }
 // ===================== 4) Update Request Status ================================
 export const updateRequestStatus = async (req, res, next) => {
   const { id } = req.params;
