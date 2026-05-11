@@ -176,8 +176,13 @@ export const refreshToken = async (req, res, next) => {
   const { refreshToken } = req.body;
 
   let decoded;
+  try {
+
     decoded = verifyToken({ token: refreshToken, secret: process.env.REFRESH_SECRET });
+  } catch (error) {
+    return next(new Error("Invalid or expired refresh token", { cause: 401 }));
   }
+
   if (!decoded?.id) return next(new Error("Invalid Token", { cause: 400 }));
 
   const user = await userModel.findById(decoded.id);
@@ -196,5 +201,4 @@ export const refreshToken = async (req, res, next) => {
   });
 
   return res.status(200).json({ success: true, accessToken: newAccessToken });
-
-
+};
