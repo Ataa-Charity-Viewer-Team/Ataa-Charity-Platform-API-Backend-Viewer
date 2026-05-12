@@ -51,11 +51,12 @@ export const deleteMyAccount = async (req, res, next) => {
 export const getAllUsers = async (req, res, next) => {
   const data = await advancedPagination(userModel,{},1,10,"userName phone address email roleType createdAt updatedAt verify ");
   // decrption phone
-  for (const user of data) {
-    if(user.phone){
-      user.phone = decryptPhone({ cipherText: user.phone });
-    }
-  }
+  data.Data = data.Data.map((item) => {
+    return {
+      ...item,
+      phone: item.phone
+        ? decryptPhone({ cipherText: item.phone }): item.phone, };
+  });
     return res.status(200).json({ success: true, data });
 };
 
