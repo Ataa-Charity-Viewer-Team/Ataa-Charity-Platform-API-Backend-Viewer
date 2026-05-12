@@ -49,12 +49,14 @@ export const deleteMyAccount = async (req, res, next) => {
 };
 
 export const getAllUsers = async (req, res, next) => {
-  const data = await advancedPagination(userModel); 
+  const data = await advancedPagination(userModel).select("-password -__v"); 
   // decrption phone
-  if(data.phone){
-   data.phone = decryptPhone({ cipherText: data.phone });
+  for (const user of data) {
+    if(user.phone){
+      user.phone = decryptPhone({ cipherText: user.phone });
+    }
   }
-  return res.status(200).json({ success: true, data });
+    return res.status(200).json({ success: true, data });
 };
 
 export const getUserById = async (req, res, next) => {
