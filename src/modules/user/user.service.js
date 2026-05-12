@@ -50,6 +50,10 @@ export const deleteMyAccount = async (req, res, next) => {
 
 export const getAllUsers = async (req, res, next) => {
   const data = await advancedPagination(userModel); 
+  // decrption phone
+  if(data.phone){
+   data.phone = decryptPhone({ cipherText: data.phone });
+  }
   return res.status(200).json({ success: true, data });
 };
 
@@ -57,6 +61,9 @@ export const getUserById = async (req, res, next) => {
   const user = await userModel.findById(req.params.id).select("-password -__v");
   if (!user) {
     return next(new Error("User not found", { cause: 404 }));
+  }
+  if (user.phone) {
+    user.phone = decryptPhone({ cipherText: user.phone });
   }
   return res.status(200).json({ success: true, user });
 };
