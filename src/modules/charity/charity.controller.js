@@ -45,9 +45,10 @@ import { charityEndpoint } from "./charity.endpoint.js";
 
 const router = Router();
 
-router.get("/charities", authAction, authorization(charityEndpoint.getAllCharities), asyncHandler(charityService.getAllCharities));
+// router.get("/charities", authAction, authorization(charityEndpoint.getAllCharities), asyncHandler(charityService.getAllCharities));
+router.get("/charities", asyncHandler(charityService.getAllCharities));
 
-router.get("/:id",      authAction, authorization(charityEndpoint.getCharity),     validation(charityValidation.charityIdSchema), asyncHandler(charityService.getCharity));
+router.get("/:id", validation(charityValidation.charityIdSchema), asyncHandler(charityService.getCharity));
 
 router.patch("/:id",    authAction, authorization(charityEndpoint.updateCharity),  validation(charityValidation.updateCharitySchema), asyncHandler(charityService.updateCharity));
 
