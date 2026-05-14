@@ -47,6 +47,6 @@ export const createDonation = async (req, res, next) => {
 // ===================== get my donations ======================
 export const getMyDonations = async (req, res, next) => {
   const { user } = req;
-  const data = await advancedPagination(donationModel, { donorId: user._id });
+  const data = await advancedPagination(donationModel,{ donorId: user._id });
   res.status(200).json({ success: true, data });
 };

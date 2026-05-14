@@ -7,7 +7,7 @@ import { notificationModel, notificationStatus } from "../../database/model/noti
 // ===================== Get All Charities =====================
 export const getAllCharities = async (req, res, next) => {
   const result = await advancedPagination(
-    charityModel,{},1,10,"charityName email address description phone licenseNumber approvalStatus");
+    charityModel,{},page,limit,"charityName email address description phone licenseNumber approvalStatus");
   result.Data = result.Data.map((item) => {
     return {
       ...item,

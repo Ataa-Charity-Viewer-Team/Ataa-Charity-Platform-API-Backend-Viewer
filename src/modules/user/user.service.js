@@ -51,7 +51,7 @@ export const deleteMyAccount = async (req, res, next) => {
 export const getAllUsers = async (req, res, next) => {
   const filter = { roleType: "user" };
 
-  const data = await advancedPagination(userModel,filter,1,10,"userName phone address email roleType createdAt updatedAt verify ");
+  const data = await advancedPagination(userModel,filter,page,limit,"userName phone address email roleType createdAt updatedAt verify ");
   // decrption phone
   data.Data = data.Data.map((item) => {
     return {

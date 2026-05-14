@@ -210,7 +210,7 @@ export const getStats = async (req, res, next) => {
 export const getCharityDonations = async (req, res, next) => {
     const paginationResult = await advancedPagination(
       donationModel, 
-      {},1, 10,
+      {},page,limit,
       "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
     );
     
