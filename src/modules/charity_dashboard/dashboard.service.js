@@ -208,6 +208,9 @@ export const getStats = async (req, res, next) => {
 };
 // ===================== 2) Get Donations ================================
 export const getCharityDonations = async (req, res, next) => {
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+  const limit = Math.max(1, parseInt(req.query.limit) || 10);
+
     const paginationResult = await advancedPagination(
       donationModel, 
       {},page,limit,
