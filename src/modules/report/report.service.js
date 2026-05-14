@@ -1,4 +1,5 @@
 import { reportModel } from "../../database/model/report.model.js";
+import { userModel } from "../../database/model/user.model.js";
 import { advancedPagination } from "../../middleware/pagination.middleware.js";
 
 // =================================== 1) Get All Reports ================================
