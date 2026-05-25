@@ -1,4 +1,5 @@
-import { userModel } from "../../database/model/user.model.js";
+import { userModel, roles } from "../../database/model/user.model.js";
+import { charityModel } from "../../database/model/charity.model.js";
 import { decryptPhone, encryptPhone } from "../../utils/encryption/encryption.js";
 import { advancedPagination } from '../../middleware/pagination.middleware.js'; 
 import { hashPassword , comparePassword } from '../../utils/hashing/hashing.js';
@@ -12,6 +13,24 @@ export const getMyProfile = async (req, res, next) => {
   if (finder.phone) {
     finder.phone = decryptPhone({ cipherText: finder.phone });
   }
+
+  if (finder.roleType === roles.charity) {
+    const charity = await charityModel.findOne({ userId: finder._id }).select("-__v");
+    if (charity) {
+      if (charity.phone) {
+        charity.phone = decryptPhone({ cipherText: charity.phone });
+      }
+      const finderObj = finder.toObject();
+      finderObj.charityId       = charity._id;
+      finderObj.charityName     = charity.charityName;
+      finderObj.licenseNumber   = charity.licenseNumber;
+      finderObj.description     = charity.description;
+      finderObj.approvalStatus  = charity.approvalStatus;
+      finderObj.rejectionReason = charity.rejectionReason;
+      return res.status(200).json({ success: true, finder: finderObj });
+    }
+  }
+
   return res.status(200).json({ success: true, finder });
 };
 
