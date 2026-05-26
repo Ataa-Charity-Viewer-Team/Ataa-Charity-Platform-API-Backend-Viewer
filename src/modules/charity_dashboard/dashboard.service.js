@@ -251,7 +251,7 @@ export const getCharityRequests = async (req, res, next) => {
     
     const requestsWithDonorData = await Promise.all(
       paginationResult.Data.map(async (donation) => {
-        const donor = await userModel.findById(donation.donorId).select("userName phone address");
+        const donor = await userModel.findById(donation.donorId).select("userName phone address email createdAt updatedAt");
         
         const donationCopy = { ...donation };
         
