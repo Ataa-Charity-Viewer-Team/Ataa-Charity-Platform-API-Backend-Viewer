@@ -217,20 +217,17 @@ export const getCharityDonations = async (req, res, next) => {
       "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
     );
     
-    const donationsWithDonor = await donationModel.populate(paginationResult.Data, {
-      path: "donorId",
-      select: "userName phone address"
+const decryptedDonations = donationsWithDonor.map(donation => {
+  const donationObj = donation.toObject ? donation.toObject() : { ...donation };
+  
+  if (donationObj.donorId && donationObj.donorId.phone) {
+    donationObj.donorId.phone = decryptPhone({ 
+      cipherText: donationObj.donorId.phone 
     });
-
-    const decryptedDonations = donationsWithDonor.map(donation => {
-      if (donation.donorId && donation.donorId.phone) {
-        donation.donorId.phone = decryptPhone({ 
-          cipherText: donation.donorId.phone 
-        });
-      }
-      return donation;
-    });
-    
+  }
+  
+  return donationObj;
+});    
     return res.status(200).json({ 
       success: true,
       pagination: {
