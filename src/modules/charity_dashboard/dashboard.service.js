@@ -218,7 +218,7 @@ export const getCharityDonations = async (req, res, next) => {
     );
 const donationsWithDonor = await donationModel.populate(paginationResult.Data, {
   path: "donorId",
-  select: "userName phone address"
+  select: "userName phone address email createdAt updatedAt "
 });
 
 const decryptedDonations = donationsWithDonor.map(donation => {
@@ -262,7 +262,10 @@ export const getCharityRequests = async (req, res, next) => {
             _id: donor._id,
             userName: donor.userName,
             phone: decryptedPhone,
-            address: donor.address
+            address: donor.address,
+            email: donor.email,
+            createdAt: donor.createdAt,
+            updatedAt: donor.updatedAt
           };
         }
         
