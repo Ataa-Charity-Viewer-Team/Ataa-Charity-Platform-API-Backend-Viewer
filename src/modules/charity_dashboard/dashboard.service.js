@@ -223,13 +223,9 @@ const donationsWithDonor = await donationModel.populate(paginationResult.Data, {
 
 const decryptedDonations = donationsWithDonor.map(donation => {
   const donationObj = donation.toObject ? donation.toObject() : { ...donation };
-  
   if (donationObj.donorId && donationObj.donorId.phone) {
-    donationObj.donorId.phone = decryptPhone({ 
-      cipherText: donationObj.donorId.phone 
-    });
+    donationObj.donorId.phone = decryptPhone({ cipherText: donationObj.donorId.phone });
   }
-  
   return donationObj;
 });
     return res.status(200).json({ 
