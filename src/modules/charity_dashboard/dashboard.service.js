@@ -220,7 +220,7 @@ const donationsWithDonor = await donationModel.populate(paginationResult.Data, {
   path: "donorId",
   select: "userName phone address"
 });
-    
+
 const decryptedDonations = donationsWithDonor.map(donation => {
   const donationObj = donation.toObject ? donation.toObject() : { ...donation };
   
@@ -231,11 +231,7 @@ const decryptedDonations = donationsWithDonor.map(donation => {
   }
   
   return donationObj;
-});    
-    if (donationObj.donorId && donationObj.donorId.phone) {
-  console.log("raw phone from DB:", donationObj.donorId.phone);
-}
-
+});
     return res.status(200).json({ 
       success: true,
       pagination: {
