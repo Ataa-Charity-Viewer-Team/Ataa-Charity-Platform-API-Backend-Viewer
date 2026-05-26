@@ -216,6 +216,16 @@ export const getCharityDonations = async (req, res, next) => {
       {},page,limit,
       "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
     );
+    const paginationResult = await advancedPagination(
+  donationModel,
+  {}, page, limit,
+  "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
+);
+
+const donationsWithDonor = await donationModel.populate(paginationResult.Data, {
+  path: "donorId",
+  select: "userName phone address"
+});
     
 const decryptedDonations = donationsWithDonor.map(donation => {
   const donationObj = donation.toObject ? donation.toObject() : { ...donation };
