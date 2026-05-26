@@ -40,6 +40,7 @@ req.body.nationalID = encryptPhone({ cipherText: req.body.nationalID });
     ...req.body,
     phone:    encryptedPhone,
     password: passwordHash,
+    userName: req.body.userName || req.body.charityName, 
   });
 
   // ===== Charity: إنشاء سجل الجمعية بـ approvalStatus: pending =====
