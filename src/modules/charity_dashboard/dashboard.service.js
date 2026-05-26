@@ -216,7 +216,9 @@ export const getCharityDonations = async (req, res, next) => {
       {},page,limit,
       "donorId imageUrl.secure_url type size quantity condition description status createdAt address"
     );
-    
+    if (donationObj.donorId && donationObj.donorId.phone) {
+  console.log("raw phone from DB:", donationObj.donorId.phone);
+}
 const donationsWithDonor = await donationModel.populate(paginationResult.Data, {
   path: "donorId",
   select: "userName phone address"
