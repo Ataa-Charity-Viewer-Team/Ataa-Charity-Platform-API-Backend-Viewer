@@ -20,8 +20,8 @@ export const registerAccount = async (req, res, next) => {
   if (existingUser) return next(new Error("Email already exists", { cause: 409 }));
 
   if (req.body.nationalID) {
-    req.body.nationalID = encryptPhone({ plainText: req.body.nationalID });
-  }
+req.body.nationalID = encryptPhone({ cipherText: req.body.nationalID }); 
+ }
 
   // ===== Charity: تحقق من البيانات الإضافية =====
   if (roleType === roles.charity) {
