@@ -1,4 +1,3 @@
-
 import { donationModel } from "../../database/model/donation.model.js";
 import {  charityApprovalStatus, charityModel } from "../../database/model/charity.model.js";
 import { advancedPagination } from '../../middleware/pagination.middleware.js';
@@ -19,14 +18,8 @@ const uploadToCloud = (buffer, userId) => {
 // ===================== create donation ======================
 export const createDonation = async (req, res, next) => {
   const { user } = req;
-  const {  type, size, quantity, description, condition } = req.body;
-// remove choose charityId from body and get it from params
-  // const charity = await charityModel.findById(charityId);
-  // if (!charity) return next(new Error("Charity not found", { cause: 404 }));
+  const { type, size, quantity, description, condition } = req.body;
 
-  // if (charity.approvalStatus !== charityApprovalStatus.approved) {
-  //   return next(new Error("This charity is not approved to receive donations", { cause: 400 }));
-  // }
   const approvedCharities = await charityModel.find({
     approvalStatus: charityApprovalStatus.approved,
   });
@@ -44,9 +37,13 @@ export const createDonation = async (req, res, next) => {
   const donation = await donationModel.create({ ...req.body, donorId: user._id, imageUrl });
   return res.status(201).json({ success: true, message: "Donation created successfully", donation });
 };
+
 // ===================== get my donations ======================
 export const getMyDonations = async (req, res, next) => {
   const { user } = req;
-  const data = await advancedPagination(donationModel,{ donorId: user._id });
-  res.status(200).json({ success: true, data });
+  const page  = parseInt(req.query.page)  || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const data = await advancedPagination(donationModel, { donorId: user._id }, page, limit);
+  res.status(200).json({ success: true, ...data });
 };
