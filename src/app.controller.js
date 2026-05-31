@@ -20,17 +20,6 @@ export const bootstrap = async (app, express) => {
   app.use(cors({
     origin: "*"
   }))
-  app.use((req, res, next) => {
-  console.log('=== Request Info ===');
-  console.log('📡 Method:', req.method);
-  console.log('🔗 URL:', req.url);
-  console.log('💻 IP:', req.ip || req.connection.remoteAddress);
-  console.log('🌐 User-Agent:', req.get('User-Agent'));
-  console.log('📍 Origin:', req.get('origin') || 'No Origin');
-  console.log('🔗 Referer:', req.get('referer') || 'No Referer');
-  console.log('===================');
-  next();
-});
   // ================= trust proxy ==================
   app.set("trust proxy", 1);
 
